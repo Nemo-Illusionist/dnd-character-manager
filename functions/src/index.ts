@@ -30,7 +30,7 @@ export const onUserCreate = functions.auth.user().onCreate(async (user) => {
       // Create game document
       transaction.set(gameRef, {
         id: gameId,
-        name: `${displayName}'s Personal Game`,
+        name: `Personal Game`,
         description: 'Your personal game for storing characters and items',
         gmId: uid,
         playerIds: [uid],
