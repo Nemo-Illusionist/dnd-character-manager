@@ -5,6 +5,7 @@ import * as admin from 'firebase-admin';
 admin.initializeApp();
 
 const db = admin.firestore();
+const FieldValue = admin.firestore.FieldValue;
 
 /**
  * Cloud Function: Create personal game for new user
@@ -34,8 +35,8 @@ export const onUserCreate = functions.auth.user().onCreate(async (user) => {
         gmId: uid,
         playerIds: [uid],
         isPersonal: true,
-        createdAt: admin.firestore.FieldValue.serverTimestamp(),
-        updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+        createdAt: FieldValue.serverTimestamp(),
+        updatedAt: FieldValue.serverTimestamp(),
       });
 
       // Create user document with reference to personal game
@@ -45,7 +46,7 @@ export const onUserCreate = functions.auth.user().onCreate(async (user) => {
         displayName,
         photoURL: user.photoURL || null,
         personalGameId: gameId,
-        createdAt: admin.firestore.FieldValue.serverTimestamp(),
+        createdAt: FieldValue.serverTimestamp(),
       });
     });
 
