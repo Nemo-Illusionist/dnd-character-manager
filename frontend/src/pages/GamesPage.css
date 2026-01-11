@@ -1,0 +1,19 @@
+.games-page {
+  min-height: 100vh;
+  padding: 2rem 1rem;
+  background: var(--bg-primary);
+}
+
+.games-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.games-container h1 {
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+}
+
+.games-container p {
+  color: var(--text-secondary);
+}

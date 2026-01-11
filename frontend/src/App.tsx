@@ -1,41 +1,53 @@
+// D&D 2024 Character Manager - Main App
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { useEffect } from 'react';
-import { useGameStore } from './store/gameStore';
-import { initializeSocket } from './socket/connection';
-import LoginPage from './pages/LoginPage';
-import CharacterSelectPage from './pages/CharacterSelectPage';
-import CharacterSheetPage from './pages/CharacterSheetPage';
+import { AuthProvider, useAuth } from './context/AuthContext';
+import { LoadingSpinner } from './components/shared/LoadingSpinner';
+import AuthPage from './pages/AuthPage';
+import GamesPage from './pages/GamesPage';
 import './App.css';
 
-function App() {
-  const { isAuthenticated } = useGameStore();
+function AppRoutes() {
+  const { isAuthenticated, loading } = useAuth();
 
-  useEffect(() => {
-    initializeSocket();
-  }, []);
+  if (loading) {
+    return (
+      <div style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        minHeight: '100vh'
+      }}>
+        <LoadingSpinner size="large" />
+      </div>
+    );
+  }
 
   return (
+    <Routes>
+      <Route
+        path="/auth"
+        element={isAuthenticated ? <Navigate to="/games" /> : <AuthPage />}
+      />
+      <Route
+        path="/games"
+        element={isAuthenticated ? <GamesPage /> : <Navigate to="/auth" />}
+      />
+      <Route
+        path="/"
+        element={<Navigate to={isAuthenticated ? "/games" : "/auth"} />}
+      />
+    </Routes>
+  );
+}
+
+function App() {
+  return (
     <BrowserRouter>
-      <div className="app">
-        <Routes>
-          <Route
-            path="/login"
-            element={isAuthenticated ? <Navigate to="/characters" /> : <LoginPage />}
-          />
-          <Route
-            path="/characters"
-            element={isAuthenticated ? <CharacterSelectPage /> : <Navigate to="/login" />}
-          />
-          <Route
-            path="/character/:actorId"
-            element={isAuthenticated ? <CharacterSheetPage /> : <Navigate to="/login" />}
-          />
-          <Route
-            path="/"
-            element={<Navigate to={isAuthenticated ? "/characters" : "/login"} />}
-          />
-        </Routes>
-      </div>
+      <AuthProvider>
+        <div className="app">
+          <AppRoutes />
+        </div>
+      </AuthProvider>
     </BrowserRouter>
   );
 }
