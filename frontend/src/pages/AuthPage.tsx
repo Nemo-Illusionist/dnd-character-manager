@@ -17,7 +17,7 @@ export default function AuthPage() {
     <div className="auth-page">
       <div className="auth-container">
         <div className="auth-header">
-          <h1 className="auth-app-title">D&D 2024</h1>
+          <h1 className="auth-app-title">D&D24</h1>
           <p className="auth-app-subtitle">Character Manager</p>
         </div>
 

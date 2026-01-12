@@ -41,9 +41,12 @@ export function RegisterForm({ onSuccess, onSwitchToLogin }: RegisterFormProps) 
     setLoading(true);
 
     try {
+      console.log('🔥 RegisterForm: Starting registration process');
       await register(email, password, displayName);
+      console.log('✅ RegisterForm: Registration successful, redirecting...');
       onSuccess();
     } catch (err: unknown) {
+      console.error('❌ RegisterForm: Registration failed:', err);
       const error = err as { code?: string; message?: string };
       if (error.code === 'auth/email-already-in-use') {
         setError('This email is already registered');
@@ -53,6 +56,7 @@ export function RegisterForm({ onSuccess, onSwitchToLogin }: RegisterFormProps) 
         setError('Password is too weak');
       } else {
         setError(error.message || 'Failed to create account');
+        console.error('Full error details:', error);
       }
     } finally {
       setLoading(false);
