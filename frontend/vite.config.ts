@@ -9,9 +9,9 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
       manifest: {
-        name: 'FoundryVTT Mobile Sheet',
+        name: 'Mobile Sheet',
         short_name: 'FVTT Sheet',
-        description: 'Mobile character sheet for FoundryVTT D&D 5e',
+        description: 'Mobile character sheet',
         theme_color: '#1a1a1a',
         background_color: '#1a1a1a',
         display: 'standalone',

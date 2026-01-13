@@ -1,7 +1,7 @@
 {
   "name": "shared",
   "version": "1.0.0",
-  "description": "Shared types for FoundryVTT Mobile Sheet",
+  "description": "Shared types for Mobile Sheet",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
