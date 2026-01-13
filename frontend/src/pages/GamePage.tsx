@@ -7,9 +7,9 @@ import { CharacterCard } from '../components/characters/CharacterCard';
 import { CreateCharacterModal } from '../components/characters/CreateCharacterModal';
 import { Button } from '../components/shared/Button';
 import { LoadingSpinner } from '../components/shared/LoadingSpinner';
-import './CharactersPage.css';
+import './GamePage.css';
 
-export default function CharactersPage() {
+export default function GamePage() {
   const navigate = useNavigate();
   const { gameId } = useParams<{ gameId: string }>();
   const { firebaseUser } = useAuth();

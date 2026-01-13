@@ -4,7 +4,7 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import { LoadingSpinner } from './components/shared/LoadingSpinner';
 import AuthPage from './pages/AuthPage';
 import GamesPage from './pages/GamesPage';
-import CharactersPage from './pages/CharactersPage';
+import GamePage from './pages/GamePage.tsx';
 import CharacterSheetPage from './pages/CharacterSheetPage';
 import GameManagePage from './pages/GameManagePage';
 import GameItemsPage from './pages/GameItemsPage';
@@ -37,8 +37,8 @@ function AppRoutes() {
         element={isAuthenticated ? <GamesPage /> : <Navigate to="/auth" />}
       />
       <Route
-        path="/games/:gameId/characters"
-        element={isAuthenticated ? <CharactersPage /> : <Navigate to="/auth" />}
+        path="/games/:gameId/"
+        element={isAuthenticated ? <GamePage /> : <Navigate to="/auth" />}
       />
       <Route
         path="/games/:gameId/characters/:characterId"

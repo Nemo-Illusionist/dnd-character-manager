@@ -27,12 +27,12 @@ export default function GamesPage() {
   };
 
   const handleGameClick = (gameId: string) => {
-    navigate(`/games/${gameId}/characters`);
+    navigate(`/games/${gameId}`);
   };
 
   const handleGameCreated = (gameId: string) => {
     console.log('Game created:', gameId);
-    navigate(`/games/${gameId}/characters`);
+    navigate(`/games/${gameId}`);
   };
 
   if (loading) {

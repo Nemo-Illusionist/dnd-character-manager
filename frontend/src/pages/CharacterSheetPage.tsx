@@ -12,7 +12,7 @@ export default function CharacterSheetPage() {
   const { character, loading } = useCharacter(gameId || null, characterId || null);
 
   const handleBack = () => {
-    navigate(`/games/${gameId}/characters`);
+    navigate(`/games/${gameId}`);
   };
 
   if (loading) {

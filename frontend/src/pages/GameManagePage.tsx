@@ -18,7 +18,7 @@ export default function GameManagePage() {
   const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
 
   const handleBack = () => {
-    navigate(`/games/${gameId}/characters`);
+    navigate(`/games/${gameId}`);
   };
 
   const handleInviteSuccess = () => {

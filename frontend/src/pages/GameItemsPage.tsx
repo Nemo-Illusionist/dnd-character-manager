@@ -22,7 +22,7 @@ export default function GameItemsPage() {
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
 
   const handleBackToCharacters = () => {
-    navigate(`/games/${gameId}/characters`);
+    navigate(`/games/${gameId}`);
   };
 
   const handleItemClick = (itemId: string) => {
