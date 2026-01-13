@@ -1,8 +1,8 @@
-// Game Layout - Loads game data into context for all game pages
+// Game Layout - Loads game data into context for all game pages with real-time updates
 import { useEffect, useState } from 'react';
 import { Outlet, useNavigate, useParams } from 'react-router-dom';
 import { useGame } from '../context/GameContext';
-import { getGame } from '../services/games.service';
+import { subscribeToGame } from '../services/games.service';
 import { LoadingSpinner } from '../components/shared/LoadingSpinner';
 
 export default function GameLayout() {
@@ -17,24 +17,25 @@ export default function GameLayout() {
       return;
     }
 
+    console.log('GameLayout: subscribing to game:', gameId);
     setLoading(true);
-    getGame(gameId)
-      .then((game) => {
-        if (game) {
-          setCurrentGame(game);
-          setLoading(false);
-        } else {
-          console.error('Game not found');
-          navigate('/games');
-        }
-      })
-      .catch((error) => {
-        console.error('Error loading game:', error);
-        navigate('/games');
-      });
 
-    // Cleanup: clear game context when leaving game pages
+    // Subscribe to game changes in real-time
+    const unsubscribe = subscribeToGame(gameId, (game) => {
+      if (game) {
+        console.log('GameLayout: game updated in context:', game.name);
+        setCurrentGame(game);
+        setLoading(false);
+      } else {
+        console.error('GameLayout: game not found');
+        navigate('/games');
+      }
+    });
+
+    // Cleanup: unsubscribe and clear game context when leaving game pages
     return () => {
+      console.log('GameLayout: cleaning up subscription');
+      unsubscribe();
       setCurrentGame(null);
     };
   }, [gameId, setCurrentGame, navigate]);
