@@ -89,6 +89,10 @@ export interface Character {
   hp: { current: number; max: number; temp: number };
   hpBonus?: number;             // Bonus to max HP (from items, effects, etc.)
   hitDice?: string;             // Hit dice (d6, d8, d10, d12)
+  deathSaves?: {
+    successes: number;          // 0-3 successful death saves
+    failures: number;           // 0-3 failed death saves
+  };
   ac: number;
   speed: number;
   initiative: number;
