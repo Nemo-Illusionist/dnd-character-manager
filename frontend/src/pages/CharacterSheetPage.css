@@ -848,6 +848,12 @@ input[type="number"] {
   letter-spacing: 0.5px;
 }
 
+.cs-hp-temp-input-wrapper {
+  display: flex;
+  align-items: start;
+  justify-content: center;
+}
+
 .cs-hp-input-small {
   padding: 0.5rem;
   background: rgba(255, 255, 255, 0.05);

@@ -531,17 +531,19 @@ function HPBoxDesktop({ character, gameId, onOpenModal }: HPBoxDesktopProps) {
             <span className="cs-hp-max">{effectiveMaxHP}</span>
           </div>
 
-          {/* Column 3, Row 2: Temp HP input */}
-          <input
-            type="number"
-            className="cs-hp-input-small"
-            value={character.hp.temp}
-            onChange={(e) => {
-              e.stopPropagation();
-              handleTempHPChange(e);
-            }}
-            onClick={(e) => e.stopPropagation()}
-          />
+          {/* Column 3, Row 2: Temp HP input (centered) */}
+          <div className="cs-hp-temp-input-wrapper">
+            <input
+              type="number"
+              className="cs-hp-input-small"
+              value={character.hp.temp}
+              onChange={(e) => {
+                e.stopPropagation();
+                handleTempHPChange(e);
+              }}
+              onClick={(e) => e.stopPropagation()}
+            />
+          </div>
         </>
       )}
     </div>
