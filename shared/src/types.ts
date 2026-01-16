@@ -74,6 +74,7 @@ export interface Character {
 
   // D&D 5e core stats
   level: number;
+  experience?: number;          // XP points
   race: string;                 // Может быть ID из базы знаний или custom
   class: string;
   subclass?: string;
@@ -90,6 +91,8 @@ export interface Character {
   speed: number;
   initiative: number;
   proficiencyBonus: number;
+  inspiration?: boolean;       // Inspiration status
+  exhaustion?: number;          // Exhaustion level (0-6)
 
   // Skills (навыки)
   // proficiency: 0 = none, 1 = proficient, 2 = expert

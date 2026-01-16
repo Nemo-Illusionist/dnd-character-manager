@@ -1,6 +1,6 @@
 
 // Character Sheet Page - Full D&D 2024 character sheet
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useCharacter } from '../hooks/useCharacter';
 import { Button } from '../components/shared/Button';
@@ -111,13 +111,267 @@ export default function CharacterSheetPage() {
             gameId={gameId!}
             expanded={headerExpanded}
             onToggleExpand={() => setHeaderExpanded(!headerExpanded)}
-            onBack={handleBack}
         />
 
         <div className="character-sheet-content">
           <AbilitiesAndSkillsSection character={character} gameId={gameId!} />
         </div>
       </div>
+  );
+}
+
+// ==================== SETTINGS MODAL ====================
+
+interface SettingsModalProps {
+  character: Character;
+  gameId: string;
+  onClose: () => void;
+}
+
+function SettingsModal({ character, gameId, onClose }: SettingsModalProps) {
+  const [formData, setFormData] = useState({
+    name: character.name,
+    race: character.race,
+    class: character.class,
+    subclass: character.subclass || '',
+    ac: character.ac,
+    speed: character.speed,
+  });
+
+  const handleSave = async () => {
+    await updateCharacter(gameId, character.id, {
+      name: formData.name,
+      race: formData.race,
+      class: formData.class,
+      subclass: formData.subclass,
+      ac: formData.ac,
+      speed: formData.speed,
+    });
+    onClose();
+  };
+
+  return (
+    <div className="cs-modal-overlay" onClick={onClose}>
+      <div className="cs-modal-content" onClick={(e) => e.stopPropagation()}>
+        <div className="cs-modal-header">
+          <h2>Character Settings</h2>
+          <button className="cs-modal-close" onClick={onClose}>×</button>
+        </div>
+
+        <div className="cs-modal-body">
+          <div className="cs-form-group">
+            <label>Name</label>
+            <input
+              type="text"
+              value={formData.name}
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+            />
+          </div>
+
+          <div className="cs-form-group">
+            <label>Background</label>
+            <input
+              type="text"
+              value={formData.race}
+              onChange={(e) => setFormData({ ...formData, race: e.target.value })}
+            />
+          </div>
+
+          <div className="cs-form-group">
+            <label>Class</label>
+            <input
+              type="text"
+              value={formData.class}
+              onChange={(e) => setFormData({ ...formData, class: e.target.value })}
+            />
+          </div>
+
+          <div className="cs-form-group">
+            <label>Subclass</label>
+            <input
+              type="text"
+              value={formData.subclass}
+              onChange={(e) => setFormData({ ...formData, subclass: e.target.value })}
+            />
+          </div>
+
+          <div className="cs-form-row">
+            <div className="cs-form-group">
+              <label>Armor Class</label>
+              <input
+                type="number"
+                value={formData.ac}
+                onChange={(e) => setFormData({ ...formData, ac: parseInt(e.target.value) || 10 })}
+              />
+            </div>
+
+            <div className="cs-form-group">
+              <label>Speed</label>
+              <input
+                type="number"
+                value={formData.speed}
+                onChange={(e) => setFormData({ ...formData, speed: parseInt(e.target.value) || 30 })}
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="cs-modal-footer">
+          <Button variant="secondary" onClick={onClose}>Cancel</Button>
+          <Button onClick={handleSave}>Save</Button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ==================== LEVEL/XP MODAL ====================
+
+interface LevelXPModalProps {
+  character: Character;
+  gameId: string;
+  onClose: () => void;
+}
+
+// XP thresholds for each level (D&D 2024 SRD)
+const XP_THRESHOLDS = [
+  0, 300, 900, 2700, 6500, 14000, 23000, 34000, 48000, 64000,
+  85000, 100000, 120000, 140000, 165000, 195000, 225000, 265000, 305000, 355000
+];
+
+function LevelXPModal({ character, gameId, onClose }: LevelXPModalProps) {
+  const [currentXP, setCurrentXP] = useState(character.experience || 0);
+  const [gainXPInput, setGainXPInput] = useState('');
+  const [message, setMessage] = useState('');
+
+  // Sync currentXP with character.experience when it changes
+  useEffect(() => {
+    setCurrentXP(character.experience || 0);
+  }, [character.experience]);
+
+  const calculateLevel = (xp: number): number => {
+    for (let i = XP_THRESHOLDS.length - 1; i >= 0; i--) {
+      if (xp >= XP_THRESHOLDS[i]) {
+        return Math.min(i + 1, 20);
+      }
+    }
+    return 1;
+  };
+
+  const currentLevel = calculateLevel(currentXP);
+  const nextLevelXP = currentLevel < 20 ? XP_THRESHOLDS[currentLevel] : null;
+
+  const handleLevelUp = async () => {
+    if (character.level >= 20) {
+      setMessage('Maximum level reached!');
+      return;
+    }
+
+    const newLevel = character.level + 1;
+    const newXP = XP_THRESHOLDS[newLevel - 1] || 0;
+
+    await updateCharacter(gameId, character.id, {
+      level: newLevel,
+      experience: newXP,
+    });
+
+    setCurrentXP(newXP);
+    setMessage(`Level increased to ${newLevel}!`);
+  };
+
+  const handleXPChange = async () => {
+    await updateCharacter(gameId, character.id, {
+      experience: currentXP,
+      level: currentLevel,
+    });
+    setMessage('Experience updated!');
+  };
+
+  const handleGainXP = async () => {
+    const gainedXP = parseInt(gainXPInput) || 0;
+    if (gainedXP <= 0) return;
+
+    const newXP = currentXP + gainedXP;
+    const oldLevel = currentLevel;
+    const newLevel = calculateLevel(newXP);
+
+    setCurrentXP(newXP);
+    setGainXPInput('');
+
+    await updateCharacter(gameId, character.id, {
+      experience: newXP,
+      level: newLevel,
+    });
+
+    if (newLevel > oldLevel) {
+      setMessage(`Gained ${gainedXP} XP! Level increased to ${newLevel}!`);
+    } else {
+      setMessage(`Gained ${gainedXP} XP!`);
+    }
+  };
+
+  return (
+    <div className="cs-modal-overlay" onClick={onClose}>
+      <div className="cs-modal-content" onClick={(e) => e.stopPropagation()}>
+        <div className="cs-modal-header">
+          <h2>Level & Experience</h2>
+          <button className="cs-modal-close" onClick={onClose}>×</button>
+        </div>
+
+        <div className="cs-modal-body">
+          {/* Current Level */}
+          <div className="cs-level-section">
+            <div className="cs-level-display">
+              <span className="cs-level-current">Level {character.level}</span>
+              {character.level < 20 && (
+                <button className="cs-level-up-btn" onClick={handleLevelUp}>Level Up</button>
+              )}
+            </div>
+          </div>
+
+          {/* Current XP */}
+          <div className="cs-form-group">
+            <label>Current Experience</label>
+            <div className="cs-xp-input-row">
+              <input
+                type="number"
+                value={currentXP}
+                onChange={(e) => setCurrentXP(parseInt(e.target.value) || 0)}
+              />
+              <Button variant="secondary" onClick={handleXPChange}>Update</Button>
+            </div>
+            {nextLevelXP && (
+              <small className="cs-xp-info">
+                {nextLevelXP - currentXP} XP until level {currentLevel + 1}
+              </small>
+            )}
+          </div>
+
+          {/* Gain XP */}
+          <div className="cs-form-group">
+            <label>Gain Experience</label>
+            <div className="cs-xp-input-row">
+              <input
+                type="number"
+                placeholder="Enter XP gained"
+                value={gainXPInput}
+                onChange={(e) => setGainXPInput(e.target.value)}
+              />
+              <Button onClick={handleGainXP}>Add</Button>
+            </div>
+          </div>
+
+          {/* Message */}
+          {message && (
+            <div className="cs-message">{message}</div>
+          )}
+        </div>
+
+        <div className="cs-modal-footer">
+          <Button variant="secondary" onClick={onClose}>Close</Button>
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -128,10 +382,12 @@ interface CharacterHeaderProps {
   gameId: string;
   expanded: boolean;
   onToggleExpand: () => void;
-  onBack: () => void;
 }
 
-function CharacterHeader({ character, gameId, expanded, onToggleExpand, onBack }: CharacterHeaderProps) {
+function CharacterHeader({ character, gameId, expanded, onToggleExpand }: CharacterHeaderProps) {
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [levelModalOpen, setLevelModalOpen] = useState(false);
+
   const handleHpChange = async (field: 'current' | 'max' | 'temp', delta: number) => {
     const newValue = Math.max(0, character.hp[field] + delta);
     await updateCharacter(gameId, character.id, {
@@ -142,76 +398,167 @@ function CharacterHeader({ character, gameId, expanded, onToggleExpand, onBack }
   const initiativeModifier = getAbilityModifier(character.abilities.dex);
 
   return (
-      <div className="cs-header">
-        {/* Top row: Back button, Name, Settings */}
-        <div className="cs-header-top">
-          <Button variant="secondary" onClick={onBack} className="cs-back-btn">
-            ← Back
-          </Button>
-          <div className="cs-header-title">
-            <h1 className="cs-name">{character.name}</h1>
-            <p className="cs-subtitle">{character.race} — {character.class}</p>
-          </div>
-        </div>
-
-        {/* Level & XP bar */}
-        <div className="cs-level-bar">
-          <div className="cs-level-label">{character.level} Level</div>
-          <div className="cs-xp-bar">
-            <div className="cs-xp-fill" style={{ width: '0%' }}></div>
-            <span className="cs-xp-text">0/300</span>
-          </div>
-          <div className="cs-prof-bonus">{character.proficiencyBonus}</div>
-        </div>
-
-        {/* Quick stats row */}
-        <div className="cs-quick-stats">
-          <div className="cs-stat-box">
-            <div className="cs-stat-value cs-bordered">{character.ac}</div>
-            <div className="cs-stat-sub">{character.speed}</div>
-            <div className="cs-stat-label">Speed</div>
-          </div>
-
-          <div className="cs-hp-box">
-            <button className="cs-hp-btn minus" onClick={() => handleHpChange('current', -1)}>−</button>
-            <div className="cs-hp-display">
-              <span className="cs-hp-current">{character.hp.current}</span>
-              <span className="cs-hp-separator">/</span>
-              <span className="cs-hp-max">{character.hp.max}</span>
+      <>
+        <div className="cs-header">
+          {/* Desktop Layout */}
+          <div className="cs-header-desktop">
+            <div className="cs-header-left">
+              <div className="cs-name-block">
+                <h1 className="cs-name">{character.name}</h1>
+                <button className="cs-settings-btn" onClick={() => setSettingsOpen(true)}>
+                  ⚙️
+                </button>
+              </div>
+              <p className="cs-subtitle">{character.race}</p>
+              <p className="cs-subtitle">{character.class} {character.subclass && `(${character.subclass})`}</p>
+              <button
+                className="cs-level-btn"
+                onClick={() => setLevelModalOpen(true)}
+              >
+                Level {character.level}
+              </button>
             </div>
-            <button className="cs-hp-btn plus" onClick={() => handleHpChange('current', 1)}>+</button>
-          </div>
-        </div>
 
-        {/* Expanded details */}
-        {expanded && (
-            <div className="cs-expanded-stats">
-              <div className="cs-mini-stat">
-                <div className="cs-mini-label">Inspiration</div>
-                <div className="cs-mini-value">—</div>
-              </div>
-              <div className="cs-mini-stat">
-                <div className="cs-mini-label">Conditions</div>
-                <div className="cs-mini-value">0</div>
-              </div>
-              <div className="cs-mini-stat">
-                <div className="cs-mini-label">Exhaustion</div>
-                <div className="cs-mini-value">0</div>
-              </div>
-              <div className="cs-mini-stat">
-                <div className="cs-mini-label">Initiative</div>
-                <div className="cs-mini-value">
-                  {initiativeModifier >= 0 ? '+' : ''}{initiativeModifier}
+            <div className="cs-header-right">
+              <div className="cs-stats-grid">
+                <div className="cs-stat-values">
+                  <div className="cs-stat-value cs-bordered">{character.ac}</div>
+                  <div className="cs-stat-value">{character.speed}</div>
+                  <div className="cs-stat-value">{character.proficiencyBonus}</div>
+                </div>
+                <div className="cs-stat-labels">
+                  <div className="cs-stat-label">Armor</div>
+                  <div className="cs-stat-label">Speed</div>
+                  <div className="cs-stat-label">Proficiency</div>
                 </div>
               </div>
+              <div className="cs-hp-box">
+                <button className="cs-hp-btn minus" onClick={() => handleHpChange('current', -1)}>−</button>
+                <div className="cs-hp-display">
+                  <span className="cs-hp-current">{character.hp.current}</span>
+                  <span className="cs-hp-separator">/</span>
+                  <span className="cs-hp-max">{character.hp.max}</span>
+                </div>
+                <button className="cs-hp-btn plus" onClick={() => handleHpChange('current', 1)}>+</button>
+              </div>
             </div>
+          </div>
+
+          {/* Mobile Layout */}
+          <div className="cs-header-mobile">
+            {/* Expandable content */}
+            {expanded && (
+              <div className="cs-mobile-expanded">
+                <div className="cs-name-block">
+                  <h1 className="cs-name">{character.name}</h1>
+                  <button className="cs-settings-btn" onClick={() => setSettingsOpen(true)}>
+                    ⚙️
+                  </button>
+                </div>
+                <p className="cs-subtitle">
+                  {character.race} — {character.class} {character.subclass && `(${character.subclass})`}
+                </p>
+
+                <button
+                  className="cs-level-btn-mobile"
+                  onClick={() => setLevelModalOpen(true)}
+                >
+                  Level {character.level}
+                </button>
+
+                {/* 4 stat blocks */}
+                <div className="cs-expanded-stats">
+                  <div
+                    className="cs-mini-stat"
+                    style={{ cursor: 'pointer' }}
+                    onClick={async () => {
+                      await updateCharacter(gameId, character.id, {
+                        inspiration: !character.inspiration,
+                      });
+                    }}
+                  >
+                    <div className="cs-mini-label">Inspiration</div>
+                    <div className="cs-mini-value">{character.inspiration ? '✓' : '—'}</div>
+                  </div>
+                  <div className="cs-mini-stat">
+                    <div className="cs-mini-label">Initiative</div>
+                    <div className="cs-mini-value">
+                      {initiativeModifier >= 0 ? '+' : ''}{initiativeModifier}
+                    </div>
+                  </div>
+                  <div className="cs-mini-stat">
+                    <div className="cs-mini-label">Conditions</div>
+                    <div className="cs-mini-value">0</div>
+                  </div>
+                  <div className="cs-mini-stat">
+                    <div className="cs-mini-label">Exhaustion</div>
+                    <select
+                      className="cs-mini-value cs-exhaustion-select"
+                      value={character.exhaustion || 0}
+                      onChange={async (e) => {
+                        await updateCharacter(gameId, character.id, {
+                          exhaustion: Number(e.target.value),
+                        });
+                      }}
+                    >
+                      {[0, 1, 2, 3, 4, 5, 6].map(level => (
+                        <option key={level} value={level}>{level}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Always visible stats */}
+            <div className="cs-quick-stats-mobile">
+              <div className="cs-stats-left">
+                <div className="cs-stat-item">
+                  <div className="cs-stat-value cs-bordered">{character.ac}</div>
+                  <div className="cs-stat-label">Armor</div>
+                </div>
+                <div className="cs-stat-item">
+                  <div className="cs-stat-value">{character.speed}</div>
+                  <div className="cs-stat-label">Speed</div>
+                </div>
+              </div>
+
+              <div className="cs-hp-box">
+                <button className="cs-hp-btn minus" onClick={() => handleHpChange('current', -1)}>−</button>
+                <div className="cs-hp-display">
+                  <span className="cs-hp-current">{character.hp.current}</span>
+                  <span className="cs-hp-separator">/</span>
+                  <span className="cs-hp-max">{character.hp.max}</span>
+                </div>
+                <button className="cs-hp-btn plus" onClick={() => handleHpChange('current', 1)}>+</button>
+              </div>
+            </div>
+
+            {/* Collapse toggle - mobile only */}
+            <button className="cs-collapse-btn" onClick={onToggleExpand}>
+              {expanded ? 'Collapse ▲' : 'Expand ▼'}
+            </button>
+          </div>
+        </div>
+
+        {/* Settings Modal */}
+        {settingsOpen && (
+          <SettingsModal
+            character={character}
+            gameId={gameId}
+            onClose={() => setSettingsOpen(false)}
+          />
         )}
 
-        {/* Collapse toggle */}
-        <button className="cs-collapse-btn" onClick={onToggleExpand}>
-          {expanded ? 'Collapse ▲' : 'Expand ▼'}
-        </button>
-      </div>
+        {/* Level/XP Modal */}
+        {levelModalOpen && (
+          <LevelXPModal
+            character={character}
+            gameId={gameId}
+            onClose={() => setLevelModalOpen(false)}
+          />
+        )}
+      </>
   );
 }
 
