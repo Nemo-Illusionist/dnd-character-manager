@@ -1,12 +1,13 @@
 /* Character Sheet Layout - Base styles for all game systems */
+/* See: src/styles/breakpoints.ts for full breakpoint documentation */
 
 /*
- * BREAKPOINTS:
- * >= 1024px : Desktop - 2 колонки abilities, правая панель (1:1), заголовок скрыт
- * >= 850px  : Wide tablet - 1 колонка abilities (1:2), правая панель, заголовок скрыт
- * >= 750px  : Tablet - 2 колонки abilities, заголовок виден, Heal/Damage видны
- * >= 650px  : Small tablet - 2 колонки abilities, заголовок виден, Heal/Damage скрыты
- * < 650px   : Mobile - вертикальный список, заголовок виден
+ * BREAKPOINTS (значения из breakpoints.ts):
+ * >= 1024px (DESKTOP)      : 2 колонки abilities, правая панель (1:1), заголовок скрыт
+ * >= 850px  (WIDE_TABLET)  : 1 колонка abilities, правая панель (1:2), заголовок скрыт
+ * >= 750px  (TABLET)       : 2 колонки abilities, заголовок виден, Heal/Damage видны
+ * >= 650px  (SMALL_TABLET) : 2 колонки abilities, заголовок виден, Heal/Damage скрыты
+ * < 650px   (MOBILE)       : вертикальный список, заголовок виден
  */
 
 .character-sheet-page {
@@ -76,20 +77,18 @@
 
 /* ==================== RESPONSIVE ==================== */
 
-/* Mobile: < 650px */
+/* MOBILE: < 650px (BREAKPOINTS.MOBILE) */
 @media (max-width: 649px) {
   .character-sheet-page {
     padding: 1rem;
   }
 }
 
-/* Small Tablet: >= 650px - 2 колонки abilities, заголовок виден, Heal/Damage скрыты */
-/* (Abilities layout handled in Abilities.css, Heal/Damage in HP.css) */
+/* SMALL_TABLET: >= 650px - handled in Abilities.css, HP.css */
+/* TABLET: >= 750px - handled in HP.css */
 
-/* Tablet: >= 750px - 2 колонки abilities, заголовок виден, Heal/Damage видны */
-/* (Heal/Damage visibility handled in HP.css) */
-
-/* Wide Tablet: >= 850px - показываем правую панель (1:2 layout), скрываем заголовок */
+/* WIDE_TABLET: >= 850px (BREAKPOINTS.WIDE_TABLET) */
+/* Показываем правую панель (1:2), скрываем заголовок "Abilities & Skills" */
 @media (min-width: 850px) {
   .cs-main-layout {
     flex-direction: row;
@@ -118,7 +117,8 @@
   }
 }
 
-/* Desktop: >= 1024px - 2 колонки abilities, правая панель (1:1 layout) */
+/* DESKTOP: >= 1024px (BREAKPOINTS.DESKTOP) */
+/* 2 колонки abilities, правая панель (1:1) */
 @media (min-width: 1024px) {
   .cs-main-layout {
     gap: 2rem;

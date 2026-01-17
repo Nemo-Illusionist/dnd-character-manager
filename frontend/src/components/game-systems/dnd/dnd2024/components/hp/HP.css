@@ -1,12 +1,17 @@
 /* ==================== HP COMPONENTS ==================== */
+/* See: src/styles/breakpoints.ts for full breakpoint documentation */
 
 /*
- * BREAKPOINTS (synced with CharacterSheetLayout.css and Abilities.css):
- * < 650px   : Mobile - HP modal via click
- * >= 650px  : Small tablet - Heal/Damage скрыты
- * >= 750px  : Tablet - Heal/Damage видны
- * >= 850px  : Wide tablet - Heal/Damage видны
- * >= 1024px : Desktop - Heal/Damage видны
+ * BREAKPOINTS (значения из breakpoints.ts):
+ * ┌─────────────────────┬─────────────┐
+ * │ Breakpoint          │ Heal/Damage │
+ * ├─────────────────────┼─────────────┤
+ * │ >= 1024 (DESKTOP)   │ видны       │
+ * │ >= 850 (WIDE_TABLET)│ видны       │
+ * │ >= 750 (TABLET)     │ видны       │
+ * │ >= 650 (SMALL_TAB)  │ скрыты      │
+ * │ < 650 (MOBILE)      │ (в модалке) │
+ * └─────────────────────┴─────────────┘
  */
 
 /* Desktop HP Box */
@@ -477,7 +482,7 @@
   font-weight: bold;
 }
 
-/* Small tablet breakpoint (< 750px) - hide Heal/Damage buttons in HP box */
+/* SMALL_TABLET & MOBILE: < 750px (BREAKPOINTS.TABLET) - скрываем Heal/Damage */
 @media (max-width: 749px) {
   .cs-hp-vertical-group {
     display: none;
@@ -488,8 +493,9 @@
   }
 }
 
+/* MOBILE: < 650px (BREAKPOINTS.MOBILE) */
 @media (max-width: 649px) {
-  /* Fix HP modal max overflow */
+  /* Fix HP modal overflow */
   .cs-hp-modal-row {
     gap: 0.5rem;
   }

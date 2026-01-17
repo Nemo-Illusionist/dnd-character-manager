@@ -1,12 +1,17 @@
 /* ==================== ABILITIES & SKILLS ==================== */
+/* See: src/styles/breakpoints.ts for full breakpoint documentation */
 
 /*
- * BREAKPOINTS (synced with CharacterSheetLayout.css and HP.css):
- * < 650px   : Mobile - вертикальный список (cs-mobile-only), заголовок виден
- * >= 650px  : Small tablet - 2 колонки compact, заголовок виден, Heal/Damage скрыты
- * >= 750px  : Tablet - 2 колонки compact, заголовок виден, Heal/Damage видны
- * >= 850px  : Wide tablet - 1 колонка compact, правая панель (1:2), заголовок скрыт
- * >= 1024px : Desktop - 2 колонки compact, правая панель (1:1), заголовок скрыт
+ * BREAKPOINTS (значения из breakpoints.ts):
+ * ┌─────────────────────┬────────────────┬───────────┐
+ * │ Breakpoint          │ Abilities      │ Заголовок │
+ * ├─────────────────────┼────────────────┼───────────┤
+ * │ >= 1024 (DESKTOP)   │ 2 колонки      │ скрыт     │
+ * │ >= 850 (WIDE_TABLET)│ 1 колонка      │ скрыт     │
+ * │ >= 750 (TABLET)     │ 2 колонки      │ виден     │
+ * │ >= 650 (SMALL_TAB)  │ 2 колонки      │ виден     │
+ * │ < 650 (MOBILE)      │ вертик. список │ виден     │
+ * └─────────────────────┴────────────────┴───────────┘
  */
 
 .cs-abilities-skills {
@@ -313,17 +318,17 @@
 
 /* ==================== RESPONSIVE VISIBILITY ==================== */
 
-/* Mobile only - show below 650px */
+/* MOBILE: < 650px - показываем вертикальный список */
 .cs-mobile-only {
   display: block;
 }
 
-/* Tablet/Desktop only - hidden by default */
+/* SMALL_TABLET+: >= 650px - скрыто по умолчанию */
 .cs-tablet-desktop-only {
   display: none;
 }
 
-/* >= 650px: Small Tablet - 2 колонки compact */
+/* SMALL_TABLET: >= 650px (BREAKPOINTS.SMALL_TABLET) - 2 колонки compact */
 @media (min-width: 650px) {
   .cs-mobile-only {
     display: none;
@@ -335,7 +340,7 @@
   }
 }
 
-/* >= 850px: Wide Tablet - 1 колонка compact (правая панель появляется) */
+/* WIDE_TABLET: >= 850px (BREAKPOINTS.WIDE_TABLET) - 1 колонка (правая панель появляется) */
 @media (min-width: 850px) {
   .cs-tablet-desktop-only {
     flex-direction: column;
@@ -352,7 +357,7 @@
   }
 }
 
-/* >= 1024px: Desktop - 2 колонки compact */
+/* DESKTOP: >= 1024px (BREAKPOINTS.DESKTOP) - 2 колонки compact */
 @media (min-width: 1024px) {
   .cs-tablet-desktop-only {
     flex-direction: row;
