@@ -159,6 +159,11 @@ service cloud.firestore {
         return getGameData().gmId == request.auth.uid;
       }
 
+      function isPlayer() {
+        let data = getGameData();
+        return request.auth.uid in data.playerIds || request.auth.uid == data.gmId;
+      }
+
       // Games can be read by GM or players (using resource.data directly)
       allow read: if isAuthenticated() && (request.auth.uid in resource.data.playerIds || request.auth.uid == resource.data.gmId);
 
@@ -172,6 +177,14 @@ service cloud.firestore {
       match /characters/{characterId} {
         allow read, update, delete: if isAuthenticated() && (isOwner(resource.data.ownerId) || isGM());
 
+        allow create: if isAuthenticated() && isOwner(request.resource.data.ownerId);
+      }
+
+      // ==================== PUBLIC CHARACTERS ====================
+      match /publicCharacters/{characterId} {
+        allow read: if isAuthenticated() && isPlayer();
+
+        allow update, delete: if isAuthenticated() && (isOwner(resource.data.ownerId) || isGM());
         allow create: if isAuthenticated() && isOwner(request.resource.data.ownerId);
       }
     }

@@ -62,6 +62,18 @@ export interface Game {
   isPersonal: boolean;          // true для личной игры пользователя
 }
 
+// ==================== PUBLIC CHARACTER ====================
+// Публичная часть листа персонажа, доступная всем участникам игры
+
+export interface PublicCharacter {
+  id: string;                         // Совпадает с id основного Character
+  gameId: string;
+  ownerId: string;
+  name: string;
+  // Дополнительные публичные поля будут добавляться здесь
+  updatedAt: Timestamp;
+}
+
 // ==================== CHARACTER ====================
 
 export interface Character {
@@ -130,6 +142,16 @@ export interface Character {
   currency: {
     [K in Currency]: number;
   };
+
+  // Equipment Training & Proficiencies
+  armorTraining?: {
+    light: boolean;
+    medium: boolean;
+    heavy: boolean;
+    shields: boolean;
+  };
+  weaponProficiencies?: string;   // Free text field
+  toolProficiencies?: string;     // Free text field
 
   // Notes (заметки)
   notes?: string;

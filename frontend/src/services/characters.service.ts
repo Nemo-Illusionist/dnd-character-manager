@@ -4,17 +4,16 @@ import {
   doc,
   getDoc,
   getDocs,
-  addDoc,
   updateDoc,
-  deleteDoc,
   query,
   where,
   serverTimestamp,
   onSnapshot,
   Unsubscribe,
+  writeBatch,
 } from 'firebase/firestore';
 import { db } from './firebase';
-import type { Character, AbilityName, SkillName } from 'shared';
+import type { Character, AbilityName, SkillName, PublicCharacter } from 'shared';
 
 /**
  * Skill ability mapping (D&D 2024 SRD 5.2)
@@ -117,12 +116,21 @@ function createDefaultCharacter(
     spells: [],
     spellSlots: {},
     currency: defaultCurrency,
+    armorTraining: {
+      light: false,
+      medium: false,
+      heavy: false,
+      shields: false,
+    },
+    weaponProficiencies: '',
+    toolProficiencies: '',
     notes: '',
   };
 }
 
 /**
- * Create a new character
+ * Create a new character with public character data (atomic batch write)
+ * Both documents are created with the same ID
  */
 export async function createCharacter(
   gameId: string,
@@ -131,21 +139,40 @@ export async function createCharacter(
 ): Promise<string> {
   const characterData = createDefaultCharacter(gameId, ownerId, name);
 
-  const docRef = await addDoc(
-    collection(db, 'games', gameId, 'characters'),
-    {
-      ...characterData,
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
-    }
-  );
+  // Generate a new document reference to get a unique ID
+  const characterRef = doc(collection(db, 'games', gameId, 'characters'));
+  const characterId = characterRef.id;
 
-  // Update with ID
-  await updateDoc(doc(db, 'games', gameId, 'characters', docRef.id), {
-    id: docRef.id,
+  // Create public character reference with the same ID
+  const publicCharacterRef = doc(db, 'games', gameId, 'publicCharacters', characterId);
+
+  // Use batch to write both documents atomically
+  const batch = writeBatch(db);
+
+  // Main character document
+  batch.set(characterRef, {
+    ...characterData,
+    id: characterId,
+    createdAt: serverTimestamp(),
+    updatedAt: serverTimestamp(),
   });
 
-  return docRef.id;
+  // Public character document (minimal public data)
+  const publicCharacterData: Omit<PublicCharacter, 'updatedAt'> = {
+    id: characterId,
+    gameId,
+    ownerId,
+    name,
+  };
+
+  batch.set(publicCharacterRef, {
+    ...publicCharacterData,
+    updatedAt: serverTimestamp(),
+  });
+
+  await batch.commit();
+
+  return characterId;
 }
 
 /**
@@ -272,26 +299,61 @@ export function subscribeToCharacter(
 
 /**
  * Update character data
+ * If name is updated, also updates the public character document atomically
  */
 export async function updateCharacter(
   gameId: string,
   characterId: string,
   updates: Partial<Omit<Character, 'id' | 'gameId' | 'ownerId' | 'createdAt' | 'updatedAt'>>
 ): Promise<void> {
-  await updateDoc(doc(db, 'games', gameId, 'characters', characterId), {
-    ...updates,
-    updatedAt: serverTimestamp(),
-  });
+  const characterRef = doc(db, 'games', gameId, 'characters', characterId);
+  const publicCharacterRef = doc(db, 'games', gameId, 'publicCharacters', characterId);
+
+  // Check if we need to update public character data
+  const hasPublicFields = 'name' in updates;
+
+  if (hasPublicFields) {
+    // Use batch to update both documents atomically
+    const batch = writeBatch(db);
+
+    batch.update(characterRef, {
+      ...updates,
+      updatedAt: serverTimestamp(),
+    });
+
+    // Build public character updates
+    const publicUpdates: Record<string, unknown> = {
+      updatedAt: serverTimestamp(),
+    };
+    if ('name' in updates) {
+      publicUpdates.name = updates.name;
+    }
+
+    batch.update(publicCharacterRef, publicUpdates);
+
+    await batch.commit();
+  } else {
+    // No public fields to update, just update the main character
+    await updateDoc(characterRef, {
+      ...updates,
+      updatedAt: serverTimestamp(),
+    });
+  }
 }
 
 /**
- * Delete a character
+ * Delete a character and its public character data atomically
  */
 export async function deleteCharacter(
   gameId: string,
   characterId: string
 ): Promise<void> {
-  await deleteDoc(doc(db, 'games', gameId, 'characters', characterId));
+  const batch = writeBatch(db);
+
+  batch.delete(doc(db, 'games', gameId, 'characters', characterId));
+  batch.delete(doc(db, 'games', gameId, 'publicCharacters', characterId));
+
+  await batch.commit();
 }
 
 /**
@@ -334,4 +396,45 @@ export function getSavingThrowModifier(
   const isProficient = character.savingThrows[ability].proficiency;
 
   return abilityMod + (isProficient ? character.proficiencyBonus : 0);
+}
+
+// ==================== PUBLIC CHARACTERS ====================
+
+/**
+ * Get all public characters in a game
+ * Accessible by all game participants
+ */
+export async function getPublicCharacters(gameId: string): Promise<PublicCharacter[]> {
+  const snapshot = await getDocs(
+    collection(db, 'games', gameId, 'publicCharacters')
+  );
+
+  const characters = snapshot.docs.map((doc) => doc.data() as PublicCharacter);
+  characters.sort((a, b) => a.name.localeCompare(b.name));
+
+  return characters;
+}
+
+/**
+ * Subscribe to all public characters in a game
+ * Accessible by all game participants (GM and players)
+ */
+export function subscribeToPublicCharacters(
+  gameId: string,
+  callback: (characters: PublicCharacter[]) => void
+): Unsubscribe {
+  const publicCharactersRef = collection(db, 'games', gameId, 'publicCharacters');
+
+  return onSnapshot(
+    publicCharactersRef,
+    (snapshot) => {
+      const characters = snapshot.docs.map((doc) => doc.data() as PublicCharacter);
+      characters.sort((a, b) => a.name.localeCompare(b.name));
+      callback(characters);
+    },
+    (error) => {
+      console.error('Error subscribing to public characters:', error);
+      callback([]);
+    }
+  );
 }

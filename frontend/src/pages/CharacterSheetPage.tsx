@@ -110,18 +110,26 @@ export default function CharacterSheetPage() {
   }
 
   return (
-      <div className="character-sheet-page">
-        <CharacterHeader
-            character={character}
-            gameId={gameId!}
-            expanded={headerExpanded}
-            onToggleExpand={() => setHeaderExpanded(!headerExpanded)}
-        />
+    <div className="character-sheet-page">
+      <CharacterHeader
+        character={character}
+        gameId={gameId!}
+        expanded={headerExpanded}
+        onToggleExpand={() => setHeaderExpanded(!headerExpanded)}
+      />
 
-        <div className="character-sheet-content">
-          <AbilitiesAndSkillsSection character={character} gameId={gameId!} />
+      {/* Desktop 2-panel layout */}
+      <div className="character-sheet-content">
+        <div className="cs-main-layout">
+          <div className="cs-main-left">
+            <AbilitiesAndSkillsSection character={character} gameId={gameId!} />
+          </div>
+          <div className="cs-main-right cs-desktop-only">
+            {/* Right panel content will be added later */}
+          </div>
         </div>
       </div>
+    </div>
   );
 }
 
@@ -591,7 +599,7 @@ function HPBoxMobile({ character, onClick }: HPBoxMobileProps) {
     <div className="cs-hp-box-mobile" onClick={onClick}>
       <div className="cs-hp-mobile-text">
         {character.hp.current}/{effectiveMaxHP}
-        {character.hp.temp > 0 && ` (+${character.hp.temp})`}
+        {character.hp.temp > 0 && ` (${character.hp.temp})`}
       </div>
       <div className="cs-hp-mobile-label">HP</div>
     </div>
@@ -1046,24 +1054,274 @@ function AbilitiesAndSkillsSection({ character, gameId }: AbilitiesSkillsProps) 
     });
   };
 
+  const handleArmorTrainingToggle = async (type: 'light' | 'medium' | 'heavy' | 'shields') => {
+    const current = character.armorTraining || { light: false, medium: false, heavy: false, shields: false };
+    await updateCharacter(gameId, character.id, {
+      armorTraining: {
+        ...current,
+        [type]: !current[type],
+      },
+    });
+  };
+
+  const handleWeaponProficienciesChange = async (value: string) => {
+    await updateCharacter(gameId, character.id, {
+      weaponProficiencies: value,
+    });
+  };
+
+  const handleToolProficienciesChange = async (value: string) => {
+    await updateCharacter(gameId, character.id, {
+      toolProficiencies: value,
+    });
+  };
+
   return (
-      <div className="cs-abilities-skills">
+    <>
+      {/* Mobile Layout - vertical list */}
+      <div className="cs-abilities-skills cs-mobile-only">
         <div className="cs-section-header">
           <h2>Abilities & Skills</h2>
           <button className="cs-section-menu">≡</button>
         </div>
 
         {ABILITY_ORDER.map((ability) => (
-            <AbilityBlock
-                key={ability}
-                ability={ability}
-                character={character}
-                onAbilityChange={handleAbilityChange}
-                onSavingThrowToggle={handleSavingThrowToggle}
-                onSkillProficiencyToggle={handleSkillProficiencyToggle}
-            />
+          <AbilityBlock
+            key={ability}
+            ability={ability}
+            character={character}
+            onAbilityChange={handleAbilityChange}
+            onSavingThrowToggle={handleSavingThrowToggle}
+            onSkillProficiencyToggle={handleSkillProficiencyToggle}
+          />
         ))}
       </div>
+
+      {/* Tablet/Desktop Layout - compact 2-column */}
+      <div className="cs-abilities-compact cs-tablet-desktop-only">
+        <div className="cs-compact-column">
+          {/* STRENGTH */}
+          <CompactAbilityBlock
+            ability="str"
+            character={character}
+            onAbilityChange={handleAbilityChange}
+            onSavingThrowToggle={handleSavingThrowToggle}
+            onSkillProficiencyToggle={handleSkillProficiencyToggle}
+          />
+
+          {/* CONSTITUTION */}
+          <CompactAbilityBlock
+            ability="con"
+            character={character}
+            onAbilityChange={handleAbilityChange}
+            onSavingThrowToggle={handleSavingThrowToggle}
+            onSkillProficiencyToggle={handleSkillProficiencyToggle}
+          />
+
+          {/* INTELLIGENCE */}
+          <CompactAbilityBlock
+            ability="int"
+            character={character}
+            onAbilityChange={handleAbilityChange}
+            onSavingThrowToggle={handleSavingThrowToggle}
+            onSkillProficiencyToggle={handleSkillProficiencyToggle}
+          />
+
+          {/* CHARISMA */}
+          <CompactAbilityBlock
+            ability="cha"
+            character={character}
+            onAbilityChange={handleAbilityChange}
+            onSavingThrowToggle={handleSavingThrowToggle}
+            onSkillProficiencyToggle={handleSkillProficiencyToggle}
+          />
+        </div>
+
+        <div className="cs-compact-column">
+          {/* DEXTERITY */}
+          <CompactAbilityBlock
+            ability="dex"
+            character={character}
+            onAbilityChange={handleAbilityChange}
+            onSavingThrowToggle={handleSavingThrowToggle}
+            onSkillProficiencyToggle={handleSkillProficiencyToggle}
+          />
+
+          {/* WISDOM */}
+          <CompactAbilityBlock
+            ability="wis"
+            character={character}
+            onAbilityChange={handleAbilityChange}
+            onSavingThrowToggle={handleSavingThrowToggle}
+            onSkillProficiencyToggle={handleSkillProficiencyToggle}
+          />
+
+          {/* Equipment Training & Proficiencies */}
+          <EquipmentProficienciesBlock
+            character={character}
+            onArmorTrainingToggle={handleArmorTrainingToggle}
+            onWeaponProficienciesChange={handleWeaponProficienciesChange}
+            onToolProficienciesChange={handleToolProficienciesChange}
+          />
+        </div>
+      </div>
+    </>
+  );
+}
+
+// ==================== COMPACT ABILITY BLOCK (Tablet/Desktop) ====================
+
+interface CompactAbilityBlockProps {
+  ability: AbilityName;
+  character: Character;
+  onAbilityChange: (ability: AbilityName, value: number) => void;
+  onSavingThrowToggle: (ability: AbilityName) => void;
+  onSkillProficiencyToggle: (skill: SkillName) => void;
+}
+
+function CompactAbilityBlock({
+  ability,
+  character,
+  onAbilityChange,
+  onSavingThrowToggle,
+  onSkillProficiencyToggle,
+}: CompactAbilityBlockProps) {
+  const score = character.abilities[ability];
+  const modifier = getAbilityModifier(score);
+  const saveModifier = getSavingThrowModifier(character, ability);
+  const saveProficient = character.savingThrows[ability].proficiency;
+  const skills = SKILLS_BY_ABILITY[ability];
+
+  return (
+    <div className="cs-compact-ability">
+      {/* Ability Header with score input */}
+      <div className="cs-compact-ability-header">
+        <h3 className="cs-compact-ability-name">{ABILITY_NAMES[ability].toUpperCase()}</h3>
+        <input
+          type="number"
+          className="cs-compact-ability-score"
+          value={score}
+          onChange={(e) => onAbilityChange(ability, parseInt(e.target.value) || 10)}
+          min="1"
+          max="30"
+        />
+      </div>
+
+      {/* Check & Saving Throw row */}
+      <div className="cs-compact-modifiers">
+        <div className="cs-compact-modifier-box">
+          <span className="cs-compact-modifier-label">Check</span>
+          <span className="cs-compact-modifier-value">
+            {modifier >= 0 ? '+' : ''}{modifier}
+          </span>
+        </div>
+        <div
+          className={`cs-compact-modifier-box cs-save ${saveProficient ? 'proficient' : ''}`}
+          onClick={() => onSavingThrowToggle(ability)}
+        >
+          <span className="cs-compact-modifier-label">Saving Throw</span>
+          <span className="cs-compact-modifier-value">
+            {saveModifier >= 0 ? '+' : ''}{saveModifier}
+          </span>
+        </div>
+      </div>
+
+      {/* Skills */}
+      {skills.length > 0 && (
+        <div className="cs-compact-skills">
+          {skills.map((skill) => {
+            const skillMod = getSkillModifier(character, skill);
+            const proficiency = character.skills[skill].proficiency;
+
+            return (
+              <div
+                key={skill}
+                className={`cs-compact-skill-row proficiency-${proficiency}`}
+                onClick={() => onSkillProficiencyToggle(skill)}
+              >
+                <div className="cs-compact-skill-indicator">
+                  {proficiency === 2 ? '◉' : proficiency === 1 ? '●' : '○'}
+                </div>
+                <span className="cs-compact-skill-name">{skill}</span>
+                <span className="cs-compact-skill-modifier">
+                  {skillMod >= 0 ? '+' : ''}{skillMod}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ==================== EQUIPMENT TRAINING & PROFICIENCIES ====================
+
+interface EquipmentProficienciesBlockProps {
+  character: Character;
+  onArmorTrainingToggle: (type: 'light' | 'medium' | 'heavy' | 'shields') => void;
+  onWeaponProficienciesChange: (value: string) => void;
+  onToolProficienciesChange: (value: string) => void;
+}
+
+function EquipmentProficienciesBlock({
+  character,
+  onArmorTrainingToggle,
+  onWeaponProficienciesChange,
+  onToolProficienciesChange,
+}: EquipmentProficienciesBlockProps) {
+  const armorTraining = character.armorTraining || {
+    light: false,
+    medium: false,
+    heavy: false,
+    shields: false,
+  };
+
+  return (
+    <div className="cs-equipment-proficiencies">
+      <h3 className="cs-equipment-header">EQUIPMENT TRAINING & PROFICIENCIES</h3>
+
+      {/* Armor Training */}
+      <div className="cs-equipment-section">
+        <label className="cs-equipment-label">Armor Training</label>
+        <div className="cs-armor-checkboxes">
+          {(['light', 'medium', 'heavy', 'shields'] as const).map((type) => (
+            <label key={type} className="cs-armor-checkbox">
+              <input
+                type="checkbox"
+                checked={armorTraining[type]}
+                onChange={() => onArmorTrainingToggle(type)}
+              />
+              <span>{type.charAt(0).toUpperCase() + type.slice(1)}</span>
+            </label>
+          ))}
+        </div>
+      </div>
+
+      {/* Weapons */}
+      <div className="cs-equipment-section">
+        <label className="cs-equipment-label">Weapons</label>
+        <textarea
+          className="cs-equipment-textarea"
+          value={character.weaponProficiencies || ''}
+          onChange={(e) => onWeaponProficienciesChange(e.target.value)}
+          placeholder="Simple, Martial, etc."
+          rows={2}
+        />
+      </div>
+
+      {/* Tools */}
+      <div className="cs-equipment-section">
+        <label className="cs-equipment-label">Tools</label>
+        <textarea
+          className="cs-equipment-textarea"
+          value={character.toolProficiencies || ''}
+          onChange={(e) => onToolProficienciesChange(e.target.value)}
+          placeholder="Thieves' Tools, etc."
+          rows={2}
+        />
+      </div>
+    </div>
   );
 }
 
