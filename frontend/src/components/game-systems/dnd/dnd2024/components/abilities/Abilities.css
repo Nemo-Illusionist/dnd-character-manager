@@ -335,7 +335,9 @@
 
 /* MOBILE: < 650px - показываем вертикальный список */
 .cs-mobile-only {
-  display: block;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 /* SMALL_TABLET+: >= 650px - скрыто по умолчанию */
