@@ -2,8 +2,8 @@
 
 import { useState } from 'react';
 import { updateCharacter } from '../../../../../../services/characters.service';
-import { getAbilityModifier } from '../../../core/utils/calculations';
-import { ConditionsModal } from '../modals/ConditionsModal';
+import { getAbilityModifier } from '../../../core';
+import { ConditionsModal } from '../modals';
 import type { Character } from 'shared';
 import './RightPanel.css';
 

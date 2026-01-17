@@ -1,6 +1,6 @@
 // D&D 2024 - Conditions Modal Component
 
-import { CONDITIONS } from '../../constants/conditions';
+import { CONDITIONS } from '../../constants';
 import { updateCharacter } from '../../../../../../services/characters.service';
 import type { Character, ConditionName } from 'shared';
 import './Modals.css';

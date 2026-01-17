@@ -3,8 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Button } from '../../../../../shared/Button';
 import { updateCharacter } from '../../../../../../services/characters.service';
-import { XP_THRESHOLDS, calculateLevelFromXP } from '../../constants/experience';
-import { getProficiencyBonus } from '../../constants/proficiencyBonus';
+import { XP_THRESHOLDS, calculateLevelFromXP, getProficiencyBonus } from '../../constants';
 import type { Character } from 'shared';
 import './Modals.css';
 

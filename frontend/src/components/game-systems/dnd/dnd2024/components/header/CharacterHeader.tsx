@@ -2,14 +2,10 @@
 
 import { useState } from 'react';
 import { updateCharacter } from '../../../../../../services/characters.service';
-import { getAbilityModifier } from '../../../core/utils/calculations';
-import { getProficiencyBonus } from '../../constants/proficiencyBonus';
-import { HPBoxDesktop } from '../hp/HPBoxDesktop';
-import { HPBoxMobile } from '../hp/HPBoxMobile';
-import { HPModal } from '../hp/HPModal';
-import { SettingsModal } from '../modals/SettingsModal';
-import { LevelXPModal } from '../modals/LevelXPModal';
-import { ConditionsModal } from '../modals/ConditionsModal';
+import { getAbilityModifier } from '../../../core';
+import { getProficiencyBonus } from '../../constants';
+import { HPBoxDesktop, HPBoxMobile, HPModal } from '../hp';
+import { SettingsModal, LevelXPModal, ConditionsModal } from '../modals';
 import type { Character } from 'shared';
 import './CharacterHeader.css';
 

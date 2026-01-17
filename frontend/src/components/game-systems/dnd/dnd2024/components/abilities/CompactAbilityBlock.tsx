@@ -1,7 +1,6 @@
 // D&D 2024 - Compact Ability Block Component (Tablet/Desktop Layout)
 
-import { getAbilityModifier, getSkillModifier, getSavingThrowModifier } from '../../../core/utils/calculations';
-import { ABILITY_NAMES, SKILLS_BY_ABILITY } from '../../../core/constants';
+import { getAbilityModifier, getSkillModifier, getSavingThrowModifier, ABILITY_NAMES, SKILLS_BY_ABILITY } from '../../../core';
 import type { Character, AbilityName, SkillName } from 'shared';
 
 interface CompactAbilityBlockProps {

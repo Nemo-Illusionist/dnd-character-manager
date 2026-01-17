@@ -1,7 +1,7 @@
 // D&D 2024 - Abilities & Skills Section Component
 
 import { updateCharacter } from '../../../../../../services/characters.service';
-import { ABILITY_ORDER } from '../../../core/constants';
+import { ABILITY_ORDER } from '../../../core';
 import { AbilityBlock } from './AbilityBlock';
 import { CompactAbilityBlock } from './CompactAbilityBlock';
 import { EquipmentProficiencies } from '../proficiencies/EquipmentProficiencies';
