@@ -1279,22 +1279,46 @@ function EquipmentProficienciesBlock({
 
   return (
     <div className="cs-equipment-proficiencies">
-      <h3 className="cs-equipment-header">EQUIPMENT TRAINING & PROFICIENCIES</h3>
+      <h3 className="cs-equipment-header">PROFICIENCIES & TRAINING</h3>
 
-      {/* Armor Training */}
-      <div className="cs-equipment-section">
-        <label className="cs-equipment-label">Armor Training</label>
-        <div className="cs-armor-checkboxes">
-          {(['light', 'medium', 'heavy', 'shields'] as const).map((type) => (
-            <label key={type} className="cs-armor-checkbox">
-              <input
-                type="checkbox"
-                checked={armorTraining[type]}
-                onChange={() => onArmorTrainingToggle(type)}
-              />
-              <span>{type.charAt(0).toUpperCase() + type.slice(1)}</span>
-            </label>
-          ))}
+      {/* Armor Training - 2x2 grid */}
+      <div className="cs-equipment-section no-border">
+        <div className="cs-armor-grid">
+          <span className="cs-armor-label">Armor</span>
+          <label className="cs-armor-checkbox">
+            <input
+              type="checkbox"
+              checked={armorTraining.light}
+              onChange={() => onArmorTrainingToggle('light')}
+            />
+            <span>Light</span>
+          </label>
+          <label className="cs-armor-checkbox">
+            <input
+              type="checkbox"
+              checked={armorTraining.heavy}
+              onChange={() => onArmorTrainingToggle('heavy')}
+            />
+            <span>Heavy</span>
+          </label>
+
+          <span className="cs-armor-label">Training</span>
+          <label className="cs-armor-checkbox">
+            <input
+              type="checkbox"
+              checked={armorTraining.medium}
+              onChange={() => onArmorTrainingToggle('medium')}
+            />
+            <span>Medium</span>
+          </label>
+          <label className="cs-armor-checkbox">
+            <input
+              type="checkbox"
+              checked={armorTraining.shields}
+              onChange={() => onArmorTrainingToggle('shields')}
+            />
+            <span>Shields</span>
+          </label>
         </div>
       </div>
 
@@ -1311,7 +1335,7 @@ function EquipmentProficienciesBlock({
       </div>
 
       {/* Tools */}
-      <div className="cs-equipment-section">
+      <div className="cs-equipment-section no-border">
         <label className="cs-equipment-label">Tools</label>
         <textarea
           className="cs-equipment-textarea"
