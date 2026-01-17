@@ -150,6 +150,7 @@ export interface Character {
 
   // Inventory (инвентарь)
   inventory: CharacterItem[];
+  inventoryItems?: InventoryItem[];  // Simplified inventory items
 
   // Spells (заклинания)
   spells: CharacterSpell[];
@@ -207,6 +208,17 @@ export interface CharacterAction {
   damageBonus?: number;         // Bonus to damage
   damageType?: string;          // Damage type (e.g., "Slashing", "Fire")
   notes?: string;               // Additional notes
+}
+
+export interface InventoryItem {
+  id: string;                   // Unique ID
+  name: string;                 // Item name
+  type: 'weapon' | 'armor' | 'gear' | 'consumable' | 'treasure' | 'other';
+  quantity: number;             // Amount
+  weight?: number;              // Weight in lbs
+  equipped?: boolean;           // Is item equipped
+  attuned?: boolean;            // Is item attuned (for magic items)
+  description?: string;         // Item description/notes
 }
 
 // ==================== KNOWLEDGE BASE - SPELL ====================
