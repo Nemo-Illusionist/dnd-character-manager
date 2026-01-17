@@ -130,6 +130,9 @@ export interface Character {
   exhaustion?: number;          // Exhaustion level (0-6)
   conditions?: ConditionName[]; // Active conditions (from SRD)
 
+  // Actions (атаки и действия)
+  actions?: CharacterAction[];
+
   // Skills (навыки)
   // proficiency: 0 = none, 1 = proficient, 2 = expert
   skills: {
@@ -192,6 +195,18 @@ export interface CharacterSpell {
   sourceId?: string;            // ID из базы знаний
   customData?: Spell;           // Если заклинание только в листе
   prepared: boolean;
+}
+
+export interface CharacterAction {
+  id: string;                   // Unique ID for the action
+  name: string;                 // Action name (e.g., "Longsword", "Fireball")
+  ability?: AbilityName;        // Ability used for attack (str, dex, etc.)
+  proficient?: boolean;         // Whether proficiency bonus applies
+  extraBonus?: number;          // Additional bonus to attack
+  damage?: string;              // Damage dice (e.g., "1d8", "2d6")
+  damageBonus?: number;         // Bonus to damage
+  damageType?: string;          // Damage type (e.g., "Slashing", "Fire")
+  notes?: string;               // Additional notes
 }
 
 // ==================== KNOWLEDGE BASE - SPELL ====================

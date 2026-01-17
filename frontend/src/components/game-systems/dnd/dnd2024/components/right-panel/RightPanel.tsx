@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { updateCharacter } from '../../../../../../services/characters.service';
 import { getAbilityModifier } from '../../../core';
 import { ConditionsModal } from '../modals';
+import { ActionsTab } from './ActionsTab';
 import type { Character } from 'shared';
 import './RightPanel.css';
 
@@ -12,11 +13,18 @@ interface RightPanelProps {
   gameId: string;
 }
 
+type TabId = 'actions';
+
 export function RightPanel({ character, gameId }: RightPanelProps) {
   const [conditionsOpen, setConditionsOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState<TabId>('actions');
 
   const initiativeModifier = getAbilityModifier(character.abilities.dex);
   const activeConditions = character.conditions || [];
+
+  const tabs: { id: TabId; label: string }[] = [
+    { id: 'actions', label: 'Actions' },
+  ];
 
   return (
     <div className="cs-right-panel">
@@ -78,6 +86,26 @@ export function RightPanel({ character, gameId }: RightPanelProps) {
                 ? activeConditions.join(', ')
                 : `${activeConditions.slice(0, 2).join(', ')}...`}
           </div>
+        </div>
+      </div>
+
+      {/* Tabbed content area */}
+      <div className="cs-tab-container">
+        <div className="cs-tab-header">
+          {tabs.map((tab) => (
+            <button
+              key={tab.id}
+              className={`cs-tab-btn ${activeTab === tab.id ? 'active' : ''}`}
+              onClick={() => setActiveTab(tab.id)}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+        <div className="cs-tab-content">
+          {activeTab === 'actions' && (
+            <ActionsTab character={character} gameId={gameId} />
+          )}
         </div>
       </div>
 

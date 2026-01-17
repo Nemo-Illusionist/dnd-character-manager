@@ -104,3 +104,135 @@
     display: block;
   }
 }
+
+/* ==================== TAB CONTAINER ==================== */
+
+.cs-tab-container {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.cs-tab-header {
+  display: flex;
+  background: rgba(255, 255, 255, 0.03);
+  border-bottom: 1px solid var(--border);
+}
+
+.cs-tab-btn {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.cs-tab-btn:hover {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.cs-tab-btn.active {
+  color: var(--accent);
+  background: rgba(124, 58, 237, 0.1);
+  border-bottom: 2px solid var(--accent);
+}
+
+.cs-tab-content {
+  flex: 1;
+  padding: 1rem;
+  overflow-y: auto;
+}
+
+/* ==================== ACTIONS TABLE ==================== */
+
+.cs-actions-tab {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.cs-actions-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.cs-actions-table th {
+  text-align: left;
+  padding: 0.5rem 0.5rem;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid var(--border);
+}
+
+.cs-actions-table td {
+  padding: 0.625rem 0.5rem;
+  vertical-align: middle;
+  font-size: 0.875rem;
+  color: var(--text-primary);
+}
+
+/* Clickable rows */
+.cs-action-row {
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.cs-action-row:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.cs-action-row td {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.cs-action-name {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* Column widths */
+.cs-col-name {
+  width: 35%;
+}
+
+.cs-col-atk {
+  width: 15%;
+}
+
+.cs-col-damage {
+  width: 25%;
+}
+
+.cs-col-type {
+  width: 25%;
+}
+
+/* Add action button */
+.cs-action-add {
+  padding: 0.5rem 1rem;
+  background: rgba(124, 58, 237, 0.2);
+  border: 1px dashed var(--accent);
+  border-radius: 8px;
+  color: var(--accent);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cs-action-add:hover {
+  background: rgba(124, 58, 237, 0.3);
+}

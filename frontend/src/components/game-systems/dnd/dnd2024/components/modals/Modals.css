@@ -238,6 +238,115 @@ input[type="number"] {
   line-height: 1.4;
 }
 
+/* Form elements - select */
+.cs-form-group select {
+  padding: 0.75rem;
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text-primary);
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.cs-form-group select:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+/* Form elements - textarea */
+.cs-form-group textarea {
+  padding: 0.75rem;
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text-primary);
+  font-size: 1rem;
+  resize: vertical;
+  min-height: 60px;
+  font-family: inherit;
+}
+
+.cs-form-group textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+/* Checkbox group */
+.cs-checkbox-group {
+  flex-direction: row;
+  align-items: center;
+}
+
+.cs-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  font-size: 0.875rem;
+  color: var(--text-primary);
+}
+
+.cs-checkbox-label input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+/* Buttons */
+.cs-btn {
+  padding: 0.625rem 1rem;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.cs-btn-primary {
+  background: var(--accent);
+  color: #fff;
+}
+
+.cs-btn-primary:hover {
+  opacity: 0.9;
+}
+
+.cs-btn-secondary {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-primary);
+}
+
+.cs-btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.cs-btn-danger {
+  background: rgba(220, 38, 38, 0.2);
+  color: #dc2626;
+}
+
+.cs-btn-danger:hover {
+  background: rgba(220, 38, 38, 0.3);
+}
+
+.cs-btn-full {
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+/* Action modal footer */
+.cs-action-modal-footer {
+  justify-content: space-between;
+}
+
+.cs-modal-footer-right {
+  display: flex;
+  gap: 0.5rem;
+}
+
 /* Mobile Responsive */
 @media (max-width: 649px) {
   /* Fix modal form width on mobile */
