@@ -658,7 +658,7 @@ input[type="number"] {
 /* ==================== RESPONSIVE ==================== */
 
 /* Tablet breakpoint - hide Heal/Damage buttons in HP box */
-@media (min-width: 769px) and (max-width: 1200px) {
+@media (min-width: 768px) and (max-width: 1200px) {
   .cs-hp-vertical-group {
     display: none;
   }
@@ -668,7 +668,7 @@ input[type="number"] {
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .character-sheet-page {
     padding: 1rem;
   }
@@ -1253,17 +1253,17 @@ input[type="number"] {
 
 /* ==================== RESPONSIVE VISIBILITY ==================== */
 
-/* Mobile only - show below 769px */
+/* Mobile only - show below 768px */
 .cs-mobile-only {
   display: block;
 }
 
-/* Tablet/Desktop only - show 769px and up */
+/* Tablet/Desktop only - show 768px and up */
 .cs-tablet-desktop-only {
   display: none;
 }
 
-@media (min-width: 769px) {
+@media (min-width: 768px) {
   .cs-mobile-only {
     display: none;
   }
@@ -1276,7 +1276,7 @@ input[type="number"] {
 /* ==================== COMPACT ABILITIES LAYOUT (Tablet/Desktop) ==================== */
 
 .cs-abilities-compact {
-  display: flex;
+  /* display controlled by .cs-tablet-desktop-only */
   gap: 1.5rem;
 }
 
