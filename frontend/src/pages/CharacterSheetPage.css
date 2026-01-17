@@ -33,8 +33,11 @@
   background: var(--bg-secondary);
   padding: 1.5rem;
   border-radius: 12px;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
   border: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
 /* Desktop Layout - default */
@@ -508,7 +511,7 @@ input[type="number"] {
   padding: 0.75rem 1rem;
   background: rgba(255, 255, 255, 0.05);
   border-radius: 8px;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.75rem;
 }
 
 .cs-section-header h2 {
@@ -658,7 +661,7 @@ input[type="number"] {
 /* ==================== RESPONSIVE ==================== */
 
 /* Tablet breakpoint - hide Heal/Damage buttons in HP box */
-@media (min-width: 768px) and (max-width: 1200px) {
+@media (max-width: 799px) {
   .cs-hp-vertical-group {
     display: none;
   }
@@ -668,7 +671,7 @@ input[type="number"] {
   }
 }
 
-@media (max-width: 767px) {
+@media (max-width: 649px) {
   .character-sheet-page {
     padding: 1rem;
   }
@@ -1249,21 +1252,25 @@ input[type="number"] {
   .cs-desktop-only {
     display: block;
   }
+
+  .cs-hide-desktop {
+    display: none;
+  }
 }
 
 /* ==================== RESPONSIVE VISIBILITY ==================== */
 
-/* Mobile only - show below 768px */
+/* Mobile only - show below 650px */
 .cs-mobile-only {
   display: block;
 }
 
-/* Tablet/Desktop only - show 768px and up */
+/* Tablet/Desktop only - show 650px and up */
 .cs-tablet-desktop-only {
   display: none;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 650px) {
   .cs-mobile-only {
     display: none;
   }

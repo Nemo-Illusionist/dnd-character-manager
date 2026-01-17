@@ -1078,13 +1078,14 @@ function AbilitiesAndSkillsSection({ character, gameId }: AbilitiesSkillsProps) 
 
   return (
     <>
+      {/* Section Header - visible on mobile and tablet, hidden on desktop */}
+      <div className="cs-section-header cs-hide-desktop">
+        <h2>Abilities & Skills</h2>
+        <button className="cs-section-menu">≡</button>
+      </div>
+
       {/* Mobile Layout - vertical list */}
       <div className="cs-abilities-skills cs-mobile-only">
-        <div className="cs-section-header">
-          <h2>Abilities & Skills</h2>
-          <button className="cs-section-menu">≡</button>
-        </div>
-
         {ABILITY_ORDER.map((ability) => (
           <AbilityBlock
             key={ability}
