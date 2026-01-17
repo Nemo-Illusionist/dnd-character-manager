@@ -347,19 +347,81 @@ input[type="number"] {
   gap: 0.5rem;
 }
 
-/* Mobile Responsive */
+/* Drag handle for bottom sheet */
+.cs-modal-drag-handle {
+  display: none;
+}
+
+/* Mobile Responsive - Bottom Sheet */
 @media (max-width: 649px) {
-  /* Fix modal form width on mobile */
+  .cs-modal-overlay {
+    align-items: flex-end;
+    padding: 0;
+  }
+
   .cs-modal-content {
     max-width: 100%;
+    max-height: 85vh;
+    border-radius: 16px 16px 0 0;
+    border-bottom: none;
+    animation: slideUp 0.3s ease-out;
+  }
+
+  @keyframes slideUp {
+    from {
+      transform: translateY(100%);
+    }
+    to {
+      transform: translateY(0);
+    }
+  }
+
+  /* Show drag handle on mobile */
+  .cs-modal-drag-handle {
+    display: flex;
+    justify-content: center;
+    padding: 0.75rem;
+    cursor: grab;
+  }
+
+  .cs-modal-drag-handle::before {
+    content: '';
+    width: 36px;
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+  }
+
+  .cs-modal-header {
+    padding: 0.75rem 1.5rem 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .cs-modal-header h2 {
+    font-size: 1.25rem;
   }
 
   .cs-modal-body {
+    padding: 1rem 1.5rem 2rem;
     overflow-x: hidden;
+    /* Safe area for bottom of screen */
+    padding-bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px));
   }
 
-  .cs-form-group input {
+  .cs-form-group input,
+  .cs-form-group select,
+  .cs-form-group textarea {
     box-sizing: border-box;
     width: 100%;
+    font-size: 16px; /* Prevent zoom on iOS */
+  }
+
+  .cs-btn {
+    padding: 0.75rem 1rem;
+    min-height: 44px; /* Touch-friendly */
+  }
+
+  .cs-btn-full {
+    margin-top: 1rem;
   }
 }

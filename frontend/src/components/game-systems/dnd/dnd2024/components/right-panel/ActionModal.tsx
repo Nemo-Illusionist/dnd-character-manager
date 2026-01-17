@@ -15,6 +15,7 @@ export function ActionModal({ action, onUpdate, onDelete, onClose }: ActionModal
   return (
     <div className="cs-modal-overlay" onClick={onClose}>
       <div className="cs-modal-content" onClick={(e) => e.stopPropagation()}>
+        <div className="cs-modal-drag-handle" />
         <div className="cs-modal-header">
           <h2>{action.name || 'New Action'}</h2>
           <button className="cs-modal-close" onClick={onClose}>×</button>
