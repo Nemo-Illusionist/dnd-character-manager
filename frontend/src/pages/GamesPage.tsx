@@ -1,21 +1,27 @@
-// Games Page - List all user's games
-import { useState } from 'react';
+// Games Page - List all user's games (Refactored)
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { useGames } from '../hooks/useGames';
+import { useModalState } from '../hooks/useModalState';
 import { isGameMaster } from '../services/games.service';
 import { signOut } from '../services/auth.service';
 import { GameCard } from '../components/games/GameCard';
 import { CreateGameModal } from '../components/games/CreateGameModal';
 import { Button } from '../components/shared/Button';
-import { LoadingSpinner } from '../components/shared/LoadingSpinner';
-import './GamesPage.css';
+import {
+  PageLayout,
+  PageHeader,
+  PageLoading,
+  PageEmpty,
+  PageSection,
+  PageGrid,
+} from '../components/shared/PageLayout';
 
 export default function GamesPage() {
   const navigate = useNavigate();
   const { firebaseUser, user } = useAuth();
   const { games, loading } = useGames();
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const createModal = useModalState();
 
   const handleLogout = async () => {
     try {
@@ -31,104 +37,86 @@ export default function GamesPage() {
   };
 
   const handleGameCreated = (gameId: string) => {
-    console.log('Game created:', gameId);
     navigate(`/games/${gameId}`);
   };
 
   if (loading) {
     return (
-      <div className="games-page">
-        <div className="games-loading">
-          <LoadingSpinner size="large" />
-          <p>Loading games...</p>
-        </div>
-      </div>
+      <PageLayout>
+        <PageLoading message="Loading games..." />
+      </PageLayout>
     );
   }
 
+  const personalGames = games.filter((g) => g.isPersonal);
+  const campaigns = games.filter((g) => !g.isPersonal);
+
   return (
-    <div className="games-page">
-      <div className="games-container">
-        <div className="games-header">
-          <div className="games-header-content">
-            <h1 className="games-title">My Games</h1>
-            <p className="games-subtitle">
-              Welcome, <strong>{user?.displayName || firebaseUser?.displayName || 'Player'}</strong>
-            </p>
-          </div>
-          <div className="games-actions">
-            <Button onClick={() => setIsCreateModalOpen(true)}>
-              + Create Game
-            </Button>
-            <Button variant="secondary" onClick={handleLogout}>
-              Logout
-            </Button>
-          </div>
-        </div>
-
-        {games.length === 0 ? (
-          <div className="games-empty">
-            <div className="empty-icon">🎲</div>
-            <h2>No Games Yet</h2>
-            <p>Create your first game to start your D&D adventure!</p>
-            <Button onClick={() => setIsCreateModalOpen(true)}>
-              + Create Your First Game
-            </Button>
-          </div>
-        ) : (
+    <PageLayout>
+      <PageHeader
+        title="My Games"
+        subtitle={
+          <p>
+            Welcome, <strong>{user?.displayName || firebaseUser?.displayName || 'Player'}</strong>
+          </p>
+        }
+        actions={
           <>
-            <div className="games-section">
-              <h2 className="section-title">
-                Personal Game
-                <span className="section-count">
-                  {games.filter((g) => g.isPersonal).length}
-                </span>
-              </h2>
-              <div className="games-grid">
-                {games
-                  .filter((game) => game.isPersonal)
-                  .map((game) => (
-                    <GameCard
-                      key={game.id}
-                      game={game}
-                      isGM={firebaseUser ? isGameMaster(game, firebaseUser.uid) : false}
-                      onClick={() => handleGameClick(game.id)}
-                    />
-                  ))}
-              </div>
-            </div>
-
-            {games.filter((g) => !g.isPersonal).length > 0 && (
-              <div className="games-section">
-                <h2 className="section-title">
-                  Campaigns
-                  <span className="section-count">
-                    {games.filter((g) => !g.isPersonal).length}
-                  </span>
-                </h2>
-                <div className="games-grid">
-                  {games
-                    .filter((game) => !game.isPersonal)
-                    .map((game) => (
-                      <GameCard
-                        key={game.id}
-                        game={game}
-                        isGM={firebaseUser ? isGameMaster(game, firebaseUser.uid) : false}
-                        onClick={() => handleGameClick(game.id)}
-                      />
-                    ))}
-                </div>
-              </div>
-            )}
+            <Button onClick={createModal.open}>+ Create Game</Button>
+            <Button variant="secondary" onClick={handleLogout}>Logout</Button>
           </>
-        )}
-      </div>
+        }
+      />
+
+      {games.length === 0 ? (
+        <PageEmpty
+          icon="🎲"
+          title="No Games Yet"
+          description="Create your first game to start your D&D adventure!"
+          action={{
+            label: '+ Create Your First Game',
+            onClick: createModal.open,
+          }}
+        />
+      ) : (
+        <>
+          {personalGames.length > 0 && (
+            <PageSection title="Personal Game" count={personalGames.length}>
+              <PageGrid>
+                {personalGames.map((game) => (
+                  <GameCard
+                    key={game.id}
+                    game={game}
+                    isGM={firebaseUser ? isGameMaster(game, firebaseUser.uid) : false}
+                    onClick={() => handleGameClick(game.id)}
+                  />
+                ))}
+              </PageGrid>
+            </PageSection>
+          )}
+
+          {campaigns.length > 0 && (
+            <PageSection title="Campaigns" count={campaigns.length}>
+              <PageGrid>
+                {campaigns.map((game) => (
+                  <GameCard
+                    key={game.id}
+                    game={game}
+                    isGM={firebaseUser ? isGameMaster(game, firebaseUser.uid) : false}
+                    onClick={() => handleGameClick(game.id)}
+                  />
+                ))}
+              </PageGrid>
+            </PageSection>
+          )}
+        </>
+      )}
 
       <CreateGameModal
-        isOpen={isCreateModalOpen}
-        onClose={() => setIsCreateModalOpen(false)}
+        isOpen={createModal.isOpen}
+        onClose={createModal.close}
         onSuccess={handleGameCreated}
       />
-    </div>
+    </PageLayout>
   );
 }

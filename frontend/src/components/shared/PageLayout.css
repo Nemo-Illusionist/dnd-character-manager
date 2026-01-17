@@ -1,0 +1,188 @@
+/* PageLayout Component Styles */
+
+.page-layout {
+  min-height: 100vh;
+  padding: 2rem 1rem;
+  background: var(--bg-primary);
+}
+
+.page-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Header */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 2rem;
+  margin-bottom: 3rem;
+  flex-wrap: wrap;
+}
+
+.page-header-content {
+  flex: 1;
+  min-width: 250px;
+}
+
+.page-back-btn {
+  margin-bottom: 0.75rem;
+  width: auto !important;
+  max-width: none !important;
+  padding: 0.5rem 1rem !important;
+}
+
+.page-title {
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: var(--text-primary);
+  margin: 0 0 0.5rem 0;
+}
+
+.page-subtitle {
+  font-size: 1.125rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.page-subtitle strong {
+  color: var(--accent);
+}
+
+.page-actions {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.page-actions button,
+.page-actions .btn {
+  max-width: 180px;
+}
+
+/* Loading State */
+.page-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  gap: 1rem;
+}
+
+.page-loading p {
+  color: var(--text-secondary);
+  font-size: 1.125rem;
+  margin: 0;
+}
+
+/* Empty State */
+.page-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 50vh;
+  text-align: center;
+  gap: 1.5rem;
+}
+
+.page-empty-icon {
+  font-size: 5rem;
+  opacity: 0.5;
+}
+
+.page-empty h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.page-empty p {
+  font-size: 1.125rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.page-empty button {
+  max-width: 300px;
+}
+
+/* Section */
+.page-section {
+  margin-bottom: 3rem;
+}
+
+.page-section-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 1.5rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.page-section-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  height: 28px;
+  padding: 0 0.5rem;
+  background: var(--bg-tertiary);
+  border-radius: 14px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+/* Grid */
+.page-grid {
+  display: grid;
+  gap: 1.5rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .page-layout {
+    padding: 1.5rem 1rem;
+  }
+
+  .page-header {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .page-header-content {
+    width: 100%;
+  }
+
+  .page-title {
+    font-size: 2rem;
+  }
+
+  .page-actions {
+    width: 100%;
+  }
+
+  .page-actions button,
+  .page-actions .btn {
+    flex: 1;
+    max-width: none;
+  }
+
+  .page-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .page-empty-icon {
+    font-size: 4rem;
+  }
+
+  .page-empty h2 {
+    font-size: 1.5rem;
+  }
+}

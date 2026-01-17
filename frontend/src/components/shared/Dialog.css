@@ -1,0 +1,85 @@
+/* Dialog Component Styles */
+
+.dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.dialog-content {
+  background: var(--bg-secondary, #1f2937);
+  border-radius: 12px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  animation: dialogFadeIn 0.2s ease-out;
+}
+
+@keyframes dialogFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.dialog-header {
+  padding: 1.25rem 1.5rem 0;
+}
+
+.dialog-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--text-primary, #ffffff);
+  margin: 0;
+}
+
+.dialog-body {
+  padding: 1rem 1.5rem;
+}
+
+.dialog-message {
+  color: var(--text-secondary, #9ca3af);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.dialog-actions {
+  display: flex;
+  gap: 0.75rem;
+  padding: 0.75rem 1.5rem 1.25rem;
+  justify-content: flex-end;
+}
+
+.dialog-actions .btn {
+  width: auto;
+  max-width: none;
+  padding: 0.5rem 1rem;
+}
+
+/* Mobile: Stack buttons vertically */
+@media (max-width: 480px) {
+  .dialog-content {
+    max-width: 100%;
+  }
+
+  .dialog-actions {
+    flex-direction: column-reverse;
+  }
+
+  .dialog-actions .btn {
+    width: 100%;
+  }
+}

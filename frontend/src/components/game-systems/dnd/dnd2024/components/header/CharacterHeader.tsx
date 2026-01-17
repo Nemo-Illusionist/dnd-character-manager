@@ -1,7 +1,7 @@
-// D&D 2024 - Character Header Component
+// D&D 2024 - Character Header Component (Refactored)
 
-import { useState } from 'react';
-import { updateCharacter } from '../../../../../../services/characters.service';
+import { useModalState } from '../../../../../../hooks/useModalState';
+import { useCharacterMutation } from '../../../../../../hooks/useCharacterMutation';
 import { getAbilityModifier } from '../../../core';
 import { getProficiencyBonus } from '../../constants';
 import { HPBoxDesktop, HPBoxMobile, HPModal } from '../hp';
@@ -17,14 +17,25 @@ interface CharacterHeaderProps {
 }
 
 export function CharacterHeader({ character, gameId, expanded, onToggleExpand }: CharacterHeaderProps) {
-  const [settingsOpen, setSettingsOpen] = useState(false);
-  const [levelModalOpen, setLevelModalOpen] = useState(false);
-  const [hpModalOpen, setHpModalOpen] = useState(false);
-  const [conditionsOpen, setConditionsOpen] = useState(false);
+  // Modal states using the new hook
+  const settingsModal = useModalState();
+  const levelModal = useModalState();
+  const hpModal = useModalState();
+  const conditionsModal = useModalState();
+
+  // Character mutation hook
+  const { update } = useCharacterMutation(gameId, character);
 
   const conditionsCount = character.conditions?.length || 0;
-
   const initiativeModifier = getAbilityModifier(character.abilities.dex);
+
+  const handleInspirationToggle = async () => {
+    await update({ inspiration: !character.inspiration });
+  };
+
+  const handleExhaustionChange = async (level: number) => {
+    await update({ exhaustion: level });
+  };
 
   return (
     <>
@@ -34,16 +45,13 @@ export function CharacterHeader({ character, gameId, expanded, onToggleExpand }:
           <div className="cs-header-left">
             <div className="cs-name-block">
               <h1 className="cs-name">{character.name}</h1>
-              <button className="cs-settings-btn" onClick={() => setSettingsOpen(true)}>
+              <button className="cs-settings-btn" onClick={settingsModal.open}>
                 ⚙️
               </button>
             </div>
             <p className="cs-subtitle">{character.race}</p>
             <p className="cs-subtitle">{character.class} {character.subclass && `(${character.subclass})`}</p>
-            <button
-              className="cs-level-btn"
-              onClick={() => setLevelModalOpen(true)}
-            >
+            <button className="cs-level-btn" onClick={levelModal.open}>
               Level {character.level}
             </button>
           </div>
@@ -63,7 +71,7 @@ export function CharacterHeader({ character, gameId, expanded, onToggleExpand }:
                 <div className="cs-stat-label">Proficiency</div>
               </div>
             </div>
-            <HPBoxDesktop character={character} gameId={gameId} onOpenModal={() => setHpModalOpen(true)} />
+            <HPBoxDesktop character={character} gameId={gameId} onOpenModal={hpModal.open} />
           </div>
         </div>
 
@@ -74,7 +82,7 @@ export function CharacterHeader({ character, gameId, expanded, onToggleExpand }:
             <div className="cs-mobile-expanded">
               <div className="cs-name-block">
                 <h1 className="cs-name">{character.name}</h1>
-                <button className="cs-settings-btn" onClick={() => setSettingsOpen(true)}>
+                <button className="cs-settings-btn" onClick={settingsModal.open}>
                   ⚙️
                 </button>
               </div>
@@ -82,10 +90,7 @@ export function CharacterHeader({ character, gameId, expanded, onToggleExpand }:
                 {character.race} — {character.class} {character.subclass && `(${character.subclass})`}
               </p>
 
-              <button
-                className="cs-level-btn-mobile"
-                onClick={() => setLevelModalOpen(true)}
-              >
+              <button className="cs-level-btn-mobile" onClick={levelModal.open}>
                 Level {character.level}
               </button>
 
@@ -94,11 +99,7 @@ export function CharacterHeader({ character, gameId, expanded, onToggleExpand }:
                 <div
                   className="cs-mini-stat"
                   style={{ cursor: 'pointer' }}
-                  onClick={async () => {
-                    await updateCharacter(gameId, character.id, {
-                      inspiration: !character.inspiration,
-                    });
-                  }}
+                  onClick={handleInspirationToggle}
                 >
                   <div className="cs-mini-label">Inspiration</div>
                   <div className="cs-mini-value">{character.inspiration ? '✓' : '—'}</div>
@@ -112,7 +113,7 @@ export function CharacterHeader({ character, gameId, expanded, onToggleExpand }:
                 <div
                   className="cs-mini-stat"
                   style={{ cursor: 'pointer' }}
-                  onClick={() => setConditionsOpen(true)}
+                  onClick={conditionsModal.open}
                 >
                   <div className="cs-mini-label">Conditions</div>
                   <div className="cs-mini-value">{conditionsCount > 0 ? conditionsCount : '—'}</div>
@@ -122,11 +123,7 @@ export function CharacterHeader({ character, gameId, expanded, onToggleExpand }:
                   <select
                     className="cs-mini-value cs-exhaustion-select"
                     value={character.exhaustion || 0}
-                    onChange={async (e) => {
-                      await updateCharacter(gameId, character.id, {
-                        exhaustion: Number(e.target.value),
-                      });
-                    }}
+                    onChange={(e) => handleExhaustionChange(Number(e.target.value))}
                   >
                     {[0, 1, 2, 3, 4, 5, 6].map(level => (
                       <option key={level} value={level}>{level}</option>
@@ -150,7 +147,7 @@ export function CharacterHeader({ character, gameId, expanded, onToggleExpand }:
               </div>
             </div>
 
-            <HPBoxMobile character={character} onClick={() => setHpModalOpen(true)} />
+            <HPBoxMobile character={character} onClick={hpModal.open} />
           </div>
 
           {/* Collapse toggle - mobile only */}
@@ -160,39 +157,36 @@ export function CharacterHeader({ character, gameId, expanded, onToggleExpand }:
         </div>
       </div>
 
-      {/* Settings Modal */}
-      {settingsOpen && (
+      {/* Modals */}
+      {settingsModal.isOpen && (
         <SettingsModal
           character={character}
           gameId={gameId}
-          onClose={() => setSettingsOpen(false)}
+          onClose={settingsModal.close}
         />
       )}
 
-      {/* Level/XP Modal */}
-      {levelModalOpen && (
+      {levelModal.isOpen && (
         <LevelXPModal
           character={character}
           gameId={gameId}
-          onClose={() => setLevelModalOpen(false)}
+          onClose={levelModal.close}
         />
       )}
 
-      {/* HP Modal */}
-      {hpModalOpen && (
+      {hpModal.isOpen && (
         <HPModal
           character={character}
           gameId={gameId}
-          onClose={() => setHpModalOpen(false)}
+          onClose={hpModal.close}
         />
       )}
 
-      {/* Conditions Modal */}
-      {conditionsOpen && (
+      {conditionsModal.isOpen && (
         <ConditionsModal
           character={character}
           gameId={gameId}
-          onClose={() => setConditionsOpen(false)}
+          onClose={conditionsModal.close}
         />
       )}
     </>

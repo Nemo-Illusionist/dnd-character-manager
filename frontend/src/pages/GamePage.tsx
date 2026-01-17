@@ -1,45 +1,40 @@
-// Characters Page - List all characters in a game
-import { useState } from 'react';
+// Characters Page - List all characters in a game (Refactored)
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { useCharacters } from '../hooks/useCharacters';
+import { useModalState } from '../hooks/useModalState';
 import { CharacterCard } from '../components/characters/CharacterCard';
 import { CreateCharacterModal } from '../components/characters/CreateCharacterModal';
 import { Button } from '../components/shared/Button';
-import { LoadingSpinner } from '../components/shared/LoadingSpinner';
-import './GamePage.css';
+import {
+  PageLayout,
+  PageHeader,
+  PageLoading,
+  PageEmpty,
+  PageSection,
+  PageGrid,
+} from '../components/shared/PageLayout';
 
 export default function GamePage() {
   const navigate = useNavigate();
   const { gameId } = useParams<{ gameId: string }>();
   const { firebaseUser } = useAuth();
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-
-  // Game is already loaded in context by GameLayout
   const { characters, loading: charactersLoading } = useCharacters();
+  const createModal = useModalState();
 
   const handleCharacterClick = (characterId: string) => {
     navigate(`/games/${gameId}/characters/${characterId}`);
   };
 
   const handleCharacterCreated = (characterId: string) => {
-    console.log('Character created:', characterId);
-    // Navigate to new character sheet
     navigate(`/games/${gameId}/characters/${characterId}`);
-  };
-
-  const handleBackToGames = () => {
-    navigate('/games');
   };
 
   if (charactersLoading || !firebaseUser) {
     return (
-      <div className="characters-page">
-        <div className="characters-loading">
-          <LoadingSpinner size="large" />
-          <p>Loading characters...</p>
-        </div>
-      </div>
+      <PageLayout>
+        <PageLoading message="Loading characters..." />
+      </PageLayout>
     );
   }
 
@@ -47,87 +42,77 @@ export default function GamePage() {
   const otherCharacters = characters.filter((c) => c.ownerId !== firebaseUser.uid);
 
   return (
-    <div className="characters-page">
-      <div className="characters-container">
-        <div className="characters-header">
-          <div className="characters-header-content">
-            <Button variant="secondary" onClick={handleBackToGames}>
-              ← Back to Games
-            </Button>
-            <h1 className="characters-title">Characters</h1>
-          </div>
-          <div className="characters-actions">
-            <Button onClick={() => setIsCreateModalOpen(true)}>
-              + Create Character
-            </Button>
+    <PageLayout>
+      <PageHeader
+        title="Characters"
+        backButton={{
+          label: 'Back to Games',
+          onClick: () => navigate('/games'),
+        }}
+        actions={
+          <>
+            <Button onClick={createModal.open}>+ Create Character</Button>
             <Button variant="secondary" onClick={() => navigate(`/games/${gameId}/items`)}>
               📦 Game Items
             </Button>
             <Button variant="secondary" onClick={() => navigate(`/games/${gameId}/manage`)}>
               ⚙️
             </Button>
-          </div>
-        </div>
-
-        {characters.length === 0 ? (
-          <div className="characters-empty">
-            <div className="empty-icon">⚔️</div>
-            <h2>No Characters Yet</h2>
-            <p>Create your first character to begin your adventure!</p>
-            <Button onClick={() => setIsCreateModalOpen(true)}>
-              + Create Your First Character
-            </Button>
-          </div>
-        ) : (
-          <>
-            {myCharacters.length > 0 && (
-              <div className="characters-section">
-                <h2 className="section-title">
-                  My Characters
-                  <span className="section-count">{myCharacters.length}</span>
-                </h2>
-                <div className="characters-grid">
-                  {myCharacters.map((character) => (
-                    <CharacterCard
-                      key={character.id}
-                      character={character}
-                      onClick={() => handleCharacterClick(character.id)}
-                    />
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {otherCharacters.length > 0 && (
-              <div className="characters-section">
-                <h2 className="section-title">
-                  Other Characters
-                  <span className="section-count">{otherCharacters.length}</span>
-                </h2>
-                <div className="characters-grid">
-                  {otherCharacters.map((character) => (
-                    <CharacterCard
-                      key={character.id}
-                      character={character}
-                      onClick={() => handleCharacterClick(character.id)}
-                    />
-                  ))}
-                </div>
-              </div>
-            )}
           </>
-        )}
-      </div>
+        }
+      />
+
+      {characters.length === 0 ? (
+        <PageEmpty
+          icon="⚔️"
+          title="No Characters Yet"
+          description="Create your first character to begin your adventure!"
+          action={{
+            label: '+ Create Your First Character',
+            onClick: createModal.open,
+          }}
+        />
+      ) : (
+        <>
+          {myCharacters.length > 0 && (
+            <PageSection title="My Characters" count={myCharacters.length}>
+              <PageGrid>
+                {myCharacters.map((character) => (
+                  <CharacterCard
+                    key={character.id}
+                    character={character}
+                    onClick={() => handleCharacterClick(character.id)}
+                  />
+                ))}
+              </PageGrid>
+            </PageSection>
+          )}
+
+          {otherCharacters.length > 0 && (
+            <PageSection title="Other Characters" count={otherCharacters.length}>
+              <PageGrid>
+                {otherCharacters.map((character) => (
+                  <CharacterCard
+                    key={character.id}
+                    character={character}
+                    onClick={() => handleCharacterClick(character.id)}
+                  />
+                ))}
+              </PageGrid>
+            </PageSection>
+          )}
+        </>
+      )}
 
       {firebaseUser && gameId && (
         <CreateCharacterModal
-          isOpen={isCreateModalOpen}
-          onClose={() => setIsCreateModalOpen(false)}
+          isOpen={createModal.isOpen}
+          onClose={createModal.close}
           onSuccess={handleCharacterCreated}
           gameId={gameId}
           userId={firebaseUser.uid}
         />
       )}
-    </div>
+    </PageLayout>
   );
 }

@@ -1,0 +1,59 @@
+/* Select Component Styles */
+
+.select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  width: 100%;
+  padding: 0.625rem 2rem 0.625rem 0.75rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border, #374151);
+  border-radius: 6px;
+  color: var(--text-primary, #ffffff);
+  font-size: 0.9375rem;
+  font-family: inherit;
+  cursor: pointer;
+  transition: border-color 0.2s;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%239ca3af' d='M6 8L2 4h8z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+}
+
+.select:focus {
+  outline: none;
+  border-color: var(--accent, #7c3aed);
+}
+
+.select:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.select option {
+  background: var(--bg-secondary, #1f2937);
+  color: var(--text-primary, #ffffff);
+}
+
+/* Compact variant - smaller padding */
+.select-compact {
+  padding: 0.375rem 1.75rem 0.375rem 0.5rem;
+  font-size: 0.875rem;
+  background-position: right 0.5rem center;
+}
+
+/* Inline variant - minimal styling */
+.select-inline {
+  width: auto;
+  background: transparent;
+  border: none;
+  padding: 0.25rem 1.5rem 0.25rem 0.25rem;
+  font-size: inherit;
+  font-weight: inherit;
+  color: inherit;
+  background-position: right 0.25rem center;
+}
+
+.select-inline:focus {
+  outline: none;
+  border: none;
+}

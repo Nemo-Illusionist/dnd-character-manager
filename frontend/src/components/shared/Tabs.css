@@ -1,0 +1,77 @@
+/* Tabs Component Styles */
+
+.tabs {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.tab {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: transparent;
+  border: none;
+  color: var(--text-secondary, #9ca3af);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.tab:hover {
+  color: var(--text-primary, #ffffff);
+}
+
+.tab.active {
+  color: var(--text-primary, #ffffff);
+}
+
+.tab-icon {
+  display: flex;
+  align-items: center;
+  font-size: 1rem;
+}
+
+/* Default variant - background highlight */
+.tabs-default .tab {
+  border-radius: 6px;
+}
+
+.tabs-default .tab.active {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Pills variant */
+.tabs-pills .tab {
+  border-radius: 9999px;
+  padding: 0.375rem 0.875rem;
+}
+
+.tabs-pills .tab.active {
+  background: var(--accent, #7c3aed);
+  color: #ffffff;
+}
+
+/* Underline variant */
+.tabs-underline {
+  border-bottom: 1px solid var(--border, #374151);
+  gap: 0;
+}
+
+.tabs-underline .tab {
+  padding: 0.75rem 1rem;
+  border-radius: 0;
+  margin-bottom: -1px;
+  border-bottom: 2px solid transparent;
+}
+
+.tabs-underline .tab.active {
+  border-bottom-color: var(--accent, #7c3aed);
+}
+
+/* Tab Panel */
+.tab-panel {
+  padding-top: 1rem;
+}
