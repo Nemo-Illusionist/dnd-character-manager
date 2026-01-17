@@ -184,9 +184,28 @@ src/components/
 - Все импорты CSS обновлены в компонентах
 - TypeScript и build работают без ошибок
 
+**Дополнительно реализовано:**
+- `dnd/core/components/` - базовые переиспользуемые компоненты:
+  - `SkillRow.tsx` - строка навыка
+  - `DeathSaves.tsx` - death saves UI (desktop/mobile/modal варианты)
+  - `StatBox.tsx` - бокс для AC, Speed и других статов
+- `character-sheet/` - общий layout wrapper:
+  - `CharacterSheetLayout.tsx` - обёртка с loading/error states
+  - `CharacterSheetLayout.css` - базовые стили layout
+- `CharacterSheetPage.tsx` сокращён до **21 строки**
+
+## Итоговая статистика
+
+| Файл | Было | Стало |
+|------|------|-------|
+| CharacterSheetPage.tsx | 1,437 строк | 21 строка |
+| CharacterSheetPage.css | 1,521 строка | удалён |
+| Всего файлов | 2 | 41 |
+
 ## Проверка после каждой фазы
 
 - [x] TypeScript компилируется без ошибок
+- [x] Build проходит успешно
 - [ ] Все функции работают (abilities, skills, HP, modals)
 - [ ] Responsive работает (mobile < 650px, tablet 650-799px, desktop >= 800px)
 - [ ] Firebase сохраняет изменения
