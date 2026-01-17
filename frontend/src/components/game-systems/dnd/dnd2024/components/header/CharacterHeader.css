@@ -1,0 +1,281 @@
+/* ==================== HEADER ==================== */
+
+.cs-header {
+  background: var(--bg-secondary);
+  padding: 1.5rem;
+  border-radius: 12px;
+  margin-bottom: 1rem;
+  border: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+/* Desktop Layout - default */
+.cs-header-desktop {
+  display: flex;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+.cs-header-mobile {
+  display: none;
+}
+
+.cs-header-left {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.cs-header-right {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.cs-name-block {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.cs-name {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0;
+  color: var(--text-primary);
+}
+
+.cs-subtitle {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.cs-settings-btn {
+  background: transparent;
+  border: none;
+  font-size: 1.25rem;
+  cursor: pointer;
+  padding: 0.25rem;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+
+.cs-settings-btn:hover {
+  opacity: 1;
+}
+
+/* Level button */
+.cs-level-btn {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  text-align: left;
+  max-width: 150px;
+}
+
+.cs-level-btn:hover {
+  opacity: 0.9;
+}
+
+.cs-level-btn-mobile {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  text-align: left;
+  margin-bottom: 1rem;
+}
+
+.cs-level-btn-mobile:hover {
+  opacity: 0.9;
+}
+
+/* Stats grid - desktop */
+.cs-combat-stats-desktop {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* Stat items */
+.cs-stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  min-width: 48px;
+}
+
+.cs-stat-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  width: 48px;
+  height: 48px;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cs-stat-value.cs-bordered {
+  border-color: var(--border);
+}
+
+.cs-stat-label {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Mobile-only elements */
+.cs-quick-stats-mobile {
+  display: none;
+}
+
+.cs-combat-stats-mobile {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+}
+
+.cs-mobile-expanded {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border);
+}
+
+/* Expanded stats - mobile only */
+.cs-expanded-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
+}
+
+.cs-mini-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.75rem 0.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  min-width: 0;
+}
+
+.cs-mini-label {
+  font-size: 0.625rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.25rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.cs-mini-value {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.cs-exhaustion-select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 1.25rem;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  text-align: center;
+  text-align-last: center;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  outline: none;
+  line-height: normal;
+}
+
+/* Collapse button - mobile only */
+.cs-collapse-btn {
+  display: none;
+}
+
+/* ==================== RESPONSIVE ==================== */
+
+@media (max-width: 649px) {
+  /* Hide desktop, show mobile */
+  .cs-header-desktop {
+    display: none;
+  }
+
+  .cs-header-mobile {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .cs-name-block {
+    justify-content: center;
+  }
+
+  .cs-name {
+    font-size: 1.5rem;
+  }
+
+  .cs-subtitle {
+    text-align: center;
+    font-size: 0.875rem;
+  }
+
+  .cs-quick-stats-mobile {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+
+  .cs-combat-stats-mobile {
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+  }
+
+  .cs-collapse-btn {
+    display: block;
+    width: 100%;
+    padding: 0.25rem;
+    background: transparent;
+    border: none;
+    color: var(--accent);
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 0;
+  }
+}

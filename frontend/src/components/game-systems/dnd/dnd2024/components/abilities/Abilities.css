@@ -1,0 +1,326 @@
+/* ==================== ABILITIES & SKILLS ==================== */
+
+.cs-abilities-skills {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.cs-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  margin-bottom: 0.75rem;
+}
+
+.cs-section-header h2 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #fff;
+  margin: 0;
+}
+
+.cs-section-menu {
+  background: transparent;
+  border: none;
+  color: var(--accent);
+  font-size: 1.25rem;
+  cursor: pointer;
+  padding: 0.25rem;
+}
+
+/* Ability Block */
+.cs-ability-block {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.cs-ability-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+}
+
+.cs-ability-name {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0;
+  letter-spacing: 1px;
+}
+
+.cs-ability-score {
+  width: 60px;
+  height: 48px;
+  background: transparent;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  color: #fff;
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+.cs-ability-score:focus {
+  border-color: var(--accent);
+  outline: none;
+}
+
+/* Modifiers row */
+.cs-ability-modifiers {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  padding: 0 1rem 1rem;
+}
+
+.cs-modifier-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.cs-modifier-box:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.cs-modifier-box.cs-save.proficient {
+  background: rgba(124, 58, 237, 0.2);
+  border-left: 3px solid var(--accent);
+}
+
+.cs-modifier-label {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.cs-modifier-value {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+/* Skills list */
+.cs-skills-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.cs-skill-row {
+  display: flex;
+  align-items: center;
+  padding: 0.875rem 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.cs-skill-row:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.cs-skill-row.proficiency-1 {
+  background: rgba(124, 58, 237, 0.1);
+}
+
+.cs-skill-row.proficiency-2 {
+  background: rgba(124, 58, 237, 0.2);
+}
+
+.cs-skill-indicator {
+  width: 24px;
+  font-size: 0.75rem;
+  color: var(--accent);
+}
+
+.cs-skill-name {
+  flex: 1;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: #fff;
+}
+
+.cs-skill-modifier {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #fff;
+  min-width: 40px;
+  text-align: right;
+}
+
+/* ==================== COMPACT ABILITIES LAYOUT (Tablet/Desktop) ==================== */
+
+.cs-abilities-compact {
+  /* display controlled by .cs-tablet-desktop-only */
+  gap: 1.5rem;
+}
+
+.cs-compact-column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Compact Ability Block */
+.cs-compact-ability {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.cs-compact-ability-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.cs-compact-ability-name {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0;
+  letter-spacing: 1px;
+}
+
+.cs-compact-ability-score {
+  width: 50px;
+  height: 36px;
+  background: transparent;
+  border: 2px solid var(--border);
+  border-radius: 6px;
+  color: #fff;
+  font-size: 1.25rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+.cs-compact-ability-score:focus {
+  border-color: var(--accent);
+  outline: none;
+}
+
+/* Compact Modifiers Row */
+.cs-compact-modifiers {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  padding: 0.5rem;
+}
+
+.cs-compact-modifier-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 0.75rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.cs-compact-modifier-box:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.cs-compact-modifier-box.cs-save.proficient {
+  background: rgba(124, 58, 237, 0.2);
+  border-left: 3px solid var(--accent);
+}
+
+.cs-compact-modifier-label {
+  font-size: 0.625rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.cs-compact-modifier-value {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+/* Compact Skills List */
+.cs-compact-skills {
+  display: flex;
+  flex-direction: column;
+}
+
+.cs-compact-skill-row {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 0.75rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.cs-compact-skill-row:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.cs-compact-skill-row.proficiency-1 {
+  background: rgba(124, 58, 237, 0.1);
+}
+
+.cs-compact-skill-row.proficiency-2 {
+  background: rgba(124, 58, 237, 0.2);
+}
+
+.cs-compact-skill-indicator {
+  width: 20px;
+  font-size: 0.625rem;
+  color: var(--accent);
+}
+
+.cs-compact-skill-name {
+  flex: 1;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: #fff;
+}
+
+.cs-compact-skill-modifier {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: #fff;
+  min-width: 32px;
+  text-align: right;
+}
+
+/* ==================== RESPONSIVE VISIBILITY ==================== */
+
+/* Mobile only - show below 650px */
+.cs-mobile-only {
+  display: block;
+}
+
+/* Tablet/Desktop only - show 650px and up */
+.cs-tablet-desktop-only {
+  display: none;
+}
+
+@media (min-width: 650px) {
+  .cs-mobile-only {
+    display: none;
+  }
+
+  .cs-tablet-desktop-only {
+    display: flex;
+  }
+}

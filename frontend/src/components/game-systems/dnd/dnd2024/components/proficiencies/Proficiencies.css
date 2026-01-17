@@ -1,0 +1,95 @@
+/* ==================== EQUIPMENT TRAINING & PROFICIENCIES ==================== */
+
+.cs-equipment-proficiencies {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.cs-equipment-header {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0;
+  padding: 0.75rem 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  letter-spacing: 0.5px;
+}
+
+.cs-equipment-section {
+  padding: 0.5rem 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.cs-equipment-section.no-border {
+  border-top: none;
+}
+
+.cs-equipment-label {
+  display: block;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.375rem;
+}
+
+/* Armor Training 2x2 Grid */
+.cs-armor-grid {
+  display: grid;
+  grid-template-columns: auto 1fr 1fr;
+  gap: 0.25rem 0.5rem;
+  align-items: center;
+}
+
+.cs-armor-label {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.cs-armor-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  cursor: pointer;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.cs-armor-checkbox input[type="checkbox"] {
+  width: 14px;
+  height: 14px;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+.cs-armor-checkbox input[type="checkbox"]:checked + span {
+  color: #fff;
+}
+
+.cs-equipment-textarea {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  color: #fff;
+  font-size: 0.875rem;
+  font-family: inherit;
+  resize: vertical;
+  min-height: 40px;
+}
+
+.cs-equipment-textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.cs-equipment-textarea::placeholder {
+  color: var(--text-secondary);
+  opacity: 0.6;
+}

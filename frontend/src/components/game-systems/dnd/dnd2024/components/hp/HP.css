@@ -1,0 +1,510 @@
+/* ==================== HP COMPONENTS ==================== */
+
+/* Desktop HP Box */
+.cs-hp-box-desktop {
+  display: grid;
+  grid-template-columns: 80px 1fr 80px;
+  grid-template-rows: auto auto;
+  gap: 0.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(124, 58, 237, 0.3);
+  border-radius: 12px;
+  padding: 0.75rem;
+  min-width: 220px;
+}
+
+.cs-hp-row {
+  display: contents;
+}
+
+.cs-hp-vertical-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  align-items: stretch;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.05);
+  grid-row: 1 / 3;
+}
+
+.cs-hp-vertical-group input {
+  padding: 0.25rem 0.5rem;
+  background: transparent;
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  color: #fff;
+  font-size: 0.875rem;
+  text-align: center;
+}
+
+.cs-hp-vertical-group input:focus {
+  outline: none;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.cs-hp-vertical-group .cs-hp-btn-small {
+  border-radius: 0;
+}
+
+.cs-hp-btn-small {
+  padding: 0.25rem 0.5rem;
+  border-radius: 8px;
+  border: none;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  color: #fff;
+  text-transform: uppercase;
+}
+
+.cs-hp-btn-small.heal {
+  background: #16a34a;
+}
+
+.cs-hp-btn-small.heal:hover {
+  background: #15803d;
+}
+
+.cs-hp-btn-small.damage {
+  background: #dc2626;
+}
+
+.cs-hp-btn-small.damage:hover {
+  background: #b91c1c;
+}
+
+.cs-hp-label {
+  text-align: center;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.cs-hp-label-temp {
+  text-align: center;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.cs-hp-temp-input-wrapper {
+  display: flex;
+  align-items: start;
+  justify-content: center;
+}
+
+.cs-hp-input-small {
+  padding: 0.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: #fff;
+  font-size: 1rem;
+  text-align: center;
+  width: 100%;
+}
+
+.cs-hp-display-large {
+  display: flex;
+  align-items: baseline;
+  gap: 0.25rem;
+  justify-content: center;
+}
+
+.cs-hp-current {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.cs-hp-separator {
+  font-size: 1rem;
+  color: var(--text-secondary);
+}
+
+.cs-hp-max {
+  font-size: 1rem;
+  color: var(--text-secondary);
+}
+
+.cs-hp-temp-value {
+  text-align: center;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+/* Mobile HP Box */
+.cs-hp-box-mobile {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(124, 58, 237, 0.3);
+  border-radius: 12px;
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.cs-hp-box-mobile:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.cs-hp-mobile-text {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.cs-hp-mobile-label {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* HP Modal */
+.cs-hp-modal-main {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.cs-hp-modal-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.cs-hp-modal-row label {
+  min-width: 120px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.cs-hp-modal-row input,
+.cs-hp-modal-row select {
+  flex: 1;
+  padding: 0.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: #fff;
+  font-size: 1rem;
+}
+
+.cs-hp-modal-max {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.cs-hp-modal-actions {
+  display: flex;
+  gap: 0;
+  margin-top: 1rem;
+  align-items: stretch;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.cs-hp-modal-actions input {
+  flex: 1;
+  min-width: 0;
+  padding: 0.5rem;
+  background: transparent;
+  border: none;
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0;
+  color: #fff;
+  font-size: 1rem;
+}
+
+.cs-hp-modal-actions input:focus {
+  outline: none;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.cs-hp-btn-heal {
+  padding: 0.5rem 0.75rem;
+  background: #16a34a;
+  color: #fff;
+  border: none;
+  border-radius: 0;
+  font-weight: 600;
+  cursor: pointer;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.cs-hp-btn-heal:hover {
+  background: #15803d;
+}
+
+.cs-hp-btn-damage {
+  padding: 0.5rem 0.75rem;
+  background: #dc2626;
+  color: #fff;
+  border: none;
+  border-radius: 0;
+  font-weight: 600;
+  cursor: pointer;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.cs-hp-btn-damage:hover {
+  background: #b91c1c;
+}
+
+.cs-hp-modal-settings {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.cs-hp-settings-toggle {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.cs-hp-settings-toggle:hover {
+  color: var(--accent);
+}
+
+.cs-hp-settings-content {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Death Saves */
+.cs-death-saves-both-rows {
+  grid-column: 2 / 4;
+  grid-row: 1 / 3;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  justify-content: center;
+  align-items: center;
+}
+
+.cs-death-saves-circles-horizontal {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+  justify-content: center;
+  align-items: center;
+}
+
+.cs-death-save-circle {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.cs-death-save-circle.cs-success {
+  border-color: #16a34a;
+}
+
+.cs-death-save-circle.cs-success.filled {
+  background: #16a34a;
+}
+
+.cs-death-save-circle.cs-failure {
+  border-color: #dc2626;
+}
+
+.cs-death-save-circle.cs-failure.filled {
+  background: #dc2626;
+}
+
+.cs-death-save-circle:hover {
+  transform: scale(1.1);
+}
+
+/* Mobile Death Saves */
+.cs-death-saves-mobile {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.75rem;
+}
+
+.cs-death-saves-mobile-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.cs-death-save-mobile-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  min-width: 60px;
+}
+
+.cs-death-save-mobile-label.success {
+  color: #16a34a;
+}
+
+.cs-death-save-mobile-label.failure {
+  color: #dc2626;
+}
+
+.cs-death-saves-circles-mobile {
+  display: flex;
+  gap: 0.375rem;
+}
+
+.cs-death-save-circle-mobile {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.cs-death-save-circle-mobile.cs-success {
+  border-color: #16a34a;
+}
+
+.cs-death-save-circle-mobile.cs-success.filled {
+  background: #16a34a;
+}
+
+.cs-death-save-circle-mobile.cs-failure {
+  border-color: #dc2626;
+}
+
+.cs-death-save-circle-mobile.cs-failure.filled {
+  background: #dc2626;
+}
+
+/* Death Saves Modal */
+.cs-hp-modal-death-saves {
+  margin: 1rem 0;
+  padding: 0.75rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+}
+
+.cs-death-saves-checkboxes {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  align-items: center;
+}
+
+.cs-death-save-checkbox {
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.cs-death-save-checkbox:hover {
+  transform: scale(1.1);
+}
+
+.cs-death-save-checkbox.cs-success {
+  border-color: #16a34a;
+}
+
+.cs-death-save-checkbox.cs-success.checked {
+  background: #16a34a;
+}
+
+.cs-death-save-checkbox.cs-success.checked::after {
+  content: '✓';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.cs-death-save-checkbox.cs-failure {
+  border-color: #dc2626;
+}
+
+.cs-death-save-checkbox.cs-failure.checked {
+  background: #dc2626;
+}
+
+.cs-death-save-checkbox.cs-failure.checked::after {
+  content: '✗';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+/* Tablet breakpoint - hide Heal/Damage buttons in HP box */
+@media (max-width: 799px) {
+  .cs-hp-vertical-group {
+    display: none;
+  }
+
+  .cs-hp-box-desktop {
+    grid-template-columns: 1fr 80px;
+  }
+}
+
+@media (max-width: 649px) {
+  /* Fix HP modal max overflow */
+  .cs-hp-modal-row {
+    gap: 0.5rem;
+  }
+
+  .cs-hp-modal-row input {
+    min-width: 0;
+    flex: 1;
+  }
+
+  .cs-hp-modal-max {
+    font-size: 1rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .cs-hp-modal-row label {
+    min-width: 60px;
+    flex-shrink: 0;
+  }
+
+  /* Fix HP modal actions overflow on mobile */
+  .cs-hp-btn-heal,
+  .cs-hp-btn-damage {
+    padding: 0.5rem;
+    font-size: 0.875rem;
+  }
+}
