@@ -3,9 +3,21 @@
 import { useState, useEffect } from 'react';
 import { Button, NumberInput } from '../../../../../shared';
 import { updateCharacter } from '../../../../../../services/characters.service';
-import { XP_THRESHOLDS, calculateLevelFromXP, getProficiencyBonus } from '../../constants';
+import { XP_THRESHOLDS, calculateLevelFromXP, getProficiencyBonus, getSpellSlotsForLevel } from '../../constants';
+import type { SpellcasterType } from '../../constants';
 import type { Character } from 'shared';
 import './Modals.css';
+
+// Helper to get spell slots update if needed
+function getSpellSlotsUpdate(character: Character, newLevel: number) {
+  const casterType = character.spellcasterType as SpellcasterType | undefined;
+  const isAutoType = casterType === 'full' || casterType === 'half' || casterType === 'warlock';
+
+  if (isAutoType) {
+    return getSpellSlotsForLevel(casterType, newLevel);
+  }
+  return undefined;
+}
 
 interface LevelXPModalProps {
   character: Character;
@@ -34,11 +46,13 @@ export function LevelXPModal({ character, gameId, onClose }: LevelXPModalProps) 
 
     const newLevel = character.level + 1;
     const newXP = XP_THRESHOLDS[newLevel - 1] || 0;
+    const spellSlotsUpdate = getSpellSlotsUpdate(character, newLevel);
 
     await updateCharacter(gameId, character.id, {
       level: newLevel,
       experience: newXP,
       proficiencyBonus: getProficiencyBonus(newLevel),
+      ...(spellSlotsUpdate && { spellSlots: spellSlotsUpdate }),
     });
 
     setCurrentXP(newXP);
@@ -46,10 +60,15 @@ export function LevelXPModal({ character, gameId, onClose }: LevelXPModalProps) 
   };
 
   const handleXPChange = async () => {
+    const spellSlotsUpdate = currentLevel !== character.level
+      ? getSpellSlotsUpdate(character, currentLevel)
+      : undefined;
+
     await updateCharacter(gameId, character.id, {
       experience: currentXP,
       level: currentLevel,
       proficiencyBonus: getProficiencyBonus(currentLevel),
+      ...(spellSlotsUpdate && { spellSlots: spellSlotsUpdate }),
     });
     setMessage('Experience updated!');
   };
@@ -60,6 +79,9 @@ export function LevelXPModal({ character, gameId, onClose }: LevelXPModalProps) 
     const newXP = currentXP + gainXPInput;
     const oldLevel = currentLevel;
     const newLevel = calculateLevelFromXP(newXP);
+    const spellSlotsUpdate = newLevel !== oldLevel
+      ? getSpellSlotsUpdate(character, newLevel)
+      : undefined;
 
     setCurrentXP(newXP);
     setGainXPInput(0);
@@ -68,6 +90,7 @@ export function LevelXPModal({ character, gameId, onClose }: LevelXPModalProps) 
       experience: newXP,
       level: newLevel,
       proficiencyBonus: getProficiencyBonus(newLevel),
+      ...(spellSlotsUpdate && { spellSlots: spellSlotsUpdate }),
     });
 
     if (newLevel > oldLevel) {
