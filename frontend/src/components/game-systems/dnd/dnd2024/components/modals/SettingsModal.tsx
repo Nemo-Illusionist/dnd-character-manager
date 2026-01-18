@@ -1,7 +1,7 @@
 // D&D 2024 - Settings Modal Component
 
 import { useState } from 'react';
-import { Button } from '../../../../../shared/Button';
+import { Button, NumberInput } from '../../../../../shared';
 import { updateCharacter } from '../../../../../../services/characters.service';
 import type { Character } from 'shared';
 import './Modals.css';
@@ -20,6 +20,7 @@ export function SettingsModal({ character, gameId, onClose }: SettingsModalProps
     subclass: character.subclass || '',
     ac: character.ac,
     speed: character.speed,
+    hideSpellsTab: character.hideSpellsTab || false,
   });
 
   const handleSave = async () => {
@@ -30,6 +31,7 @@ export function SettingsModal({ character, gameId, onClose }: SettingsModalProps
       subclass: formData.subclass,
       ac: formData.ac,
       speed: formData.speed,
+      hideSpellsTab: formData.hideSpellsTab,
     });
     onClose();
   };
@@ -83,21 +85,34 @@ export function SettingsModal({ character, gameId, onClose }: SettingsModalProps
           <div className="cs-form-row">
             <div className="cs-form-group">
               <label>Armor Class</label>
-              <input
-                type="number"
+              <NumberInput
                 value={formData.ac}
-                onChange={(e) => setFormData({ ...formData, ac: parseInt(e.target.value) || 10 })}
+                onChange={(value) => setFormData({ ...formData, ac: value })}
+                min={0}
+                defaultValue={10}
               />
             </div>
 
             <div className="cs-form-group">
               <label>Speed</label>
-              <input
-                type="number"
+              <NumberInput
                 value={formData.speed}
-                onChange={(e) => setFormData({ ...formData, speed: parseInt(e.target.value) || 30 })}
+                onChange={(value) => setFormData({ ...formData, speed: value })}
+                min={0}
+                defaultValue={30}
               />
             </div>
+          </div>
+
+          <div className="cs-form-group cs-checkbox-group">
+            <label className="cs-checkbox-label">
+              <input
+                type="checkbox"
+                checked={formData.hideSpellsTab}
+                onChange={(e) => setFormData({ ...formData, hideSpellsTab: e.target.checked })}
+              />
+              <span>Hide Spells Tab</span>
+            </label>
           </div>
         </div>
 

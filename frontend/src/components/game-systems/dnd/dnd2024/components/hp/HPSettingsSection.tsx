@@ -1,6 +1,7 @@
 // D&D 2024 - HP Settings Section Component
 
 import { useState } from 'react';
+import { NumberInput } from '../../../../../../components/shared';
 
 interface HPSettingsSectionProps {
   maxHP: number;
@@ -33,19 +34,19 @@ export function HPSettingsSection({
         <div className="cs-hp-settings-content">
           <div className="cs-hp-modal-row">
             <label>Max HP</label>
-            <input
-              type="number"
+            <NumberInput
               value={maxHP}
-              onChange={(e) => onMaxHPChange(parseInt(e.target.value) || 0)}
+              onChange={onMaxHPChange}
+              min={1}
+              defaultValue={1}
             />
           </div>
           <div className="cs-hp-modal-row">
             <label>HP Bonus</label>
-            <input
-              type="number"
+            <NumberInput
               value={hpBonus}
-              onChange={(e) => onHPBonusChange(parseInt(e.target.value) || 0)}
-              placeholder="0"
+              onChange={onHPBonusChange}
+              defaultValue={0}
             />
           </div>
           <div className="cs-hp-modal-row">

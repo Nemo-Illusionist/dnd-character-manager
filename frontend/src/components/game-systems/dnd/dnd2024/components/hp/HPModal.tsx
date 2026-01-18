@@ -21,7 +21,7 @@ export function HPModal({ character, gameId, onClose }: HPModalProps) {
   const [maxHP, setMaxHP] = useState(character.hp.max);
   const [hpBonus, setHpBonus] = useState(character.hpBonus || 0);
   const [hitDice, setHitDice] = useState(character.hitDice || 'd8');
-  const [amount, setAmount] = useState('');
+  const [amount, setAmount] = useState(0);
 
   const { update, heal, damage } = useCharacterMutation(gameId, character);
 
@@ -40,18 +40,17 @@ export function HPModal({ character, gameId, onClose }: HPModalProps) {
   };
 
   const handleHeal = async () => {
-    const healAmount = parseInt(amount) || 0;
-    if (healAmount <= 0) return;
+    if (amount <= 0) return;
 
-    const newCurrent = Math.min(effectiveMaxHP, currentHP + healAmount);
+    const newCurrent = Math.min(effectiveMaxHP, currentHP + amount);
     setCurrentHP(newCurrent);
-    await heal(healAmount, effectiveMaxHP);
-    setAmount('');
+    await heal(amount, effectiveMaxHP);
+    setAmount(0);
   };
 
   const handleDamage = async () => {
-    const dmg = parseInt(amount) || 0;
-    if (dmg <= 0) return;
+    if (amount <= 0) return;
+    const dmg = amount;
 
     let remaining = dmg;
     let newTemp = tempHP;
@@ -74,7 +73,7 @@ export function HPModal({ character, gameId, onClose }: HPModalProps) {
     setCurrentHP(newCurrent);
     setTempHP(newTemp);
     await damage(dmg, currentHP, tempHP);
-    setAmount('');
+    setAmount(0);
   };
 
   const handleMaxHPChange = async (newMax: number) => {

@@ -1,5 +1,6 @@
 // D&D 2024 - Inventory Item Modal Component
 
+import { NumberInput } from '../../../../../shared';
 import type { InventoryItem } from 'shared';
 import '../modals/Modals.css';
 
@@ -56,11 +57,11 @@ export function InventoryItemModal({ item, onUpdate, onDelete, onClose }: Invent
             </div>
             <div className="cs-form-group">
               <label>Quantity</label>
-              <input
-                type="number"
+              <NumberInput
                 value={item.quantity}
-                onChange={(e) => onUpdate({ quantity: Math.max(1, parseInt(e.target.value) || 1) })}
-                min="1"
+                onChange={(value) => onUpdate({ quantity: Math.max(1, value) })}
+                min={1}
+                defaultValue={1}
               />
             </div>
           </div>
@@ -68,12 +69,12 @@ export function InventoryItemModal({ item, onUpdate, onDelete, onClose }: Invent
           {/* Weight */}
           <div className="cs-form-group">
             <label>Weight (lb)</label>
-            <input
-              type="number"
-              value={item.weight || ''}
-              onChange={(e) => onUpdate({ weight: parseFloat(e.target.value) || undefined })}
+            <NumberInput
+              value={item.weight || 0}
+              onChange={(value) => onUpdate({ weight: value || undefined })}
+              min={0}
+              defaultValue={0}
               placeholder="0"
-              step="0.1"
             />
           </div>
 
@@ -105,8 +106,8 @@ export function InventoryItemModal({ item, onUpdate, onDelete, onClose }: Invent
           <div className="cs-form-group">
             <label>Description</label>
             <textarea
-              value={item.description || ''}
-              onChange={(e) => onUpdate({ description: e.target.value || undefined })}
+              value={item.description ?? ''}
+              onChange={(e) => onUpdate({ description: e.target.value })}
               placeholder="Item description..."
               rows={3}
             />

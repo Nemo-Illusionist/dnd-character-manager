@@ -1,7 +1,7 @@
 // D&D 2024 - Level & XP Modal Component
 
 import { useState, useEffect } from 'react';
-import { Button } from '../../../../../shared/Button';
+import { Button, NumberInput } from '../../../../../shared';
 import { updateCharacter } from '../../../../../../services/characters.service';
 import { XP_THRESHOLDS, calculateLevelFromXP, getProficiencyBonus } from '../../constants';
 import type { Character } from 'shared';
@@ -15,7 +15,7 @@ interface LevelXPModalProps {
 
 export function LevelXPModal({ character, gameId, onClose }: LevelXPModalProps) {
   const [currentXP, setCurrentXP] = useState(character.experience || 0);
-  const [gainXPInput, setGainXPInput] = useState('');
+  const [gainXPInput, setGainXPInput] = useState(0);
   const [message, setMessage] = useState('');
 
   // Sync currentXP with character.experience when it changes
@@ -55,15 +55,14 @@ export function LevelXPModal({ character, gameId, onClose }: LevelXPModalProps) 
   };
 
   const handleGainXP = async () => {
-    const gainedXP = parseInt(gainXPInput) || 0;
-    if (gainedXP <= 0) return;
+    if (gainXPInput <= 0) return;
 
-    const newXP = currentXP + gainedXP;
+    const newXP = currentXP + gainXPInput;
     const oldLevel = currentLevel;
     const newLevel = calculateLevelFromXP(newXP);
 
     setCurrentXP(newXP);
-    setGainXPInput('');
+    setGainXPInput(0);
 
     await updateCharacter(gameId, character.id, {
       experience: newXP,
@@ -72,9 +71,9 @@ export function LevelXPModal({ character, gameId, onClose }: LevelXPModalProps) 
     });
 
     if (newLevel > oldLevel) {
-      setMessage(`Gained ${gainedXP} XP! Level increased to ${newLevel}!`);
+      setMessage(`Gained ${gainXPInput} XP! Level increased to ${newLevel}!`);
     } else {
-      setMessage(`Gained ${gainedXP} XP!`);
+      setMessage(`Gained ${gainXPInput} XP!`);
     }
   };
 
@@ -102,10 +101,11 @@ export function LevelXPModal({ character, gameId, onClose }: LevelXPModalProps) 
           <div className="cs-form-group">
             <label>Current Experience</label>
             <div className="cs-xp-input-row">
-              <input
-                type="number"
+              <NumberInput
                 value={currentXP}
-                onChange={(e) => setCurrentXP(parseInt(e.target.value) || 0)}
+                onChange={setCurrentXP}
+                min={0}
+                defaultValue={0}
               />
               <Button variant="secondary" onClick={handleXPChange}>Update</Button>
             </div>
@@ -120,11 +120,12 @@ export function LevelXPModal({ character, gameId, onClose }: LevelXPModalProps) 
           <div className="cs-form-group">
             <label>Gain Experience</label>
             <div className="cs-xp-input-row">
-              <input
-                type="number"
-                placeholder="Enter XP gained"
+              <NumberInput
                 value={gainXPInput}
-                onChange={(e) => setGainXPInput(e.target.value)}
+                onChange={setGainXPInput}
+                min={0}
+                defaultValue={0}
+                placeholder="Enter XP gained"
               />
               <Button onClick={handleGainXP}>Add</Button>
             </div>

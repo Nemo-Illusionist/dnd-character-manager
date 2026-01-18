@@ -1,5 +1,6 @@
 // D&D 2024 - Ability Block Component (Mobile Layout)
 
+import { NumberInput } from '../../../../../../components/shared';
 import { getAbilityModifier, getSkillModifier, getSavingThrowModifier, ABILITY_NAMES, SKILLS_BY_ABILITY } from '../../../core';
 import type { Character, AbilityName, SkillName } from 'shared';
 
@@ -30,13 +31,13 @@ export function AbilityBlock({
       <div className="cs-ability-header">
         <div className="cs-ability-title">
           <h3 className="cs-ability-name">{ABILITY_NAMES[ability].toUpperCase()}</h3>
-          <input
-            type="number"
+          <NumberInput
             className="cs-ability-score"
             value={score}
-            onChange={(e) => onAbilityChange(ability, parseInt(e.target.value) || 10)}
-            min="1"
-            max="30"
+            onChange={(val) => onAbilityChange(ability, val)}
+            min={1}
+            max={30}
+            defaultValue={10}
           />
         </div>
         <div className="cs-ability-modifiers">

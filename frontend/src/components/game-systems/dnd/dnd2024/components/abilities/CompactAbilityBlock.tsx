@@ -1,5 +1,6 @@
 // D&D 2024 - Compact Ability Block Component (Tablet/Desktop Layout)
 
+import { NumberInput } from '../../../../../../components/shared';
 import { getAbilityModifier, getSkillModifier, getSavingThrowModifier, ABILITY_NAMES, SKILLS_BY_ABILITY } from '../../../core';
 import type { Character, AbilityName, SkillName } from 'shared';
 
@@ -30,13 +31,13 @@ export function CompactAbilityBlock({
       <div className="cs-compact-ability-header">
         <div className="cs-compact-ability-title">
           <h3 className="cs-compact-ability-name">{ABILITY_NAMES[ability].toUpperCase()}</h3>
-          <input
-            type="number"
+          <NumberInput
             className="cs-compact-ability-score"
             value={score}
-            onChange={(e) => onAbilityChange(ability, parseInt(e.target.value) || 10)}
-            min="1"
-            max="30"
+            onChange={(val) => onAbilityChange(ability, val)}
+            min={1}
+            max={30}
+            defaultValue={10}
           />
         </div>
         <div className="cs-compact-modifiers">

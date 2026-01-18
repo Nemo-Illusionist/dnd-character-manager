@@ -113,8 +113,8 @@ export function SpellModal({ spell, onUpdate, onDelete, onClose }: SpellModalPro
               <label>Range</label>
               <input
                 type="text"
-                value={spell.range || ''}
-                onChange={(e) => onUpdate({ range: e.target.value || undefined })}
+                value={spell.range ?? ''}
+                onChange={(e) => onUpdate({ range: e.target.value })}
                 placeholder="Self, Touch, 30 feet..."
               />
             </div>
@@ -126,8 +126,8 @@ export function SpellModal({ spell, onUpdate, onDelete, onClose }: SpellModalPro
               <label>Components</label>
               <input
                 type="text"
-                value={spell.components || ''}
-                onChange={(e) => onUpdate({ components: e.target.value || undefined })}
+                value={spell.components ?? ''}
+                onChange={(e) => onUpdate({ components: e.target.value })}
                 placeholder="V, S, M (a feather)"
               />
             </div>
@@ -135,8 +135,8 @@ export function SpellModal({ spell, onUpdate, onDelete, onClose }: SpellModalPro
               <label>Duration</label>
               <input
                 type="text"
-                value={spell.duration || ''}
-                onChange={(e) => onUpdate({ duration: e.target.value || undefined })}
+                value={spell.duration ?? ''}
+                onChange={(e) => onUpdate({ duration: e.target.value })}
                 placeholder="Instantaneous, 1 minute..."
               />
             </div>
@@ -182,8 +182,8 @@ export function SpellModal({ spell, onUpdate, onDelete, onClose }: SpellModalPro
           <div className="cs-form-group">
             <label>Description</label>
             <textarea
-              value={spell.description || ''}
-              onChange={(e) => onUpdate({ description: e.target.value || undefined })}
+              value={spell.description ?? ''}
+              onChange={(e) => onUpdate({ description: e.target.value })}
               placeholder="Spell description..."
               rows={4}
             />
@@ -194,8 +194,8 @@ export function SpellModal({ spell, onUpdate, onDelete, onClose }: SpellModalPro
             <label>Source</label>
             <input
               type="text"
-              value={spell.source || ''}
-              onChange={(e) => onUpdate({ source: e.target.value || undefined })}
+              value={spell.source ?? ''}
+              onChange={(e) => onUpdate({ source: e.target.value })}
               placeholder="PHB 279, XGE 152..."
             />
           </div>

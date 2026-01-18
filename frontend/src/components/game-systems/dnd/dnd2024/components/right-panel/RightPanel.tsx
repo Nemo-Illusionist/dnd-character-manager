@@ -1,6 +1,6 @@
 // D&D 2024 - Right Panel Component (Desktop/Wide Tablet)
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { updateCharacter } from '../../../../../../services/characters.service';
 import { getAbilityModifier } from '../../../core';
 import { ConditionsModal } from '../modals';
@@ -24,11 +24,24 @@ export function RightPanel({ character, gameId }: RightPanelProps) {
   const initiativeModifier = getAbilityModifier(character.abilities.dex);
   const activeConditions = character.conditions || [];
 
-  const tabs: { id: TabId; label: string }[] = [
+  const allTabs: { id: TabId; label: string }[] = [
     { id: 'actions', label: 'Actions' },
     { id: 'spells', label: 'Spells' },
     { id: 'inventory', label: 'Inventory' },
   ];
+
+  // Filter tabs based on settings
+  const tabs = allTabs.filter((tab) => {
+    if (tab.id === 'spells' && character.hideSpellsTab) return false;
+    return true;
+  });
+
+  // Switch to first available tab if current is hidden
+  useEffect(() => {
+    if (!tabs.find((t) => t.id === activeTab) && tabs.length > 0) {
+      setActiveTab(tabs[0].id);
+    }
+  }, [tabs, activeTab]);
 
   return (
     <div className="cs-right-panel">

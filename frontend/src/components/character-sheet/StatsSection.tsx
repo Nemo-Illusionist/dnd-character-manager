@@ -1,5 +1,6 @@
 // Stats Section - Abilities, Skills, Saving Throws
 import { Card } from '../shared/Card';
+import { NumberInput } from '../shared';
 import { getAbilityModifier, getSavingThrowModifier, getSkillModifier, updateCharacter } from '../../services/characters.service';
 import type { Character, AbilityName, SkillName } from 'shared';
 import './StatsSection.css';
@@ -89,13 +90,13 @@ export function StatsSection({ character, gameId }: StatsSectionProps) {
               return (
                 <div key={ability} className="ability-item">
                   <label className="ability-label">{ABILITY_NAMES[ability]}</label>
-                  <input
-                    type="number"
+                  <NumberInput
                     className="ability-input"
                     value={score}
-                    onChange={(e) => handleAbilityChange(ability, parseInt(e.target.value) || 10)}
-                    min="1"
-                    max="30"
+                    onChange={(value) => handleAbilityChange(ability, value)}
+                    min={1}
+                    max={30}
+                    defaultValue={10}
                   />
                   <span className="ability-modifier">
                     {modifier >= 0 ? '+' : ''}{modifier}

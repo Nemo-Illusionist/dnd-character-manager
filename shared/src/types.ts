@@ -155,6 +155,10 @@ export interface Character {
   // Spells (заклинания)
   spells: CharacterSpell[];
   spellEntries?: CharacterSpellEntry[];  // Simplified spell entries
+  spellcastingAbility?: AbilityName;     // Ability used for spellcasting (int, wis, cha)
+  spellcasterType?: 'none' | 'full' | 'half' | 'warlock' | 'manual';  // Caster type for auto spell slots
+  showAllSpellLevels?: boolean;  // Show spell levels even without slots
+  hideSpellsTab?: boolean;               // Hide spells tab in UI
 
   // Spell Slots (ячейки заклинаний)
   spellSlots: {

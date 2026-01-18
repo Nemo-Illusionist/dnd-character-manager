@@ -1,5 +1,7 @@
 // D&D 2024 - HP Display Component (HP and Temp inputs)
 
+import { NumberInput } from '../../../../../../components/shared';
+
 interface HPDisplayProps {
   currentHP: number;
   tempHP: number;
@@ -19,20 +21,23 @@ export function HPDisplay({
     <>
       <div className="cs-hp-modal-row">
         <label>HP</label>
-        <input
-          type="number"
+        <NumberInput
           value={currentHP}
-          onChange={(e) => onCurrentHPChange(parseInt(e.target.value) || 0)}
+          onChange={onCurrentHPChange}
+          min={0}
+          max={effectiveMaxHP}
+          defaultValue={0}
         />
         <span className="cs-hp-modal-max">/ {effectiveMaxHP}</span>
       </div>
 
       <div className="cs-hp-modal-row">
         <label>TEMP</label>
-        <input
-          type="number"
+        <NumberInput
           value={tempHP}
-          onChange={(e) => onTempHPChange(parseInt(e.target.value) || 0)}
+          onChange={onTempHPChange}
+          min={0}
+          defaultValue={0}
         />
       </div>
     </>

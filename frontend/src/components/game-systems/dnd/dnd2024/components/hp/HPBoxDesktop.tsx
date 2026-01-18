@@ -1,6 +1,7 @@
 // D&D 2024 - HP Box Desktop Component
 
 import { useState } from 'react';
+import { NumberInput } from '../../../../../shared';
 import { updateCharacter } from '../../../../../../services/characters.service';
 import type { Character } from 'shared';
 import './HP.css';
@@ -12,13 +13,13 @@ interface HPBoxDesktopProps {
 }
 
 export function HPBoxDesktop({ character, gameId, onOpenModal }: HPBoxDesktopProps) {
-  const [healAmount, setHealAmount] = useState('');
+  const [healAmount, setHealAmount] = useState(0);
 
   const effectiveMaxHP = character.hp.max + (character.hpBonus || 0);
 
   const handleDamage = async () => {
-    const amount = parseInt(healAmount) || 0;
-    if (amount <= 0) return;
+    if (healAmount <= 0) return;
+    const amount = healAmount;
 
     let remaining = amount;
     let newTemp = character.hp.temp;
@@ -43,23 +44,21 @@ export function HPBoxDesktop({ character, gameId, onOpenModal }: HPBoxDesktopPro
     await updateCharacter(gameId, character.id, {
       hp: { ...character.hp, current: newCurrent, temp: newTemp },
     });
-    setHealAmount('');
+    setHealAmount(0);
   };
 
   const handleHeal = async () => {
-    const amount = parseInt(healAmount) || 0;
-    if (amount <= 0) return;
+    if (healAmount <= 0) return;
 
-    const newCurrent = Math.min(effectiveMaxHP, character.hp.current + amount);
+    const newCurrent = Math.min(effectiveMaxHP, character.hp.current + healAmount);
     await updateCharacter(gameId, character.id, {
       hp: { ...character.hp, current: newCurrent },
       deathSaves: { successes: 0, failures: 0 }, // Clear death saves on heal
     });
-    setHealAmount('');
+    setHealAmount(0);
   };
 
-  const handleTempHPChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = parseInt(e.target.value) || 0;
+  const handleTempHPChange = async (value: number) => {
     await updateCharacter(gameId, character.id, {
       hp: { ...character.hp, temp: Math.max(0, value) },
     });
@@ -94,12 +93,13 @@ export function HPBoxDesktop({ character, gameId, onOpenModal }: HPBoxDesktopPro
         >
           Heal
         </button>
-        <input
-          type="number"
+        <NumberInput
           className="cs-hp-input-small"
           value={healAmount}
-          onChange={(e) => setHealAmount(e.target.value)}
+          onChange={setHealAmount}
           onClick={(e) => e.stopPropagation()}
+          min={0}
+          defaultValue={0}
           placeholder="0"
         />
         <button
@@ -160,15 +160,13 @@ export function HPBoxDesktop({ character, gameId, onOpenModal }: HPBoxDesktopPro
 
           {/* Column 3, Row 2: Temp HP input (centered) */}
           <div className="cs-hp-temp-input-wrapper">
-            <input
-              type="number"
+            <NumberInput
               className="cs-hp-input-small"
               value={character.hp.temp}
-              onChange={(e) => {
-                e.stopPropagation();
-                handleTempHPChange(e);
-              }}
+              onChange={handleTempHPChange}
               onClick={(e) => e.stopPropagation()}
+              min={0}
+              defaultValue={0}
             />
           </div>
         </>

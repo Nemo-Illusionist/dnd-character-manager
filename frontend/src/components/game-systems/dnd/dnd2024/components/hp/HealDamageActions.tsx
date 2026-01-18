@@ -1,8 +1,10 @@
 // D&D 2024 - Heal/Damage Actions Component
 
+import { NumberInput } from '../../../../../../components/shared';
+
 interface HealDamageActionsProps {
-  amount: string;
-  onAmountChange: (value: string) => void;
+  amount: number;
+  onAmountChange: (value: number) => void;
   onHeal: () => void;
   onDamage: () => void;
 }
@@ -18,11 +20,12 @@ export function HealDamageActions({
       <button className="cs-hp-btn-heal" onClick={onHeal}>
         Heal
       </button>
-      <input
-        type="number"
-        placeholder="Amount"
+      <NumberInput
         value={amount}
-        onChange={(e) => onAmountChange(e.target.value)}
+        onChange={onAmountChange}
+        min={0}
+        defaultValue={0}
+        placeholder="Amount"
       />
       <button className="cs-hp-btn-damage" onClick={onDamage}>
         Damage

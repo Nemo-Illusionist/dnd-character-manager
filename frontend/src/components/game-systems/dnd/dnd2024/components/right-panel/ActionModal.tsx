@@ -1,5 +1,6 @@
 // D&D 2024 - Action Modal Component
 
+import { NumberInput } from '../../../../../shared';
 import { ABILITY_NAMES, ABILITY_ORDER, DAMAGE_TYPES } from '../../constants';
 import type { CharacterAction, AbilityName } from 'shared';
 import '../modals/Modals.css';
@@ -49,11 +50,10 @@ export function ActionModal({ action, onUpdate, onDelete, onClose }: ActionModal
             </div>
             <div className="cs-form-group">
               <label>Extra Bonus</label>
-              <input
-                type="number"
+              <NumberInput
                 value={action.extraBonus || 0}
-                onChange={(e) => onUpdate({ extraBonus: parseInt(e.target.value) || 0 })}
-                placeholder="0"
+                onChange={(value) => onUpdate({ extraBonus: value })}
+                defaultValue={0}
               />
             </div>
           </div>
@@ -76,18 +76,17 @@ export function ActionModal({ action, onUpdate, onDelete, onClose }: ActionModal
               <label>Damage</label>
               <input
                 type="text"
-                value={action.damage || ''}
-                onChange={(e) => onUpdate({ damage: e.target.value || undefined })}
+                value={action.damage ?? ''}
+                onChange={(e) => onUpdate({ damage: e.target.value })}
                 placeholder="1d8"
               />
             </div>
             <div className="cs-form-group">
               <label>Damage Bonus</label>
-              <input
-                type="number"
+              <NumberInput
                 value={action.damageBonus || 0}
-                onChange={(e) => onUpdate({ damageBonus: parseInt(e.target.value) || 0 })}
-                placeholder="0"
+                onChange={(value) => onUpdate({ damageBonus: value })}
+                defaultValue={0}
               />
             </div>
           </div>
@@ -95,7 +94,7 @@ export function ActionModal({ action, onUpdate, onDelete, onClose }: ActionModal
           <div className="cs-form-group">
             <label>Damage Type</label>
             <select
-              value={action.damageType || ''}
+              value={action.damageType ?? ''}
               onChange={(e) => onUpdate({ damageType: e.target.value || undefined })}
             >
               <option value="">—</option>
@@ -109,8 +108,8 @@ export function ActionModal({ action, onUpdate, onDelete, onClose }: ActionModal
           <div className="cs-form-group">
             <label>Notes</label>
             <textarea
-              value={action.notes || ''}
-              onChange={(e) => onUpdate({ notes: e.target.value || undefined })}
+              value={action.notes ?? ''}
+              onChange={(e) => onUpdate({ notes: e.target.value })}
               placeholder="Additional notes..."
               rows={3}
             />
