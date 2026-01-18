@@ -71,8 +71,8 @@ export function BiographyTab({ character, gameId }: BiographyTabProps) {
             <label>Age</label>
             <input
               type="number"
-              value={appearance.age || ''}
-              onChange={(e) => updateAppearance('age', e.target.value ? Number(e.target.value) : undefined)}
+              value={appearance.age ?? ''}
+              onChange={(e) => updateAppearance('age', e.target.value === '' ? undefined : Number(e.target.value))}
               placeholder="—"
               min={0}
             />
@@ -90,8 +90,8 @@ export function BiographyTab({ character, gameId }: BiographyTabProps) {
             <label>Weight</label>
             <input
               type="number"
-              value={appearance.weight || ''}
-              onChange={(e) => updateAppearance('weight', e.target.value ? Number(e.target.value) : undefined)}
+              value={appearance.weight ?? ''}
+              onChange={(e) => updateAppearance('weight', e.target.value === '' ? undefined : Number(e.target.value))}
               placeholder="—"
               min={0}
             />
