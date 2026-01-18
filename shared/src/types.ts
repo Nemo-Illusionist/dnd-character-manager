@@ -117,7 +117,9 @@ export interface Character {
   // Attributes (атрибуты)
   hp: { current: number; max: number; temp: number };
   hpBonus?: number;             // Bonus to max HP (from items, effects, etc.)
-  hitDice?: string;             // Hit dice (d6, d8, d10, d12)
+  hitDice?: string;             // Hit dice type (d6, d8, d10, d12)
+  hitDiceTotal?: number;        // Total hit dice (usually = level)
+  hitDiceUsed?: number;         // Used hit dice (recovered on long rest)
   deathSaves?: {
     successes: number;          // 0-3 successful death saves
     failures: number;           // 0-3 failed death saves

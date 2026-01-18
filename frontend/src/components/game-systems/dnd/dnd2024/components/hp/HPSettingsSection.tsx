@@ -7,18 +7,24 @@ interface HPSettingsSectionProps {
   maxHP: number;
   hpBonus: number;
   hitDice: string;
+  hitDiceUsed: number;
+  hitDiceTotal: number;
   onMaxHPChange: (value: number) => void;
   onHPBonusChange: (value: number) => void;
   onHitDiceChange: (value: string) => void;
+  onHitDiceUsedChange: (value: number) => void;
 }
 
 export function HPSettingsSection({
   maxHP,
   hpBonus,
   hitDice,
+  hitDiceUsed,
+  hitDiceTotal,
   onMaxHPChange,
   onHPBonusChange,
   onHitDiceChange,
+  onHitDiceUsedChange,
 }: HPSettingsSectionProps) {
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -60,6 +66,17 @@ export function HPSettingsSection({
               <option value="d10">d10</option>
               <option value="d12">d12</option>
             </select>
+          </div>
+          <div className="cs-hp-modal-row">
+            <label>Hit Dice Used</label>
+            <NumberInput
+              value={hitDiceUsed}
+              onChange={onHitDiceUsedChange}
+              min={0}
+              max={hitDiceTotal}
+              defaultValue={0}
+            />
+            <span className="cs-hp-modal-max">/ {hitDiceTotal}</span>
           </div>
         </div>
       )}

@@ -6,3 +6,4 @@ export { HPDisplay } from './HPDisplay';
 export { HealDamageActions } from './HealDamageActions';
 export { DeathSavesSection } from './DeathSavesSection';
 export { HPSettingsSection } from './HPSettingsSection';
+export { HitDiceSection } from './HitDiceSection';
