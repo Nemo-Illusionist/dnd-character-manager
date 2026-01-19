@@ -73,4 +73,5 @@
 
 .dropdown-item-label {
   flex: 1;
+  white-space: nowrap;
 }
