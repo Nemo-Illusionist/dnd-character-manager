@@ -1,0 +1,76 @@
+/* DropdownMenu Component Styles */
+
+.dropdown-menu {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-primary);
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.dropdown-trigger:hover {
+  background: var(--bg-tertiary);
+}
+
+.dropdown-dots {
+  font-weight: bold;
+  line-height: 1;
+}
+
+.dropdown-content {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 0.5rem;
+  min-width: 180px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  overflow: hidden;
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.875rem 1rem;
+  border: none;
+  background: transparent;
+  color: var(--text-primary);
+  font-size: 1rem;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.dropdown-item:hover {
+  background: var(--bg-tertiary);
+}
+
+.dropdown-item:not(:last-child) {
+  border-bottom: 1px solid var(--border-color);
+}
+
+.dropdown-item-icon {
+  font-size: 1.125rem;
+  line-height: 1;
+}
+
+.dropdown-item-label {
+  flex: 1;
+}

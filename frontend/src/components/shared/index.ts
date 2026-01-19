@@ -13,3 +13,4 @@ export { InputField, TextareaField, SelectField, CheckboxField, FormRow } from '
 export { NumberInput } from './NumberInput';
 export { PageLayout, PageHeader, PageLoading, PageEmpty, PageSection, PageGrid } from './PageLayout';
 export { SideNav } from './SideNav';
+export { DropdownMenu } from './DropdownMenu';

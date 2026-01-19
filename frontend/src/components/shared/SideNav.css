@@ -73,3 +73,24 @@
     display: none !important;
   }
 }
+
+/* Mobile menu - visible only on mobile (< 650px), positioned top-right */
+.mobile-menu {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 50;
+}
+
+@media (min-width: 650px) {
+  .mobile-menu {
+    display: none !important;
+  }
+}
+
+/* Hide on mobile (< 650px) */
+@media (max-width: 649px) {
+  .hide-on-mobile {
+    display: none !important;
+  }
+}

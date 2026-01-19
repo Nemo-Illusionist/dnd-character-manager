@@ -13,6 +13,7 @@ import {
   PageLoading,
   PageEmpty,
   PageGrid,
+  DropdownMenu,
 } from '../components/shared';
 
 export default function GamesPage() {
@@ -60,8 +61,16 @@ export default function GamesPage() {
           }
           actions={
             <>
-              <Button className="hide-on-side-nav" onClick={createModal.open}>+ Create Game</Button>
-              <Button className="hide-on-side-nav" variant="secondary" onClick={settingsModal.open}>⚙ Settings</Button>
+              <div className="mobile-menu">
+                <DropdownMenu
+                  items={[
+                    { label: 'Create Game', icon: '+', onClick: createModal.open },
+                    { label: 'Settings', icon: '⚙️', onClick: settingsModal.open },
+                  ]}
+                />
+              </div>
+              <Button className="hide-on-side-nav hide-on-mobile" onClick={createModal.open}>+ Create Game</Button>
+              <Button className="hide-on-side-nav hide-on-mobile" variant="secondary" onClick={settingsModal.open}>⚙ Settings</Button>
             </>
           }
         />
