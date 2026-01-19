@@ -42,10 +42,10 @@ export default function GameLayout() {
       }
     });
 
-    // Cleanup: unsubscribe and clear game context when leaving game pages
+    // Cleanup: only unsubscribe, don't clear game context
+    // (it will be replaced when navigating to another game)
     return () => {
       unsubscribe();
-      setCurrentGame(null);
     };
   }, [gameId, setCurrentGame, navigate]);
 
