@@ -156,8 +156,8 @@
   color: var(--text-primary);
 }
 
-/* Responsive */
-@media (max-width: 768px) {
+/* Responsive - MOBILE: < 650px */
+@media (max-width: 649px) {
   .stats-grid {
     grid-template-columns: 1fr;
   }
