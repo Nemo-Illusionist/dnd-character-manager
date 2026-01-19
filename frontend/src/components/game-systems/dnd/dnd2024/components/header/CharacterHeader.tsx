@@ -4,7 +4,7 @@ import { useModalState, useCharacterMutation } from '../../../../../../hooks';
 import { getAbilityModifier } from '../../../core';
 import { getProficiencyBonus } from '../../constants';
 import { HPBoxDesktop, HPBoxMobile, HPModal } from '../hp';
-import { SettingsModal, LevelXPModal, ConditionsModal } from '../modals';
+import { SettingsModal, LevelXPModal, ConditionsModal, CombatStatsModal } from '../modals';
 import type { Character } from 'shared';
 import './CharacterHeader.css';
 
@@ -21,12 +21,15 @@ export function CharacterHeader({ character, gameId, expanded, onToggleExpand }:
   const levelModal = useModalState();
   const hpModal = useModalState();
   const conditionsModal = useModalState();
+  const combatStatsModal = useModalState();
 
   // Character mutation hook
   const { update } = useCharacterMutation(gameId, character);
 
   const conditionsCount = character.conditions?.length || 0;
-  const initiativeModifier = getAbilityModifier(character.abilities.dex);
+  const dexModifier = getAbilityModifier(character.abilities.dex);
+  const totalAC = character.ac + (character.shield || 0);
+  const displayedInitiative = character.initiativeOverride ?? dexModifier;
 
   const handleInspirationToggle = async () => {
     await update({ inspiration: !character.inspiration });
@@ -57,11 +60,11 @@ export function CharacterHeader({ character, gameId, expanded, onToggleExpand }:
 
           <div className="cs-header-right">
             <div className="cs-combat-stats-desktop">
-              <div className="cs-stat-item">
-                <div className="cs-stat-value cs-bordered">{character.ac}</div>
+              <div className="cs-stat-item cs-clickable" onClick={combatStatsModal.open}>
+                <div className="cs-stat-value cs-bordered">{totalAC}</div>
                 <div className="cs-stat-label">Armor</div>
               </div>
-              <div className="cs-stat-item">
+              <div className="cs-stat-item cs-clickable" onClick={combatStatsModal.open}>
                 <div className="cs-stat-value">{character.speed}</div>
                 <div className="cs-stat-label">Speed</div>
               </div>
@@ -103,10 +106,10 @@ export function CharacterHeader({ character, gameId, expanded, onToggleExpand }:
                   <div className="cs-mini-label">Inspiration</div>
                   <div className="cs-mini-value">{character.inspiration ? '✓' : '—'}</div>
                 </div>
-                <div className="cs-mini-stat">
+                <div className="cs-mini-stat" style={{ cursor: 'pointer' }} onClick={combatStatsModal.open}>
                   <div className="cs-mini-label">Initiative</div>
                   <div className="cs-mini-value">
-                    {initiativeModifier >= 0 ? '+' : ''}{initiativeModifier}
+                    {displayedInitiative >= 0 ? '+' : ''}{displayedInitiative}
                   </div>
                 </div>
                 <div
@@ -136,11 +139,11 @@ export function CharacterHeader({ character, gameId, expanded, onToggleExpand }:
           {/* Always visible stats */}
           <div className="cs-quick-stats-mobile">
             <div className="cs-combat-stats-mobile">
-              <div className="cs-stat-item">
-                <div className="cs-stat-value cs-bordered">{character.ac}</div>
+              <div className="cs-stat-item cs-clickable" onClick={combatStatsModal.open}>
+                <div className="cs-stat-value cs-bordered">{totalAC}</div>
                 <div className="cs-stat-label">Armor</div>
               </div>
-              <div className="cs-stat-item">
+              <div className="cs-stat-item cs-clickable" onClick={combatStatsModal.open}>
                 <div className="cs-stat-value">{character.speed}</div>
                 <div className="cs-stat-label">Speed</div>
               </div>
@@ -186,6 +189,14 @@ export function CharacterHeader({ character, gameId, expanded, onToggleExpand }:
           character={character}
           gameId={gameId}
           onClose={conditionsModal.close}
+        />
+      )}
+
+      {combatStatsModal.isOpen && (
+        <CombatStatsModal
+          character={character}
+          gameId={gameId}
+          onClose={combatStatsModal.close}
         />
       )}
     </>

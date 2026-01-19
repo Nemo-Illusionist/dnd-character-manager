@@ -168,9 +168,11 @@ export interface Character {
     successes: number;          // 0-3 successful death saves
     failures: number;           // 0-3 failed death saves
   };
-  ac: number;
+  ac: number;                    // Base armor class (without shield)
+  shield?: number;               // Shield bonus to AC
   speed: number;
   initiative: number;
+  initiativeOverride?: number;   // Custom initiative (overrides dex modifier if set)
   proficiencyBonus: number;
   inspiration?: boolean;       // Inspiration status
   exhaustion?: number;          // Exhaustion level (0-6)

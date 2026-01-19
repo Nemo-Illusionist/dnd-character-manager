@@ -1,6 +1,5 @@
 // D&D 2024 - Settings Modal Component
 
-import { NumberInput } from '../../../../../shared';
 import { updateCharacter } from '../../../../../../services/characters.service';
 import type { Character } from 'shared';
 import './Modals.css';
@@ -72,29 +71,6 @@ export function SettingsModal({ character, gameId, onClose }: SettingsModalProps
               <span>Spellcasting Class</span>
             </label>
           </div>
-
-          <div className="cs-form-row">
-            <div className="cs-form-group">
-              <label>Armor Class</label>
-              <NumberInput
-                value={character.ac}
-                onChange={(value) => update({ ac: value })}
-                min={0}
-                defaultValue={10}
-              />
-            </div>
-
-            <div className="cs-form-group">
-              <label>Speed</label>
-              <NumberInput
-                value={character.speed}
-                onChange={(value) => update({ speed: value })}
-                min={0}
-                defaultValue={30}
-              />
-            </div>
-          </div>
-
         </div>
       </div>
     </div>

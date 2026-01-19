@@ -120,6 +120,15 @@
   min-width: 40px;
 }
 
+.cs-stat-item.cs-clickable {
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.cs-stat-item.cs-clickable:hover {
+  opacity: 0.8;
+}
+
 .cs-stat-value {
   font-size: 1.25rem;
   font-weight: 700;

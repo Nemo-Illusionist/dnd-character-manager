@@ -352,6 +352,69 @@ input[type="number"] {
   display: none;
 }
 
+/* Combat Stats Modal */
+.cs-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.cs-section-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.cs-section-total {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.cs-stats-row {
+  display: grid;
+  grid-template-columns: auto 1fr auto 1fr;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.cs-stats-row label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.cs-stats-row input {
+  padding: 0.75rem;
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text-primary);
+  font-size: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.cs-stats-row input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.cs-divider {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 1rem 0;
+}
+
+.cs-hint {
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+  margin: 0.5rem 0 0;
+}
+
 /* Mobile Responsive - Bottom Sheet */
 @media (max-width: 649px) {
   .cs-modal-overlay {

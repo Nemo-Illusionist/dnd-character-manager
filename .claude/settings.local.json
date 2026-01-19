@@ -3,7 +3,8 @@
     "allow": [
       "Bash(npm run lint)",
       "Bash(npm run build:*)",
-      "mcp__jetbrains-web-storm__list_directory_tree"
+      "mcp__jetbrains-web-storm__list_directory_tree",
+      "Bash(npx tsc:*)"
     ]
   }
 }
