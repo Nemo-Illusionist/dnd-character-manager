@@ -15,7 +15,7 @@ import {
   Unsubscribe,
 } from 'firebase/firestore';
 import { db } from './firebase';
-import type { Game } from 'shared';
+import type { Game, GameSystem } from 'shared';
 
 /**
  * Create a new game
@@ -23,13 +23,15 @@ import type { Game } from 'shared';
 export async function createGame(
   name: string,
   description: string | undefined,
-  gmId: string
+  gmId: string,
+  system: GameSystem = 'dnd'
 ): Promise<string> {
   const gameData = {
     name,
     description: description || '',
     gmId,
     playerIds: [gmId], // GM is automatically a player
+    system,
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp(),
   };

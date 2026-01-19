@@ -27,6 +27,12 @@
   white-space: nowrap;
 }
 
+.game-card-badges {
+  display: flex;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
 .game-badge {
   padding: 0.25rem 0.75rem;
   border-radius: 12px;
@@ -34,6 +40,11 @@
   font-weight: 600;
   text-transform: uppercase;
   white-space: nowrap;
+}
+
+.game-badge.system {
+  background: rgba(22, 163, 74, 0.15);
+  color: var(--success);
 }
 
 .game-badge.gm {

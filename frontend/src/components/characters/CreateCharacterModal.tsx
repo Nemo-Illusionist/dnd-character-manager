@@ -2,6 +2,7 @@
 import { FormEvent, useState } from 'react';
 import { Modal, Input, Button } from '../shared';
 import { createCharacter } from '../../services/characters.service';
+import { SHEET_TYPE_NAMES, SYSTEM_SHEET_TYPES, type SheetType, type GameSystem } from 'shared';
 import './CreateCharacterModal.css';
 
 interface CreateCharacterModalProps {
@@ -10,6 +11,7 @@ interface CreateCharacterModalProps {
   onSuccess: (characterId: string) => void;
   gameId: string;
   userId: string;
+  gameSystem?: GameSystem;
 }
 
 export function CreateCharacterModal({
@@ -18,10 +20,15 @@ export function CreateCharacterModal({
   onSuccess,
   gameId,
   userId,
+  gameSystem = 'dnd',
 }: CreateCharacterModalProps) {
   const [name, setName] = useState('');
+  const [sheetType, setSheetType] = useState<SheetType>('character-2024');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+
+  // Get available sheet types for this game system
+  const availableSheetTypes = SYSTEM_SHEET_TYPES[gameSystem] || SYSTEM_SHEET_TYPES.dnd;
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -35,10 +42,11 @@ export function CreateCharacterModal({
     setError('');
 
     try {
-      const characterId = await createCharacter(gameId, userId, name.trim());
+      const characterId = await createCharacter(gameId, userId, name.trim(), sheetType);
 
       // Reset form
       setName('');
+      setSheetType('character-2024');
 
       onSuccess(characterId);
       onClose();
@@ -52,6 +60,7 @@ export function CreateCharacterModal({
   const handleClose = () => {
     if (!loading) {
       setName('');
+      setSheetType('character-2024');
       setError('');
       onClose();
     }
@@ -71,6 +80,21 @@ export function CreateCharacterModal({
           required
           autoFocus
         />
+
+        <div className="input-wrapper">
+          <label className="input-label">Sheet Type</label>
+          <select
+            className="sheet-type-select"
+            value={sheetType}
+            onChange={(e) => setSheetType(e.target.value as SheetType)}
+          >
+            {availableSheetTypes.map((type) => (
+              <option key={type} value={type}>
+                {SHEET_TYPE_NAMES[type]}
+              </option>
+            ))}
+          </select>
+        </div>
 
         <p className="create-character-hint">
           You can customize race, class, abilities, and other details after creating the character.

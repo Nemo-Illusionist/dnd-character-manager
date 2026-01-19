@@ -1,6 +1,6 @@
 // Character Card Component
 import { Card } from '../shared';
-import type { Character } from 'shared';
+import { SHEET_TYPE_NAMES, DEFAULT_SHEET_TYPE, type Character } from 'shared';
 import './CharacterCard.css';
 
 interface CharacterCardProps {
@@ -9,6 +9,8 @@ interface CharacterCardProps {
 }
 
 export function CharacterCard({ character, onClick }: CharacterCardProps) {
+  const sheetTypeName = SHEET_TYPE_NAMES[character.sheetType || DEFAULT_SHEET_TYPE];
+
   return (
     <Card onClick={onClick} className="character-card">
       <div className="character-card-header">
@@ -18,9 +20,9 @@ export function CharacterCard({ character, onClick }: CharacterCardProps) {
             Level {character.level} {character.race} {character.class}
           </p>
         </div>
-        {character.type === 'Minion' && (
-          <span className="character-badge">Minion</span>
-        )}
+        <div className="character-card-badges">
+          <span className="character-badge sheet-type">{sheetTypeName}</span>
+        </div>
       </div>
 
       <div className="character-stats">

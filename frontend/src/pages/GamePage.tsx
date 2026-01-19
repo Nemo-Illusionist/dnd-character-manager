@@ -1,6 +1,7 @@
 // Characters Page - List all characters in a game (Refactored)
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth, useCharacters, useModalState } from '../hooks';
+import { useGame } from '../context/GameContext';
 import { CharacterCard } from '../components/characters/CharacterCard';
 import { CreateCharacterModal } from '../components/characters/CreateCharacterModal';
 import {
@@ -17,6 +18,7 @@ export default function GamePage() {
   const navigate = useNavigate();
   const { gameId } = useParams<{ gameId: string }>();
   const { firebaseUser } = useAuth();
+  const { currentGame } = useGame();
   const { characters, loading: charactersLoading } = useCharacters();
   const createModal = useModalState();
 
@@ -109,6 +111,7 @@ export default function GamePage() {
           onSuccess={handleCharacterCreated}
           gameId={gameId}
           userId={firebaseUser.uid}
+          gameSystem={currentGame?.system}
         />
       )}
     </PageLayout>

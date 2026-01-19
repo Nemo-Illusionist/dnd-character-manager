@@ -1,7 +1,8 @@
 {
   "name": "shared",
   "version": "1.0.0",
-  "description": "Shared types for Mobile Sheet",
+  "description": "Shared types for OmnisGM",
+  "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {

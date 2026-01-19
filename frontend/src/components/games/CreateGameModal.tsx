@@ -3,6 +3,7 @@ import { FormEvent, useState } from 'react';
 import { Modal, Input, Button } from '../shared';
 import { createGame } from '../../services/games.service';
 import { useAuth } from '../../hooks';
+import { GAME_SYSTEM_NAMES, type GameSystem } from 'shared';
 import './CreateGameModal.css';
 
 interface CreateGameModalProps {
@@ -11,10 +12,14 @@ interface CreateGameModalProps {
   onSuccess: (gameId: string) => void;
 }
 
+// Available game systems
+const AVAILABLE_SYSTEMS: GameSystem[] = ['dnd'];
+
 export function CreateGameModal({ isOpen, onClose, onSuccess }: CreateGameModalProps) {
   const { firebaseUser } = useAuth();
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
+  const [system, setSystem] = useState<GameSystem>('dnd');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -35,11 +40,12 @@ export function CreateGameModal({ isOpen, onClose, onSuccess }: CreateGameModalP
     setError('');
 
     try {
-      const gameId = await createGame(name.trim(), description.trim() || undefined, firebaseUser.uid);
+      const gameId = await createGame(name.trim(), description.trim() || undefined, firebaseUser.uid, system);
 
       // Reset form
       setName('');
       setDescription('');
+      setSystem('dnd');
 
       onSuccess(gameId);
       onClose();
@@ -54,6 +60,7 @@ export function CreateGameModal({ isOpen, onClose, onSuccess }: CreateGameModalP
     if (!loading) {
       setName('');
       setDescription('');
+      setSystem('dnd');
       setError('');
       onClose();
     }
@@ -83,6 +90,21 @@ export function CreateGameModal({ isOpen, onClose, onSuccess }: CreateGameModalP
             placeholder="Describe your game..."
             rows={4}
           />
+        </div>
+
+        <div className="input-wrapper">
+          <label className="input-label">Game System</label>
+          <select
+            className="game-system-select"
+            value={system}
+            onChange={(e) => setSystem(e.target.value as GameSystem)}
+          >
+            {AVAILABLE_SYSTEMS.map((s) => (
+              <option key={s} value={s}>
+                {GAME_SYSTEM_NAMES[s]}
+              </option>
+            ))}
+          </select>
         </div>
 
         <div className="modal-actions">

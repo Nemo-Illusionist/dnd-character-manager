@@ -1,5 +1,5 @@
-// D&D 2024 Character Management - Firebase Types
-// Based on D&D 2024 SRD v5.2.1 (System Reference Document)
+// OmnisGM - Universal Game Master Tool
+// Supporting multiple game systems
 // Created from scratch for standalone app
 
 // Timestamp type (compatible with Firebase Timestamp)
@@ -9,6 +9,43 @@ export interface Timestamp {
   toDate(): Date;
   toMillis(): number;
 }
+
+// ==================== GAME SYSTEMS ====================
+
+// Supported game systems (extensible)
+export type GameSystem = 'dnd';
+
+// Game system display names
+export const GAME_SYSTEM_NAMES: Record<GameSystem, string> = {
+  dnd: 'D&D',
+};
+
+// Default game system for backwards compatibility
+export const DEFAULT_GAME_SYSTEM: GameSystem = 'dnd';
+
+// ==================== SHEET TYPES ====================
+
+// D&D specific sheet types
+export type DnDSheetType = 'character-2024' | 'character-2014' | 'mob-2024' | 'mob-2014';
+
+// All sheet types (union of all system-specific types)
+export type SheetType = DnDSheetType;
+
+// Sheet type display names
+export const SHEET_TYPE_NAMES: Record<SheetType, string> = {
+  'character-2024': 'Character 2024',
+  'character-2014': 'Character 2014',
+  'mob-2024': 'Mob 2024',
+  'mob-2014': 'Mob 2014',
+};
+
+// Sheet types available for each game system
+export const SYSTEM_SHEET_TYPES: Record<GameSystem, SheetType[]> = {
+  dnd: ['character-2024', 'character-2014', 'mob-2024', 'mob-2014'],
+};
+
+// Default sheet type for backwards compatibility
+export const DEFAULT_SHEET_TYPE: SheetType = 'character-2024';
 
 // ==================== ENUMS & CONSTANTS ====================
 
@@ -72,6 +109,7 @@ export interface Game {
   description?: string;
   gmId: string;                 // Owner/Game Master UID
   playerIds: string[];          // Список UIDs игроков
+  system?: GameSystem;          // Game system (default: 'dnd' for backwards compatibility)
   createdAt: Timestamp;
   updatedAt: Timestamp;
 }
@@ -97,6 +135,7 @@ export interface Character {
   name: string;
   avatar?: string;              // URL аватара
   type: CharacterType;          // Персонаж или миньон
+  sheetType?: SheetType;        // Sheet type (default: 'character-2024' for backwards compatibility)
 
   // D&D 5e core stats
   level: number;

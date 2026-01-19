@@ -9,9 +9,9 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
       manifest: {
-        name: 'Mobile Sheet',
-        short_name: 'D&D Sheet',
-        description: 'Mobile character sheet',
+        name: 'OmnisGM - All-Seeing Game Master',
+        short_name: 'OmnisGM',
+        description: 'Universal Game Master tool for tabletop RPGs',
         theme_color: '#1a1a1a',
         background_color: '#1a1a1a',
         display: 'standalone',

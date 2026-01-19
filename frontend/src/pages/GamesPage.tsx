@@ -1,4 +1,4 @@
-// Games Page - List all user's games (Refactored)
+// Games Page - List all user's games
 import { useNavigate } from 'react-router-dom';
 import { useAuth, useGames, useModalState } from '../hooks';
 import { isGameMaster } from '../services/games.service';
@@ -66,7 +66,7 @@ export default function GamesPage() {
         <PageEmpty
           icon="🎲"
           title="No Games Yet"
-          description="Create your first game to start your D&D adventure!"
+          description="Create your first game to start your TTRPG adventure!"
           action={{
             label: '+ Create Your First Game',
             onClick: createModal.open,

@@ -13,7 +13,7 @@ import {
   writeBatch,
 } from 'firebase/firestore';
 import { db } from './firebase';
-import type { Character, AbilityName, SkillName, PublicCharacter } from 'shared';
+import type { Character, AbilityName, SkillName, PublicCharacter, SheetType } from 'shared';
 
 /**
  * Skill ability mapping (D&D 2024 SRD 5.2)
@@ -45,7 +45,8 @@ const SKILL_ABILITIES: Record<SkillName, AbilityName> = {
 function createDefaultCharacter(
   gameId: string,
   ownerId: string,
-  name: string
+  name: string,
+  sheetType: SheetType = 'character-2024'
 ): Omit<Character, 'id' | 'createdAt' | 'updatedAt'> {
   const defaultAbilities = {
     str: 10,
@@ -94,11 +95,16 @@ function createDefaultCharacter(
     pp: 0,
   };
 
+  // Determine character type based on sheet type
+  const isMob = sheetType.startsWith('mob-');
+  const characterType = isMob ? 'Minion' : 'Player Character';
+
   return {
     gameId,
     ownerId,
     name,
-    type: 'Player Character',
+    type: characterType,
+    sheetType,
     level: 1,
     race: '',
     class: '',
@@ -135,9 +141,10 @@ function createDefaultCharacter(
 export async function createCharacter(
   gameId: string,
   ownerId: string,
-  name: string
+  name: string,
+  sheetType: SheetType = 'character-2024'
 ): Promise<string> {
-  const characterData = createDefaultCharacter(gameId, ownerId, name);
+  const characterData = createDefaultCharacter(gameId, ownerId, name, sheetType);
 
   // Generate a new document reference to get a unique ID
   const characterRef = doc(collection(db, 'games', gameId, 'characters'));

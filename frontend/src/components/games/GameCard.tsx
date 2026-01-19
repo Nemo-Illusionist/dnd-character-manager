@@ -1,6 +1,6 @@
 // Game Card Component
 import { Card } from '../shared';
-import type { Game } from 'shared';
+import { GAME_SYSTEM_NAMES, DEFAULT_GAME_SYSTEM, type Game } from 'shared';
 import './GameCard.css';
 
 interface GameCardProps {
@@ -10,11 +10,16 @@ interface GameCardProps {
 }
 
 export function GameCard({ game, isGM, onClick }: GameCardProps) {
+  const systemName = GAME_SYSTEM_NAMES[game.system || DEFAULT_GAME_SYSTEM];
+
   return (
     <Card onClick={onClick} className="game-card">
       <div className="game-card-header">
         <h3 className="game-card-title">{game.name}</h3>
-        {isGM && <span className="game-badge gm">GM</span>}
+        <div className="game-card-badges">
+          <span className="game-badge system">{systemName}</span>
+          {isGM && <span className="game-badge gm">GM</span>}
+        </div>
       </div>
 
       {game.description && (

@@ -37,15 +37,31 @@
   margin: 0;
 }
 
+.character-card-badges {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  align-items: flex-end;
+  flex-shrink: 0;
+}
+
 .character-badge {
   padding: 0.25rem 0.75rem;
   border-radius: 12px;
   font-size: 0.75rem;
   font-weight: 600;
   text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.character-badge.sheet-type {
+  background: rgba(22, 163, 74, 0.15);
+  color: var(--success);
+}
+
+.character-badge.minion {
   background: rgba(251, 191, 36, 0.15);
   color: var(--warning);
-  white-space: nowrap;
 }
 
 .character-stats {
