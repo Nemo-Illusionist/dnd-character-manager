@@ -23,9 +23,9 @@ export function CombatStatsModal({ character, gameId, onClose }: CombatStatsModa
 
   return (
     <div className="cs-modal-overlay" onClick={onClose}>
-      <div className="cs-modal-content" onClick={(e) => e.stopPropagation()}>
+      <div className="cs-modal-content cs-combat-modal" onClick={(e) => e.stopPropagation()}>
         <div className="cs-modal-drag-handle" />
-        <div className="cs-modal-header">
+        <div className="cs-modal-header cs-no-border">
           <h2>Combat Stats</h2>
           <button className="cs-modal-close" onClick={onClose}>×</button>
         </div>

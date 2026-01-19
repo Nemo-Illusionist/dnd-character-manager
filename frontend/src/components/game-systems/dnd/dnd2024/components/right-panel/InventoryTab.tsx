@@ -78,8 +78,56 @@ export function InventoryTab({ character, gameId }: InventoryTabProps) {
     return sum + (item.weight || 0) * item.quantity;
   }, 0);
 
+  const updateCurrency = async (coin: keyof typeof character.currency, value: number) => {
+    await updateCharacter(gameId, character.id, {
+      currency: { ...character.currency, [coin]: value },
+    });
+  };
+
   return (
     <div className="cs-inventory-tab">
+      {/* Coins section */}
+      <div className="cs-coins-section">
+        <div className="cs-coins-title">Coins</div>
+        <div className="cs-coins-grid">
+          <label>CP</label>
+          <label>SP</label>
+          <label>EP</label>
+          <label>GP</label>
+          <label>PP</label>
+          <input
+            type="number"
+            value={character.currency.cp}
+            onChange={(e) => updateCurrency('cp', Number(e.target.value) || 0)}
+            min={0}
+          />
+          <input
+            type="number"
+            value={character.currency.sp}
+            onChange={(e) => updateCurrency('sp', Number(e.target.value) || 0)}
+            min={0}
+          />
+          <input
+            type="number"
+            value={character.currency.ep}
+            onChange={(e) => updateCurrency('ep', Number(e.target.value) || 0)}
+            min={0}
+          />
+          <input
+            type="number"
+            value={character.currency.gp}
+            onChange={(e) => updateCurrency('gp', Number(e.target.value) || 0)}
+            min={0}
+          />
+          <input
+            type="number"
+            value={character.currency.pp}
+            onChange={(e) => updateCurrency('pp', Number(e.target.value) || 0)}
+            min={0}
+          />
+        </div>
+      </div>
+
       {/* Filter tabs */}
       <div className="cs-inventory-filters">
         {ITEM_TYPES.map((type) => (

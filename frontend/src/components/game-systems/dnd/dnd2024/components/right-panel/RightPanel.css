@@ -246,6 +246,63 @@
   height: 100%;
 }
 
+/* Coins section */
+.cs-coins-section {
+  padding: 0.75rem;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 8px;
+}
+
+.cs-coins-title {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.5rem;
+}
+
+.cs-coins-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.25rem 0.5rem;
+}
+
+.cs-coins-grid label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+.cs-coins-grid input {
+  padding: 0.5rem;
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text-primary);
+  font-size: 0.875rem;
+  text-align: center;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.cs-coins-grid input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+/* Hide number input spinners */
+.cs-coins-grid input::-webkit-inner-spin-button,
+.cs-coins-grid input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.cs-coins-grid input {
+  -moz-appearance: textfield;
+}
+
 /* Filter tabs */
 .cs-inventory-filters {
   display: flex;
