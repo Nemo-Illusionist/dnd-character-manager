@@ -10,7 +10,7 @@ export default defineConfig({
       includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
       manifest: {
         name: 'Mobile Sheet',
-        short_name: 'FVTT Sheet',
+        short_name: 'D&D Sheet',
         description: 'Mobile character sheet',
         theme_color: '#1a1a1a',
         background_color: '#1a1a1a',
