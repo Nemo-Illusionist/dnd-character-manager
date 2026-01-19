@@ -1,13 +1,21 @@
 // Game Items Page - Shared game items (maps, notes, images)
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useAuth, useGameById, useGameItems } from '../hooks';
+import { useAuth, useGameById, useGameItems, useModalState } from '../hooks';
 import { isGameMaster } from '../services/games.service';
 import { filterGameItemsByVisibility, deleteGameItem } from '../services/gameItems.service';
 import { GameItemCard } from '../components/gameItems/GameItemCard';
+import { GameItemDetailModal } from '../components/gameItems/GameItemDetailModal';
 import { CreateGameItemModal } from '../components/gameItems/CreateGameItemModal';
-import { Button, LoadingSpinner } from '../components/shared';
-import './GameItemsPage.css';
+import {
+  Button,
+  PageLayout,
+  PageHeader,
+  PageLoading,
+  PageEmpty,
+  PageGrid,
+} from '../components/shared';
+import type { GameItem } from 'shared';
 
 export default function GameItemsPage() {
   const navigate = useNavigate();
@@ -15,160 +23,105 @@ export default function GameItemsPage() {
   const { firebaseUser } = useAuth();
   const { game, loading: gameLoading } = useGameById(gameId || null);
   const { items, loading: itemsLoading } = useGameItems(gameId || null);
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
-
-  const handleBackToCharacters = () => {
-    navigate(`/games/${gameId}`);
-  };
-
-  const handleItemClick = (itemId: string) => {
-    setSelectedItemId(itemId);
-  };
-
-  const handleItemCreated = () => {
-    console.log('Item created successfully');
-  };
-
-  const handleDeleteItem = async (itemId: string) => {
-    if (!gameId || !confirm('Are you sure you want to delete this item?')) {
-      return;
-    }
-
-    try {
-      await deleteGameItem(gameId, itemId);
-      if (selectedItemId === itemId) {
-        setSelectedItemId(null);
-      }
-    } catch (err) {
-      console.error('Failed to delete item:', err);
-      alert('Failed to delete item');
-    }
-  };
+  const createModal = useModalState();
+  const [selectedItem, setSelectedItem] = useState<GameItem | null>(null);
 
   if (gameLoading || itemsLoading || !firebaseUser) {
     return (
-      <div className="game-items-page">
-        <div className="game-items-loading">
-          <LoadingSpinner size="large" />
-          <p>Loading items...</p>
-        </div>
-      </div>
+      <PageLayout>
+        <PageLoading message="Loading items..." />
+      </PageLayout>
     );
   }
 
   if (!game) {
     return (
-      <div className="game-items-page">
-        <div className="game-items-error">
-          <h2>Game Not Found</h2>
-          <Button onClick={() => navigate('/games')}>Back to Games</Button>
-        </div>
-      </div>
+      <PageLayout>
+        <PageEmpty
+          icon="❌"
+          title="Game Not Found"
+          action={{
+            label: 'Back to Games',
+            onClick: () => navigate('/games'),
+          }}
+        />
+      </PageLayout>
     );
   }
 
   const isGM = isGameMaster(game, firebaseUser.uid);
   const visibleItems = filterGameItemsByVisibility(items, isGM);
-  const selectedItem = visibleItems.find((item) => item.id === selectedItemId);
+
+  const handleDeleteItem = async (itemId: string) => {
+    if (!gameId) return;
+    await deleteGameItem(gameId, itemId);
+  };
 
   return (
-    <div className="game-items-page">
-      <div className="game-items-container">
-        <div className="game-items-header">
-          <div className="game-items-header-content">
-            <Button variant="secondary" onClick={handleBackToCharacters}>
-              ← Back to Characters
-            </Button>
-            <h1 className="game-items-title">Game Items</h1>
-            <p className="game-items-subtitle">{game.name}</p>
-          </div>
-          {isGM && (
-            <div className="game-items-actions">
-              <Button onClick={() => setIsCreateModalOpen(true)}>
-                + Add Item
-              </Button>
-            </div>
-          )}
-        </div>
+    <PageLayout>
+      <PageHeader
+        title="Game Items"
+        subtitle={<p>{game.name}</p>}
+        backButton={{
+          label: 'Back to Characters',
+          onClick: () => navigate(`/games/${gameId}`),
+        }}
+        actions={
+          isGM ? (
+            <Button onClick={createModal.open}>+ Add Item</Button>
+          ) : undefined
+        }
+      />
 
-        <div className="game-items-content">
-          {visibleItems.length === 0 ? (
-            <div className="game-items-empty">
-              <div className="empty-icon">📦</div>
-              <h2>No Items Yet</h2>
-              <p>
-                {isGM
-                  ? 'Add maps, notes, and images to share with your players!'
-                  : 'Your GM hasn\'t added any items yet.'}
-              </p>
-              {isGM && (
-                <Button onClick={() => setIsCreateModalOpen(true)}>
-                  + Add Your First Item
-                </Button>
-              )}
-            </div>
-          ) : (
-            <div className="game-items-grid">
-              {visibleItems.map((item) => (
-                <div key={item.id} className="game-item-wrapper">
-                  <GameItemCard
-                    item={item}
-                    onClick={() => handleItemClick(item.id)}
-                    isGM={isGM}
-                  />
-                  {isGM && (
-                    <div className="item-actions">
-                      <Button
-                        variant="danger"
-                        onClick={() => handleDeleteItem(item.id)}
-                      >
-                        Delete
-                      </Button>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
+      {visibleItems.length === 0 ? (
+        <PageEmpty
+          icon="📦"
+          title="No Items Yet"
+          description={
+            isGM
+              ? 'Add maps, notes, and images to share with your players!'
+              : "Your GM hasn't added any items yet."
+          }
+          action={
+            isGM
+              ? {
+                  label: '+ Add Your First Item',
+                  onClick: createModal.open,
+                }
+              : undefined
+          }
+        />
+      ) : (
+        <PageGrid minWidth="280px">
+          {visibleItems.map((item) => (
+            <GameItemCard
+              key={item.id}
+              item={item}
+              onClick={() => setSelectedItem(item)}
+              isGM={isGM}
+            />
+          ))}
+        </PageGrid>
+      )}
 
-        {selectedItem && (
-          <div className="item-detail-overlay" onClick={() => setSelectedItemId(null)}>
-            <div className="item-detail-content" onClick={(e) => e.stopPropagation()}>
-              <div className="item-detail-header">
-                <h2>{selectedItem.name}</h2>
-                <button
-                  className="close-button"
-                  onClick={() => setSelectedItemId(null)}
-                >
-                  ✕
-                </button>
-              </div>
-              <p className="item-detail-type">{selectedItem.type}</p>
-              {selectedItem.description && (
-                <p className="item-detail-description">{selectedItem.description}</p>
-              )}
-              {selectedItem.imageUrl && (
-                <div className="item-detail-image">
-                  <img src={selectedItem.imageUrl} alt={selectedItem.name} />
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-      </div>
+      <GameItemDetailModal
+        item={selectedItem}
+        isOpen={!!selectedItem}
+        onClose={() => setSelectedItem(null)}
+        onDelete={handleDeleteItem}
+        isGM={isGM}
+      />
 
-      {firebaseUser && gameId && (
+      {gameId && (
         <CreateGameItemModal
-          isOpen={isCreateModalOpen}
-          onClose={() => setIsCreateModalOpen(false)}
-          onSuccess={handleItemCreated}
+          isOpen={createModal.isOpen}
+          onClose={createModal.close}
+          onSuccess={() => console.log('Item created successfully')}
           gameId={gameId}
           userId={firebaseUser.uid}
           isGM={isGM}
         />
       )}
-    </div>
+    </PageLayout>
   );
 }

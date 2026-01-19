@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { getUsers } from '../../services/users.service';
 import { removePlayerFromGame } from '../../services/games.service';
-import { Button } from '../shared';
+import { Button, ConfirmDialog, AlertDialog } from '../shared';
 import type { User } from 'shared';
 import './PlayersList.css';
 
@@ -18,6 +18,9 @@ interface PlayersListProps {
 export function PlayersList({ playerIds, gmId, gameId, currentUserId, isGM, onInviteClick }: PlayersListProps) {
   const [players, setPlayers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
+  const [playerToRemove, setPlayerToRemove] = useState<User | null>(null);
+  const [isRemoving, setIsRemoving] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
     loadPlayers();
@@ -30,13 +33,18 @@ export function PlayersList({ playerIds, gmId, gameId, currentUserId, isGM, onIn
     setLoading(false);
   };
 
-  const handleRemovePlayer = async (playerId: string) => {
-    if (!confirm('Remove this player from the game?')) return;
+  const handleRemovePlayer = async () => {
+    if (!playerToRemove) return;
 
+    setIsRemoving(true);
     try {
-      await removePlayerFromGame(gameId, playerId);
+      await removePlayerFromGame(gameId, playerToRemove.uid);
+      setPlayerToRemove(null);
     } catch (error) {
-      alert('Failed to remove player: ' + (error as Error).message);
+      setErrorMessage('Failed to remove player: ' + (error as Error).message);
+      setPlayerToRemove(null);
+    } finally {
+      setIsRemoving(false);
     }
   };
 
@@ -74,7 +82,7 @@ export function PlayersList({ playerIds, gmId, gameId, currentUserId, isGM, onIn
             {isGM && player.uid !== gmId && player.uid !== currentUserId && (
               <button
                 className="player-remove"
-                onClick={() => handleRemovePlayer(player.uid)}
+                onClick={() => setPlayerToRemove(player)}
                 title="Remove player"
               >
                 ✕
@@ -83,6 +91,25 @@ export function PlayersList({ playerIds, gmId, gameId, currentUserId, isGM, onIn
           </div>
         ))}
       </div>
+
+      <ConfirmDialog
+        isOpen={!!playerToRemove}
+        onClose={() => setPlayerToRemove(null)}
+        onConfirm={handleRemovePlayer}
+        title="Remove Player"
+        message={`Are you sure you want to remove ${playerToRemove?.displayName} from the game?`}
+        confirmLabel="Remove"
+        cancelLabel="Cancel"
+        variant="danger"
+        isLoading={isRemoving}
+      />
+
+      <AlertDialog
+        isOpen={!!errorMessage}
+        onClose={() => setErrorMessage(null)}
+        title="Error"
+        message={errorMessage || ''}
+      />
     </div>
   );
 }

@@ -1,81 +1,52 @@
-.game-manage-page {
-  min-height: 100vh;
-  padding: 2rem 1rem;
-  background: var(--bg-primary);
-}
+/* Game Management Page - Custom Styles */
 
-.game-manage-container {
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-/* Header */
-.game-manage-header {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  margin-bottom: 2rem;
-}
-
-.game-title-section {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.game-manage-title {
-  font-size: 2.5rem;
-  font-weight: 900;
-  color: var(--text-primary);
-  margin: 0;
-}
-
-.game-manage-subtitle {
-  font-size: 1.25rem;
-  color: var(--text-secondary);
-  margin: 0;
-}
-
-/* Content */
-.game-manage-content {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-}
-
-/* Loading & Error States */
-.game-manage-loading,
-.game-manage-error {
+/* Personal game info message */
+.personal-game-info {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  min-height: 60vh;
-  gap: 1rem;
   text-align: center;
+  padding: 3rem 1.5rem;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+  border: 1px solid var(--border);
 }
 
-.game-manage-loading p {
-  color: var(--text-secondary);
-  font-size: 1.125rem;
-}
-
-.game-manage-error h2 {
-  color: var(--text-primary);
+.personal-game-info .info-icon {
+  font-size: 3rem;
   margin-bottom: 1rem;
+  opacity: 0.6;
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-  .game-manage-page {
-    padding: 1.5rem 1rem;
-  }
+.personal-game-info h2 {
+  font-size: 1.5rem;
+  color: var(--text-primary);
+  margin: 0 0 1rem 0;
+}
 
-  .game-manage-title {
-    font-size: 2rem;
-  }
+.personal-game-info p {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  margin: 0 0 0.5rem 0;
+  max-width: 400px;
+  line-height: 1.5;
+}
 
-  .game-manage-subtitle {
-    font-size: 1rem;
-  }
+.personal-game-info p:last-child {
+  margin-bottom: 0;
+}
+
+/* Game badge */
+.game-badge {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-left: 0.5rem;
+}
+
+.game-badge.personal {
+  background: rgba(124, 58, 237, 0.2);
+  color: var(--accent);
 }
