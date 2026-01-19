@@ -62,6 +62,17 @@ export function SettingsModal({ character, gameId, onClose }: SettingsModalProps
             />
           </div>
 
+          <div className="cs-form-group cs-checkbox-group">
+            <label className="cs-checkbox-label">
+              <input
+                type="checkbox"
+                checked={!character.hideSpellsTab}
+                onChange={(e) => update({ hideSpellsTab: !e.target.checked })}
+              />
+              <span>Spellcasting Class</span>
+            </label>
+          </div>
+
           <div className="cs-form-row">
             <div className="cs-form-group">
               <label>Armor Class</label>
@@ -84,16 +95,6 @@ export function SettingsModal({ character, gameId, onClose }: SettingsModalProps
             </div>
           </div>
 
-          <div className="cs-form-group cs-checkbox-group">
-            <label className="cs-checkbox-label">
-              <input
-                type="checkbox"
-                checked={character.hideSpellsTab || false}
-                onChange={(e) => update({ hideSpellsTab: e.target.checked })}
-              />
-              <span>Hide Spells Tab</span>
-            </label>
-          </div>
         </div>
       </div>
     </div>
