@@ -36,7 +36,7 @@
   margin-top: 0.5rem;
   min-width: 180px;
   background: var(--bg-secondary);
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--border);
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   z-index: 1000;
@@ -63,7 +63,7 @@
 }
 
 .dropdown-item:not(:last-child) {
-  border-bottom: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border);
 }
 
 .dropdown-item-icon {

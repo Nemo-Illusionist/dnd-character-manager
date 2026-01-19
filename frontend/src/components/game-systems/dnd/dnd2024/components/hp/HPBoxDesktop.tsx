@@ -19,9 +19,8 @@ export function HPBoxDesktop({ character, gameId, onOpenModal }: HPBoxDesktopPro
 
   const handleDamage = async () => {
     if (healAmount <= 0) return;
-    const amount = healAmount;
 
-    let remaining = amount;
+    let remaining = healAmount;
     let newTemp = character.hp.temp;
     let newCurrent = character.hp.current;
 

@@ -1,7 +1,6 @@
 // AuthenticatedLayout - Wrapper for authenticated pages with side navigation
 import { ReactNode } from 'react';
-import { SideNav } from '../components/shared/SideNav';
-import { MobileTabBar } from '../components/shared/MobileTabBar';
+import { SideNav, MobileTabBar } from '../components/shared';
 import './AuthenticatedLayout.css';
 
 interface AuthenticatedLayoutProps {

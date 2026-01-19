@@ -74,23 +74,16 @@ export async function register(email: string, password: string, displayName: str
             photoURLValue: userData.photoURL
         });
 
-        try {
-            await setDoc(doc(db, 'users', firebaseUser.uid), userData);
-            console.log('✅ User document created in Firestore');
+        await setDoc(doc(db, 'users', firebaseUser.uid), userData);
+        console.log('✅ User document created in Firestore');
 
-            // Verify it was written
-            const userDocRef = doc(db, 'users', firebaseUser.uid);
-            const userDocSnap = await getDoc(userDocRef);
-            if (userDocSnap.exists()) {
-                console.log('✅ User document verified:', userDocSnap.data());
-            } else {
-                console.warn('⚠️  User document NOT found after write!');
-            }
-        } catch (userError) {
-            console.error('❌ Failed to create user document:', userError);
-            console.error('Error code:', (userError as any).code);
-            console.error('Error message:', (userError as any).message);
-            throw userError;
+        // Verify it was written
+        const userDocRef = doc(db, 'users', firebaseUser.uid);
+        const userDocSnap = await getDoc(userDocRef);
+        if (userDocSnap.exists()) {
+            console.log('✅ User document verified:', userDocSnap.data());
+        } else {
+            console.warn('⚠️  User document NOT found after write!');
         }
 
         console.log('🎉 Registration completed successfully!');

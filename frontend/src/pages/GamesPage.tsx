@@ -44,18 +44,13 @@ export default function GamesPage() {
   const filteredGames = useMemo(() => {
     return games.filter((game) => {
       // Search by name
-      if (searchQuery && !game.name.toLowerCase().includes(searchQuery.toLowerCase())) {
-        return false;
-      }
+      const matchesSearch = !searchQuery || game.name.toLowerCase().includes(searchQuery.toLowerCase());
       // Filter by system (treat undefined as default system)
-      if (systemFilter && (game.system || DEFAULT_GAME_SYSTEM) !== systemFilter) {
-        return false;
-      }
+      const matchesSystem = !systemFilter || (game.system || DEFAULT_GAME_SYSTEM) === systemFilter;
       // Filter by GM status
-      if (gmOnlyFilter && firebaseUser && !isGameMaster(game, firebaseUser.uid)) {
-        return false;
-      }
-      return true;
+      const matchesGM = !gmOnlyFilter || !firebaseUser || isGameMaster(game, firebaseUser.uid);
+
+      return matchesSearch && matchesSystem && matchesGM;
     });
   }, [games, searchQuery, systemFilter, gmOnlyFilter, firebaseUser]);
 
