@@ -5,7 +5,7 @@ import { ABILITY_ORDER } from '../../../core';
 import { AbilityBlock } from './AbilityBlock';
 import { CompactAbilityBlock } from './CompactAbilityBlock';
 import { PassiveSenses } from './PassiveSenses';
-import { EquipmentProficiencies } from '../proficiencies/EquipmentProficiencies';
+import { EquipmentProficiencies } from '../proficiencies';
 import type { Character, AbilityName, SkillName } from 'shared';
 import './Abilities.scss';
 

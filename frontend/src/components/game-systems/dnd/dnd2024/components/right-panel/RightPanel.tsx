@@ -33,10 +33,9 @@ export function RightPanel({ character, gameId }: RightPanelProps) {
   ];
 
   // Filter tabs based on settings
-  const tabs = allTabs.filter((tab) => {
-    if (tab.id === 'spells' && character.hideSpellsTab) return false;
-    return true;
-  });
+  const tabs = allTabs.filter((tab) =>
+    !(tab.id === 'spells' && character.hideSpellsTab)
+  );
 
   // Switch to first available tab if current is hidden
   useEffect(() => {
