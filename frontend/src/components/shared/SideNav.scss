@@ -99,12 +99,9 @@
   }
 }
 
-/* Mobile menu - visible only on mobile, positioned top-right */
+/* Mobile menu - visible only on mobile */
 .mobile-menu {
-  position: fixed;
-  top: 1rem;
-  right: 1rem;
-  z-index: 50;
+  /* No fixed positioning - scrolls with page header */
 }
 
 /* Hide on mobile */
