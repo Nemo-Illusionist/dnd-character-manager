@@ -1,7 +1,0 @@
-/* Game Management Page - Custom Styles */
-
-.manage-sections {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}

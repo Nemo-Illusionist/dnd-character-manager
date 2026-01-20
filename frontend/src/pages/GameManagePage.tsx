@@ -4,12 +4,12 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth, useModalState } from '../hooks';
 import { useGame } from '../context/GameContext';
 import { isGameMaster } from '../services/games.service';
-import { PlayersList } from '../components/games/PlayersList';
+import { PlayersSection } from '../components/game-manage/PlayersSection';
 import { InvitePlayerModal } from '../components/game-manage/InvitePlayerModal';
 import { GameSettingsSection } from '../components/game-manage/GameSettingsSection';
 import { TransferGMSection } from '../components/game-manage/TransferGMSection';
-import { PageLayout, PageHeader } from '../components/shared';
-import './GameManagePage.css';
+import { PageLayout, PageHeader, DropdownMenu } from '../components/shared';
+import './GameManagePage.scss';
 
 export default function GameManagePage() {
   const navigate = useNavigate();
@@ -36,17 +36,27 @@ export default function GameManagePage() {
       <PageHeader
         title="Game Management"
         subtitle={<p>{game.name}</p>}
+        actions={
+          <div className="mobile-menu">
+            <DropdownMenu
+              items={[
+                { label: 'Characters', icon: '🎭', onClick: () => navigate(`/games/${gameId}/characters`) },
+                { label: 'Items', icon: '📦', onClick: () => navigate(`/games/${gameId}/items`) },
+                { label: 'Back to Games', icon: '⬅️', onClick: () => navigate('/games') },
+              ]}
+            />
+          </div>
+        }
       />
 
-      <div className="manage-sections">
+      <div className="manage-page">
         <GameSettingsSection game={game} />
 
-        <PlayersList
+        <PlayersSection
           playerIds={game.playerIds}
           gmId={game.gmId}
           gameId={game.id}
           currentUserId={firebaseUser.uid}
-          isGM={true}
           onInviteClick={inviteModal.open}
         />
 

@@ -3,7 +3,6 @@ import { FormEvent, useState, useEffect } from 'react';
 import { Input, Button } from '../shared';
 import { updateGame } from '../../services/games.service';
 import type { Game } from 'shared';
-import './GameSettingsSection.css';
 
 interface GameSettingsSectionProps {
   game: Game;
@@ -44,7 +43,8 @@ export function GameSettingsSection({ game }: GameSettingsSectionProps) {
         name: trimmedName,
         description: description.trim(),
       });
-      setSuccess('Settings saved');
+      setSuccess('Settings saved successfully');
+      setTimeout(() => setSuccess(''), 3000);
     } catch (err) {
       setError((err as Error).message || 'Failed to update game');
     } finally {
@@ -55,37 +55,50 @@ export function GameSettingsSection({ game }: GameSettingsSectionProps) {
   const hasChanges = name.trim() !== game.name || description.trim() !== (game.description || '');
 
   return (
-    <section className="game-settings-section">
-      <h3 className="section-title">Game Settings</h3>
+    <section className="manage-section">
+      <h3 className="manage-section-title">
+        <span className="manage-section-icon">⚙️</span>
+        Game Settings
+      </h3>
 
-      <form onSubmit={handleSubmit} className="settings-form">
-        {error && <div className="form-error">{error}</div>}
-        {success && <div className="form-success">{success}</div>}
+      <form onSubmit={handleSubmit} className="manage-form">
+        {error && (
+          <div className="manage-alert manage-alert--error">
+            {error}
+          </div>
+        )}
+        {success && (
+          <div className="manage-alert manage-alert--success">
+            {success}
+          </div>
+        )}
 
         <Input
           type="text"
           label="Game Name"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          placeholder="Game name"
+          placeholder="Enter game name"
           disabled={loading}
         />
 
         <div className="input-wrapper">
           <label className="input-label">Description</label>
           <textarea
-            className="game-description-input"
+            className="manage-textarea"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            placeholder="Describe your game..."
+            placeholder="Describe your game, campaign setting, or any important notes for players..."
             rows={4}
             disabled={loading}
           />
         </div>
 
-        <Button type="submit" disabled={loading || !hasChanges}>
-          {loading ? 'Saving...' : 'Save Changes'}
-        </Button>
+        <div className="manage-form-actions">
+          <Button type="submit" disabled={loading || !hasChanges}>
+            {loading ? 'Saving...' : 'Save Changes'}
+          </Button>
+        </div>
       </form>
     </section>
   );

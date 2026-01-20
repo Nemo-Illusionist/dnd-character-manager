@@ -1,10 +1,9 @@
-// Transfer GM Section Component
+// Transfer GM Section Component - Danger Zone
 import { useState, useEffect } from 'react';
 import { Button, ConfirmDialog } from '../shared';
 import { getUsers } from '../../services/users.service';
 import { transferGMRole } from '../../services/games.service';
 import type { Game, User } from 'shared';
-import './TransferGMSection.css';
 
 interface TransferGMSectionProps {
   game: Game;
@@ -51,67 +50,67 @@ export function TransferGMSection({ game, currentUserId }: TransferGMSectionProp
 
   const selectedPlayer = players.find(p => p.uid === selectedPlayerId);
 
-  if (loading) {
-    return (
-      <section className="transfer-gm-section">
-        <h3 className="section-title">Transfer GM Role</h3>
-        <p className="loading-text">Loading players...</p>
-      </section>
-    );
-  }
-
-  if (players.length === 0) {
-    return (
-      <section className="transfer-gm-section">
-        <h3 className="section-title">Transfer GM Role</h3>
-        <p className="empty-text">No other players in the game to transfer GM role to.</p>
-      </section>
-    );
-  }
-
   return (
-    <section className="transfer-gm-section">
-      <h3 className="section-title">Transfer GM Role</h3>
-      <p className="section-description">
-        Transfer game master privileges to another player. This action cannot be undone by you.
+    <section className="manage-section manage-section--danger">
+      <h3 className="manage-section-title">
+        <span className="manage-section-icon">⚠️</span>
+        Danger Zone
+      </h3>
+      <p className="manage-section-description">
+        Transfer your Game Master privileges to another player.
+        This action is <strong>irreversible</strong> — you will lose all GM abilities and cannot undo this yourself.
       </p>
 
-      {error && <div className="form-error">{error}</div>}
-
-      <div className="transfer-form">
-        <div className="input-wrapper">
-          <label className="input-label">Select New GM</label>
-          <select
-            className="player-select"
-            value={selectedPlayerId}
-            onChange={(e) => setSelectedPlayerId(e.target.value)}
-            disabled={transferring}
-          >
-            <option value="">Choose a player...</option>
-            {players.map((player) => (
-              <option key={player.uid} value={player.uid}>
-                {player.displayName}
-              </option>
-            ))}
-          </select>
+      {error && (
+        <div className="manage-alert manage-alert--error">
+          {error}
         </div>
+      )}
 
-        <Button
-          variant="danger"
-          onClick={() => setShowConfirm(true)}
-          disabled={!selectedPlayerId || transferring}
-        >
-          Transfer GM Role
-        </Button>
-      </div>
+      {loading ? (
+        <p className="players-empty">Loading players...</p>
+      ) : players.length === 0 ? (
+        <p className="players-empty">
+          No other players in the game. Invite players first before transferring GM role.
+        </p>
+      ) : (
+        <div className="manage-form">
+          <div className="input-wrapper">
+            <label className="input-label">Select New Game Master</label>
+            <select
+              className="transfer-select"
+              value={selectedPlayerId}
+              onChange={(e) => setSelectedPlayerId(e.target.value)}
+              disabled={transferring}
+            >
+              <option value="">Choose a player...</option>
+              {players.map((player) => (
+                <option key={player.uid} value={player.uid}>
+                  {player.displayName}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="manage-form-actions">
+            <Button
+              variant="danger"
+              onClick={() => setShowConfirm(true)}
+              disabled={!selectedPlayerId || transferring}
+            >
+              Transfer GM Role
+            </Button>
+          </div>
+        </div>
+      )}
 
       <ConfirmDialog
         isOpen={showConfirm}
         onClose={() => setShowConfirm(false)}
         onConfirm={handleTransfer}
         title="Transfer GM Role"
-        message={`Are you sure you want to transfer GM role to ${selectedPlayer?.displayName}? You will lose all GM privileges and cannot undo this action.`}
-        confirmLabel="Transfer"
+        message={`Are you sure you want to transfer GM role to ${selectedPlayer?.displayName}? You will lose all GM privileges and cannot undo this action yourself.`}
+        confirmLabel="Yes, Transfer"
         cancelLabel="Cancel"
         variant="danger"
         isLoading={transferring}
