@@ -1,5 +1,5 @@
 // Loading Spinner Component
-import './LoadingSpinner.css';
+import './LoadingSpinner.scss';
 
 interface LoadingSpinnerProps {
   size?: 'small' | 'medium' | 'large';

@@ -1,7 +1,7 @@
 // Dialog Component - Confirmation dialogs and alerts
 import { ReactNode } from 'react';
 import { Button } from './Button';
-import './Dialog.css';
+import './Dialog.scss';
 
 interface DialogProps {
   isOpen: boolean;

@@ -1,6 +1,6 @@
 // DropdownMenu Component - Popup menu triggered by a button
 import { useState, useRef, useEffect, ReactNode } from 'react';
-import './DropdownMenu.css';
+import './DropdownMenu.scss';
 
 interface DropdownMenuItem {
   label: string;

@@ -1,7 +1,7 @@
 // Game Card Component
 import { Card } from '../shared';
 import { GAME_SYSTEM_NAMES, DEFAULT_GAME_SYSTEM, type Game } from 'shared';
-import './GameCard.css';
+import './GameCard.scss';
 
 interface GameCardProps {
   game: Game;

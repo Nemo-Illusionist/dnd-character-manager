@@ -1,9 +1,17 @@
-/* FormField Component Styles */
+// FormField Component Styles
 
 .form-field {
   display: flex;
   flex-direction: column;
   gap: 0.375rem;
+
+  &.has-error {
+    .form-field-input,
+    .form-field-textarea,
+    .form-field-select {
+      border-color: var(--danger, #dc2626);
+    }
+  }
 }
 
 .form-field-label {
@@ -26,19 +34,19 @@
   font-size: 0.9375rem;
   font-family: inherit;
   transition: border-color 0.2s;
+
+  &:focus {
+    outline: none;
+    border-color: var(--accent, #7c3aed);
+  }
 }
 
-.form-field-input:focus,
-.form-field-textarea:focus,
-.form-field-select:focus {
-  outline: none;
-  border-color: var(--accent, #7c3aed);
-}
-
-.form-field-input::placeholder,
-.form-field-textarea::placeholder {
-  color: var(--text-secondary, #9ca3af);
-  opacity: 0.6;
+.form-field-input,
+.form-field-textarea {
+  &::placeholder {
+    color: var(--text-secondary, #9ca3af);
+    opacity: 0.6;
+  }
 }
 
 .form-field-textarea {
@@ -65,13 +73,7 @@
   color: var(--danger, #dc2626);
 }
 
-.form-field.has-error .form-field-input,
-.form-field.has-error .form-field-textarea,
-.form-field.has-error .form-field-select {
-  border-color: var(--danger, #dc2626);
-}
-
-/* Checkbox */
+// Checkbox
 .form-field-checkbox {
   flex-direction: row;
   align-items: flex-start;
@@ -96,15 +98,13 @@
   color: var(--text-primary, #ffffff);
 }
 
-/* Form Row - inline fields */
+// Form Row - inline fields
 .form-row {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 0.75rem;
-}
 
-@media (max-width: 480px) {
-  .form-row {
+  @media (max-width: 480px) {
     grid-template-columns: 1fr;
   }
 }

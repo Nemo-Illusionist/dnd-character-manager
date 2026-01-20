@@ -1,6 +1,6 @@
 // Tabs Component - Reusable tab navigation
 import { ReactNode } from 'react';
-import './Tabs.css';
+import './Tabs.scss';
 
 export interface Tab {
   id: string;

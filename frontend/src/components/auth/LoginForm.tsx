@@ -2,7 +2,7 @@
 import { FormEvent, useState } from 'react';
 import { signIn } from '../../services/auth.service';
 import { Input, Button } from '../shared';
-import './AuthForms.css';
+import './AuthForms.scss';
 
 interface LoginFormProps {
   onSuccess: () => void;

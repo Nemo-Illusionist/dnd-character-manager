@@ -1,11 +1,11 @@
 .character-card {
   cursor: pointer;
   transition: all 0.2s;
-}
 
-.character-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 16px rgba(124, 58, 237, 0.2);
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(124, 58, 237, 0.2);
+  }
 }
 
 .character-card-header {
@@ -52,16 +52,16 @@
   font-weight: 600;
   text-transform: uppercase;
   white-space: nowrap;
-}
 
-.character-badge.sheet-type {
-  background: rgba(22, 163, 74, 0.15);
-  color: var(--success);
-}
+  &.sheet-type {
+    background: rgba(22, 163, 74, 0.15);
+    color: var(--success);
+  }
 
-.character-badge.minion {
-  background: rgba(251, 191, 36, 0.15);
-  color: var(--warning);
+  &.minion {
+    background: rgba(251, 191, 36, 0.15);
+    color: var(--warning);
+  }
 }
 
 .character-stats {

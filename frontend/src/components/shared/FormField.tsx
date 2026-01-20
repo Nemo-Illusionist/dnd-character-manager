@@ -1,6 +1,6 @@
 // FormField Component - Consistent form field styling
 import { InputHTMLAttributes, TextareaHTMLAttributes, SelectHTMLAttributes, ReactNode } from 'react';
-import './FormField.css';
+import './FormField.scss';
 
 interface BaseFieldProps {
   label?: string;

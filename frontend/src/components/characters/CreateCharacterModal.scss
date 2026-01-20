@@ -29,15 +29,15 @@
   background-repeat: no-repeat;
   background-position: right 1rem center;
   padding-right: 2.5rem;
-}
 
-.sheet-type-select:focus {
-  outline: none;
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
-}
+  &:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+  }
 
-.sheet-type-select option {
-  background: var(--bg-secondary);
-  color: var(--text-primary);
+  option {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+  }
 }

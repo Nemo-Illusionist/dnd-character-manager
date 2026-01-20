@@ -24,12 +24,12 @@
   resize: vertical;
   transition: all 0.2s;
   width: 100%;
-}
 
-.game-description-input:focus {
-  outline: none;
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+  &:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+  }
 }
 
 .game-system-select {
@@ -48,25 +48,25 @@
   background-repeat: no-repeat;
   background-position: right 1rem center;
   padding-right: 2.5rem;
-}
 
-.game-system-select:focus {
-  outline: none;
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
-}
+  &:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+  }
 
-.game-system-select option {
-  background: var(--bg-secondary);
-  color: var(--text-primary);
+  option {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+  }
 }
 
 .modal-actions {
   display: flex;
   gap: 1rem;
   margin-top: 0.5rem;
-}
 
-.modal-actions button {
-  flex: 1;
+  button {
+    flex: 1;
+  }
 }

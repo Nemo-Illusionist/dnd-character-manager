@@ -25,7 +25,11 @@
   align-items: center;
   margin-bottom: 1rem;
   gap: 1rem;
-  flex-wrap: wrap;
+
+  @include mobile {
+    flex-direction: column;
+    align-items: stretch;
+  }
 }
 
 .manage-section-title {
@@ -88,18 +92,17 @@
 
   @include mobile {
     flex-direction: column;
-
-    .btn {
-      width: 100%;
-    }
   }
 }
 
 // Consistent button sizing across sections
 .manage-section .btn {
-  width: 140px;
+  width: 160px;
+  white-space: nowrap;
+}
 
-  @include mobile {
+@include mobile {
+  .manage-section .btn {
     width: 100%;
   }
 }

@@ -60,7 +60,7 @@ a {
   text-decoration: none;
 }
 
-/* Scrollbar styles */
+// Scrollbar styles
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -79,21 +79,21 @@ a {
   background: var(--border);
 }
 
-/* Prevent text selection on mobile */
+// Prevent text selection on mobile
 .no-select {
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   user-select: none;
 }
 
-/* Allow text selection where needed */
+// Allow text selection where needed
 .allow-select {
   -webkit-touch-callout: default;
   -webkit-user-select: text;
   user-select: text;
 }
 
-/* Loading animation */
+// Loading animation
 @keyframes spin {
   to { transform: rotate(360deg); }
 }

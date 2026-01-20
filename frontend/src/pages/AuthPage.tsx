@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { LoginForm } from '../components/auth/LoginForm';
 import { RegisterForm } from '../components/auth/RegisterForm';
-import './AuthPage.css';
+import './AuthPage.scss';
 
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);

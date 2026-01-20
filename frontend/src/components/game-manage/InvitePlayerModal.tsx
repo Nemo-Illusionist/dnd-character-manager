@@ -3,7 +3,7 @@ import { FormEvent, useState } from 'react';
 import { Modal, Input, Button } from '../shared';
 import { getUserByEmail } from '../../services/users.service';
 import { addPlayerToGame } from '../../services/games.service';
-import './InvitePlayerModal.css';
+import './InvitePlayerModal.scss';
 
 interface InvitePlayerModalProps {
   isOpen: boolean;

@@ -2,6 +2,11 @@
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+
+  // Make buttons full width in settings
+  .btn {
+    max-width: none;
+  }
 }
 
 .settings-section {
@@ -67,9 +72,4 @@
 .settings-section-danger {
   padding-top: 1rem;
   border-top: 1px solid var(--border);
-}
-
-/* Make buttons full width in settings */
-.user-settings .btn {
-  max-width: none;
 }

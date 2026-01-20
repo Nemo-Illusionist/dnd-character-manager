@@ -45,10 +45,10 @@
   cursor: pointer;
   padding: 0.25rem;
   transition: color 0.2s;
-}
 
-.modal-close:hover {
-  color: var(--text-primary, #ffffff);
+  &:hover {
+    color: var(--text-primary, #ffffff);
+  }
 }
 
 .modal-body {

@@ -1,7 +1,7 @@
 // D&D 2024 - Equipment Training & Proficiencies Component
 
 import type { Character } from 'shared';
-import './Proficiencies.css';
+import './Proficiencies.scss';
 
 interface EquipmentProficienciesProps {
   character: Character;

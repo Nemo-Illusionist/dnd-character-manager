@@ -3,7 +3,7 @@ import { FormEvent, useState, useEffect } from 'react';
 import { Modal, Input, Button } from '../shared';
 import { updateUserDisplayName } from '../../services/auth.service';
 import { useAuth } from '../../hooks';
-import './UserSettingsModal.css';
+import './UserSettingsModal.scss';
 
 interface UserSettingsModalProps {
   isOpen: boolean;

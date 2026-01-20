@@ -21,20 +21,20 @@
   transition: all 0.2s;
   width: 100%;
   box-sizing: border-box;
-}
 
-.input:focus {
-  outline: none;
-  border-color: var(--accent, #7c3aed);
-  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+  &:focus {
+    outline: none;
+    border-color: var(--accent, #7c3aed);
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+  }
 }
 
 .input-error {
   border-color: var(--danger, #dc2626);
-}
 
-.input-error:focus {
-  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+  &:focus {
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+  }
 }
 
 .input-error-text {

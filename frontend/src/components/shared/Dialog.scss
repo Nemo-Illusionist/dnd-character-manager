@@ -1,4 +1,4 @@
-/* Dialog Component Styles */
+// Dialog Component Styles
 
 .dialog-overlay {
   position: fixed;
@@ -61,15 +61,15 @@
   gap: 0.75rem;
   padding: 0.75rem 1.5rem 1.25rem;
   justify-content: flex-end;
+
+  .btn {
+    width: auto;
+    max-width: none;
+    padding: 0.5rem 1rem;
+  }
 }
 
-.dialog-actions .btn {
-  width: auto;
-  max-width: none;
-  padding: 0.5rem 1rem;
-}
-
-/* Mobile: Stack buttons vertically */
+// Mobile: Stack buttons vertically
 @media (max-width: 480px) {
   .dialog-content {
     max-width: 100%;
@@ -77,9 +77,9 @@
 
   .dialog-actions {
     flex-direction: column-reverse;
-  }
 
-  .dialog-actions .btn {
-    width: 100%;
+    .btn {
+      width: 100%;
+    }
   }
 }

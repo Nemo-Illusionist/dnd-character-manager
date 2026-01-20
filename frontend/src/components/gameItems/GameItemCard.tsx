@@ -1,7 +1,7 @@
 // Game Item Card Component
 import { Card } from '../shared';
 import type { GameItem } from 'shared';
-import './GameItemCard.css';
+import './GameItemCard.scss';
 
 interface GameItemCardProps {
   item: GameItem;

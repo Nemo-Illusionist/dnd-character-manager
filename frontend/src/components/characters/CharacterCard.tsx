@@ -1,7 +1,7 @@
 // Character Card Component
 import { Card } from '../shared';
 import { SHEET_TYPE_SHORT_NAMES, DEFAULT_SHEET_TYPE, type Character } from 'shared';
-import './CharacterCard.css';
+import './CharacterCard.scss';
 
 interface CharacterCardProps {
   character: Character;

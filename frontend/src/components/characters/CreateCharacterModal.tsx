@@ -3,7 +3,7 @@ import { FormEvent, useState } from 'react';
 import { Modal, Input, Button } from '../shared';
 import { createCharacter } from '../../services/characters.service';
 import { SHEET_TYPE_NAMES, SYSTEM_SHEET_TYPES, type SheetType, type GameSystem } from 'shared';
-import './CreateCharacterModal.css';
+import './CreateCharacterModal.scss';
 
 interface CreateCharacterModalProps {
   isOpen: boolean;

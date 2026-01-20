@@ -1,11 +1,11 @@
 .game-card {
   cursor: pointer;
   transition: all 0.2s;
-}
 
-.game-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 16px rgba(124, 58, 237, 0.2);
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(124, 58, 237, 0.2);
+  }
 }
 
 .game-card-header {
@@ -40,16 +40,16 @@
   font-weight: 600;
   text-transform: uppercase;
   white-space: nowrap;
-}
 
-.game-badge.system {
-  background: rgba(22, 163, 74, 0.15);
-  color: var(--success);
-}
+  &.system {
+    background: rgba(22, 163, 74, 0.15);
+    color: var(--success);
+  }
 
-.game-badge.gm {
-  background: rgba(124, 58, 237, 0.15);
-  color: var(--accent);
+  &.gm {
+    background: rgba(124, 58, 237, 0.15);
+    color: var(--accent);
+  }
 }
 
 .game-card-description {

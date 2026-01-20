@@ -1,4 +1,4 @@
-/* Game Item Detail Modal Styles */
+// Game Item Detail Modal Styles
 
 .game-item-detail {
   display: flex;
@@ -11,26 +11,26 @@
   align-items: center;
   gap: 0.5rem;
   color: var(--text-secondary);
-}
 
-.game-item-detail-type .type-icon {
-  font-size: 1.25rem;
-}
+  .type-icon {
+    font-size: 1.25rem;
+  }
 
-.game-item-detail-type .type-name {
-  font-size: 0.875rem;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
+  .type-name {
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
 
-.game-item-detail-type .visibility-badge {
-  margin-left: auto;
-  padding: 0.25rem 0.5rem;
-  background: rgba(234, 179, 8, 0.2);
-  color: #eab308;
-  border-radius: 4px;
-  font-size: 0.75rem;
-  font-weight: 600;
+  .visibility-badge {
+    margin-left: auto;
+    padding: 0.25rem 0.5rem;
+    background: rgba(234, 179, 8, 0.2);
+    color: #eab308;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
 }
 
 .game-item-detail-description {
@@ -43,12 +43,12 @@
   border-radius: 8px;
   overflow: hidden;
   background: rgba(0, 0, 0, 0.2);
-}
 
-.game-item-detail-image img {
-  width: 100%;
-  height: auto;
-  display: block;
+  img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
 }
 
 .game-item-detail-actions {

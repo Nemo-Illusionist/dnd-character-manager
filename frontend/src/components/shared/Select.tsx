@@ -1,6 +1,6 @@
 // Select Component - Styled dropdown select
 import { SelectHTMLAttributes } from 'react';
-import './Select.css';
+import './Select.scss';
 
 export interface SelectOption {
   value: string | number;

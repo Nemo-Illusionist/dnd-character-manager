@@ -1,4 +1,4 @@
-/* DropdownMenu Component Styles */
+// DropdownMenu Component Styles
 
 .dropdown-menu {
   position: relative;
@@ -18,10 +18,10 @@
   font-size: 1.5rem;
   cursor: pointer;
   transition: background 0.15s ease;
-}
 
-.dropdown-trigger:hover {
-  background: var(--bg-tertiary);
+  &:hover {
+    background: var(--bg-tertiary);
+  }
 }
 
 .dropdown-dots {
@@ -56,14 +56,14 @@
   text-align: left;
   cursor: pointer;
   transition: background 0.15s ease;
-}
 
-.dropdown-item:hover {
-  background: var(--bg-tertiary);
-}
+  &:hover {
+    background: var(--bg-tertiary);
+  }
 
-.dropdown-item:not(:last-child) {
-  border-bottom: 1px solid var(--border);
+  &:not(:last-child) {
+    border-bottom: 1px solid var(--border);
+  }
 }
 
 .dropdown-item-icon {

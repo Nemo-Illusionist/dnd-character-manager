@@ -4,7 +4,7 @@ import { Modal, Input, Button } from '../shared';
 import { createGame } from '../../services/games.service';
 import { useAuth } from '../../hooks';
 import { GAME_SYSTEM_NAMES, type GameSystem } from 'shared';
-import './CreateGameModal.css';
+import './CreateGameModal.scss';
 
 interface CreateGameModalProps {
   isOpen: boolean;

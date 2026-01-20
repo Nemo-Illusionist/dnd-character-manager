@@ -3,7 +3,7 @@ import { FormEvent, useState } from 'react';
 import { Modal, Input, Button } from '../shared';
 import { createGameItem } from '../../services/gameItems.service';
 import type { GameItemType } from 'shared';
-import './CreateGameItemModal.css';
+import './CreateGameItemModal.scss';
 
 interface CreateGameItemModalProps {
   isOpen: boolean;

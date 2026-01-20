@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { Modal, Button, ConfirmDialog } from '../shared';
 import type { GameItem } from 'shared';
-import './GameItemDetailModal.css';
+import './GameItemDetailModal.scss';
 
 interface GameItemDetailModalProps {
   item: GameItem | null;

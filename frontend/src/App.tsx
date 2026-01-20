@@ -4,7 +4,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { GameProvider } from './context/GameContext';
 import { LoadingSpinner } from './components/shared';
-import './App.css';
+import './App.scss';
 
 // Lazy load pages for code-splitting
 const AuthPage = lazy(() => import('./pages/AuthPage'));
