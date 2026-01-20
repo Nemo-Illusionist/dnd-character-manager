@@ -105,7 +105,7 @@ export default function GamesPage() {
             <div className="mobile-menu">
               <DropdownMenu
                 items={[
-                  { label: 'Create Game', icon: '+', onClick: createModal.open },
+                  { label: 'Create Game', icon: '➕', onClick: createModal.open },
                   { label: 'Profile', icon: '👤', onClick: settingsModal.open },
                   { label: 'Logout', icon: '🚪', onClick: handleLogout },
                 ]}

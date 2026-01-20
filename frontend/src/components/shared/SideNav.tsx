@@ -25,7 +25,7 @@ export function SideNav({ variant, onCreateGame, onOpenSettings, onLogout, isGM 
             className="side-nav-dropdown"
             trigger={<span className="side-nav-icon">⚙️</span>}
             items={[
-              ...(onCreateGame ? [{ label: 'Create Game', icon: '+', onClick: onCreateGame }] : []),
+              ...(onCreateGame ? [{ label: 'Create Game', icon: '➕', onClick: onCreateGame }] : []),
               ...(onOpenSettings ? [{ label: 'Profile', icon: '👤', onClick: onOpenSettings }] : []),
               ...(onLogout ? [{ label: 'Logout', icon: '🚪', onClick: onLogout }] : []),
             ]}
@@ -39,31 +39,23 @@ export function SideNav({ variant, onCreateGame, onOpenSettings, onLogout, isGM 
   const currentPath = location.pathname;
   const isCharactersActive = currentPath === `/games/${gameId}/characters`;
   const isItemsActive = currentPath === `/games/${gameId}/items`;
-  const isManageActive = currentPath === `/games/${gameId}/manage`;
 
-  const handleBack = () => {
-    navigate('/games');
-  };
+  const menuItems = [
+    { label: 'Create Character', icon: '🎭', onClick: () => navigate(`/games/${gameId}/characters?action=create`) },
+    { label: 'Add Item', icon: '📦', onClick: () => navigate(`/games/${gameId}/items?action=create`) },
+    { label: 'Back to Games', icon: '⬅️', onClick: () => navigate('/games') },
+    ...(isGM ? [{ label: 'Game Management', icon: '⚙️', onClick: () => navigate(`/games/${gameId}/manage`) }] : []),
+  ];
 
   return (
     <nav className="side-nav">
       <div className="side-nav-top">
         <button
-          className="side-nav-btn"
-          onClick={handleBack}
-          title="Back to Games"
-        >
-          ←
-        </button>
-      </div>
-
-      <div className="side-nav-bottom">
-        <button
           className={`side-nav-btn ${isCharactersActive ? 'active' : ''}`}
           onClick={() => navigate(`/games/${gameId}/characters`)}
           title="Characters"
         >
-          <span className="side-nav-icon">⚔️</span>
+          <span className="side-nav-icon">🎭</span>
         </button>
         <button
           className={`side-nav-btn ${isItemsActive ? 'active' : ''}`}
@@ -72,15 +64,14 @@ export function SideNav({ variant, onCreateGame, onOpenSettings, onLogout, isGM 
         >
           <span className="side-nav-icon">📦</span>
         </button>
-        {isGM && (
-          <button
-            className={`side-nav-btn ${isManageActive ? 'active' : ''}`}
-            onClick={() => navigate(`/games/${gameId}/manage`)}
-            title="Game Settings"
-          >
-            <span className="side-nav-icon">⚙️</span>
-          </button>
-        )}
+      </div>
+
+      <div className="side-nav-bottom">
+        <DropdownMenu
+          className="side-nav-dropdown"
+          trigger={<span className="side-nav-icon">⚙️</span>}
+          items={menuItems}
+        />
       </div>
     </nav>
   );

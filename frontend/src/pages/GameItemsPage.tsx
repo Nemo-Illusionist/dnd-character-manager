@@ -1,6 +1,6 @@
 // Game Items Page - Shared game items (maps, notes, images)
-import { useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useAuth, useGameItems, useModalState } from '../hooks';
 import { useGame } from '../context/GameContext';
 import { isGameMaster } from '../services/games.service';
@@ -9,7 +9,6 @@ import { GameItemCard } from '../components/gameItems/GameItemCard';
 import { GameItemDetailModal } from '../components/gameItems/GameItemDetailModal';
 import { CreateGameItemModal } from '../components/gameItems/CreateGameItemModal';
 import {
-  Button,
   PageLayout,
   PageHeader,
   PageLoading,
@@ -22,11 +21,20 @@ import type { GameItem } from 'shared';
 export default function GameItemsPage() {
   const navigate = useNavigate();
   const { gameId } = useParams<{ gameId: string }>();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { firebaseUser } = useAuth();
   const { currentGame: game } = useGame();
   const { items, loading: itemsLoading } = useGameItems(gameId || null);
   const createModal = useModalState();
   const [selectedItem, setSelectedItem] = useState<GameItem | null>(null);
+
+  // Handle ?action=create URL param
+  useEffect(() => {
+    if (searchParams.get('action') === 'create') {
+      createModal.open();
+      setSearchParams({}, { replace: true });
+    }
+  }, [searchParams, setSearchParams, createModal]);
 
   if (itemsLoading || !firebaseUser) {
     return (
@@ -54,18 +62,16 @@ export default function GameItemsPage() {
         title="Game Items"
         subtitle={<p>{game.name}</p>}
         actions={
-          <>
-            <div className="mobile-menu">
-              <DropdownMenu
-                items={[
-                  { label: 'Add Item', icon: '+', onClick: createModal.open },
-                  { label: 'Back to Games', icon: '←', onClick: () => navigate('/games') },
-                  ...(isGM ? [{ label: 'Game Settings', icon: '⚙️', onClick: () => navigate(`/games/${gameId}/manage`) }] : []),
-                ]}
-              />
-            </div>
-            <Button className="hide-on-mobile" onClick={createModal.open}>+ Add Item</Button>
-          </>
+          <div className="mobile-menu">
+            <DropdownMenu
+              items={[
+                { label: 'Create Character', icon: '🎭', onClick: () => navigate(`/games/${gameId}/characters?action=create`) },
+                { label: 'Add Item', icon: '📦', onClick: createModal.open },
+                { label: 'Back to Games', icon: '⬅️', onClick: () => navigate('/games') },
+                ...(isGM ? [{ label: 'Game Management', icon: '⚙️', onClick: () => navigate(`/games/${gameId}/manage`) }] : []),
+              ]}
+            />
+          </div>
         }
       />
 

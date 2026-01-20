@@ -23,7 +23,7 @@ export function MobileTabBar({ variant }: MobileTabBarProps) {
         className={`mobile-tab-bar-item ${isCharactersActive ? 'active' : ''}`}
         onClick={() => navigate(`/games/${gameId}/characters`)}
       >
-        <span className="mobile-tab-bar-icon">⚔️</span>
+        <span className="mobile-tab-bar-icon">🎭</span>
         <span className="mobile-tab-bar-label">Characters</span>
       </button>
       <button

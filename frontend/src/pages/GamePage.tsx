@@ -1,6 +1,6 @@
 // Characters Page - List all characters in a game (Refactored)
 import { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useAuth, useCharacters, useModalState } from '../hooks';
 import { useGame } from '../context/GameContext';
 import { isGameMaster } from '../services/games.service';
@@ -8,7 +8,6 @@ import { getUsers } from '../services/users.service';
 import { CharacterCard } from '../components/characters/CharacterCard';
 import { CreateCharacterModal } from '../components/characters/CreateCharacterModal';
 import {
-  Button,
   PageLayout,
   PageHeader,
   PageLoading,
@@ -22,6 +21,7 @@ import type { User } from 'shared';
 export default function GamePage() {
   const navigate = useNavigate();
   const { gameId } = useParams<{ gameId: string }>();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { firebaseUser } = useAuth();
   const { currentGame } = useGame();
   const { characters, loading: charactersLoading } = useCharacters();
@@ -29,6 +29,14 @@ export default function GamePage() {
   const [playerUsers, setPlayerUsers] = useState<Map<string, User>>(new Map());
 
   const isGM = currentGame && firebaseUser ? isGameMaster(currentGame, firebaseUser.uid) : false;
+
+  // Handle ?action=create URL param
+  useEffect(() => {
+    if (searchParams.get('action') === 'create') {
+      createModal.open();
+      setSearchParams({}, { replace: true });
+    }
+  }, [searchParams, setSearchParams, createModal]);
 
   // Load player names for GM view
   useEffect(() => {
@@ -93,32 +101,22 @@ export default function GamePage() {
       <PageHeader
         title="Characters"
         actions={
-          <>
-            <div className="mobile-menu">
-              <DropdownMenu
-                items={[
-                  { label: 'Create Character', icon: '+', onClick: createModal.open },
-                  { label: 'Back to Games', icon: '←', onClick: () => navigate('/games') },
-                  ...(isGM ? [{ label: 'Game Settings', icon: '⚙️', onClick: () => navigate(`/games/${gameId}/manage`) }] : []),
-                ]}
-              />
-            </div>
-            <Button className="hide-on-mobile" onClick={createModal.open}>+ Create Character</Button>
-            <Button className="hide-on-side-nav hide-on-mobile" variant="secondary" onClick={() => navigate(`/games/${gameId}/items`)}>
-              📦 Game Items
-            </Button>
-            {isGM && (
-              <Button className="hide-on-side-nav hide-on-mobile" variant="secondary" onClick={() => navigate(`/games/${gameId}/manage`)}>
-                ⚙️
-              </Button>
-            )}
-          </>
+          <div className="mobile-menu">
+            <DropdownMenu
+              items={[
+                { label: 'Create Character', icon: '🎭', onClick: createModal.open },
+                { label: 'Add Item', icon: '📦', onClick: () => navigate(`/games/${gameId}/items?action=create`) },
+                { label: 'Back to Games', icon: '⬅️', onClick: () => navigate('/games') },
+                ...(isGM ? [{ label: 'Game Management', icon: '⚙️', onClick: () => navigate(`/games/${gameId}/manage`) }] : []),
+              ]}
+            />
+          </div>
         }
       />
 
       {characters.length === 0 ? (
         <PageEmpty
-          icon="⚔️"
+          icon="🎭"
           title="No Characters Yet"
           description="Create your first character to begin your adventure!"
           action={{
