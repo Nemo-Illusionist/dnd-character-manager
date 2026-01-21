@@ -1,0 +1,37 @@
+.character-public-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.character-public-avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: var(--bg-tertiary);
+  border: 3px solid var(--primary);
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.character-public-description {
+  font-size: 1rem;
+  color: var(--text-primary);
+  margin: 0;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  text-align: center;
+}
+
+.no-description {
+  color: var(--text-secondary);
+  font-style: italic;
+  text-align: center;
+  margin: 0;
+}

@@ -19,6 +19,8 @@ firebase-debug.*.log
 firestore-debug.log
 ui-debug.log
 functions/lib/
+serviceAccountKey.json
+*-service-account.json
 
 # Environment
 .env

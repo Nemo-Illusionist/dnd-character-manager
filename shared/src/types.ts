@@ -124,26 +124,33 @@ export interface Game {
 
 // ==================== PUBLIC CHARACTER ====================
 // Публичная часть листа персонажа, доступная всем участникам игры
+// Хранится в /games/{gameId}/characters/{charId}
 
 export interface PublicCharacter {
-  id: string;                         // Совпадает с id основного Character
+  id: string;
   gameId: string;
   ownerId: string;
   name: string;
-  // Дополнительные публичные поля будут добавляться здесь
+  avatar?: string;
+  sheetType: SheetType;
+  publicDescription?: string;  // Публичное описание/внешность
+  isHidden?: boolean;          // Скрыт ли персонаж от других игроков
+  createdAt?: Timestamp;
   updatedAt: Timestamp;
 }
 
-// ==================== CHARACTER ====================
+// Публичные поля персонажа (для разделения данных)
+export const PUBLIC_CHARACTER_FIELDS = [
+  'id', 'gameId', 'ownerId', 'name', 'avatar', 'sheetType',
+  'publicDescription', 'isHidden', 'createdAt', 'updatedAt'
+] as const;
 
-export interface Character {
-  id: string;
-  gameId: string;
-  ownerId: string;              // Player UID who owns this character
-  name: string;
-  avatar?: string;              // URL аватара
+// ==================== PRIVATE CHARACTER SHEET ====================
+// Приватная часть листа персонажа (только owner + GM)
+// Хранится в /games/{gameId}/characters/{charId}/private/sheet
+
+export interface PrivateCharacterSheet {
   type: CharacterType;          // Персонаж или миньон
-  sheetType?: SheetType;        // Sheet type (default: 'character-2024' for backwards compatibility)
 
   // D&D 5e core stats
   level: number;
@@ -251,10 +258,13 @@ export interface Character {
     languages?: string;
     alliesAndOrganizations?: string;
   };
-
-  createdAt: Timestamp;
-  updatedAt: Timestamp;
 }
+
+// ==================== CHARACTER (FULL) ====================
+// Полный тип персонажа = публичные + приватные данные
+
+export type Character = PublicCharacter & PrivateCharacterSheet;
+
 
 // ==================== CHARACTER ITEMS & SPELLS ====================
 

@@ -75,11 +75,36 @@ frontend/src/
 ### Коллекции
 
 ```
-users/{uid}                     → Профиль пользователя
-games/{gameId}                  → Игра (содержит playerIds)
-  └── characters/{characterId}  → Лист персонажа (subcollection)
-  └── knowledge/{type}/{itemId} → Knowledge base (subcollection)
+users/{uid}                                    → Профиль пользователя
+games/{gameId}                                 → Игра (содержит playerIds)
+  └── characters/{characterId}                 → Публичные данные персонажа
+      └── private/sheet                        → Приватные данные листа (subcollection)
+  └── knowledge/{type}/{itemId}                → Knowledge base (subcollection)
 ```
+
+### Разделение данных персонажа
+
+Данные персонажа разделены на **публичные** и **приватные** на уровне Firestore:
+
+**Публичные** (`/games/{gameId}/characters/{id}`) — видны всем участникам игры:
+- `id`, `gameId`, `ownerId`
+- `name`, `avatar`, `sheetType`
+- `publicDescription` — описание/внешность для других игроков
+- `isHidden` — скрыт ли от других игроков (только owner/GM могут видеть скрытых)
+- `createdAt`, `updatedAt`
+
+**Приватные** (`/games/{gameId}/characters/{id}/private/sheet`) — только owner + GM:
+- Все остальное: abilities, skills, HP, AC, spells, inventory, biography и т.д.
+
+### Права доступа (Firestore Rules)
+- **Публичные данные**: все участники игры читают, owner/GM пишут
+- **Приватные данные**: только owner/GM читают и пишут
+
+### TypeScript типы
+- `PublicCharacter` — интерфейс для публичных данных
+- `PrivateCharacterSheet` — интерфейс для приватных данных
+- `Character = PublicCharacter & PrivateCharacterSheet` — полный тип персонажа
+- `PUBLIC_CHARACTER_FIELDS` — константа для разделения полей в сервисе
 
 ### Модель данных персонажа (D&D 2024)
 

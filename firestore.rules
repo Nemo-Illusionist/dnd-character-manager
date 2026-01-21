@@ -174,18 +174,25 @@ service cloud.firestore {
       allow update, delete: if isAuthenticated() && resource.data.gmId == request.auth.uid;
 
       // ==================== CHARACTERS ====================
+      // Публичные данные персонажей - все участники игры читают
       match /characters/{characterId} {
-        allow read, update, delete: if isAuthenticated() && (isOwner(resource.data.ownerId) || isGM());
-
-        allow create: if isAuthenticated() && isOwner(request.resource.data.ownerId);
-      }
-
-      // ==================== PUBLIC CHARACTERS ====================
-      match /publicCharacters/{characterId} {
+        // Все участники игры могут читать публичные данные
         allow read: if isAuthenticated() && isPlayer();
 
-        allow update, delete: if isAuthenticated() && (isOwner(resource.data.ownerId) || isGM());
+        // Создавать может только владелец
         allow create: if isAuthenticated() && isOwner(request.resource.data.ownerId);
+
+        // Редактировать/удалять может владелец или GM
+        allow update, delete: if isAuthenticated() && (isOwner(resource.data.ownerId) || isGM());
+
+        // ==================== PRIVATE CHARACTER DATA ====================
+        // Приватные данные листа персонажа - только owner или GM
+        match /private/{docId} {
+          allow read, write: if isAuthenticated() && (
+            isOwner(get(/databases/$(database)/documents/games/$(gameId)/characters/$(characterId)).data.ownerId) ||
+            isGM()
+          );
+        }
       }
     }
   }

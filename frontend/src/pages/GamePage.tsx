@@ -1,12 +1,12 @@
 // Characters Page - List all characters in a game (Refactored)
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import { useAuth, useCharacters, useGameMenuItems, useModalState } from '../hooks';
+import { useAuth, usePublicCharacters, useGameMenuItems, useModalState } from '../hooks';
 import { useGame } from '../context/GameContext';
-import { isGameMaster } from '../services/games.service';
 import { getUsers } from '../services/users.service';
 import { CharacterCard } from '../components/characters/CharacterCard';
 import { CreateCharacterModal } from '../components/characters/CreateCharacterModal';
+import { CharacterPublicInfoModal } from '../components/characters/CharacterPublicInfoModal';
 import {
   PageLayout,
   PageHeader,
@@ -16,7 +16,7 @@ import {
   PageGrid,
   DropdownMenu,
 } from '../components/shared';
-import type { User } from 'shared';
+import type { User, PublicCharacter } from 'shared';
 
 export default function GamePage() {
   const navigate = useNavigate();
@@ -24,11 +24,12 @@ export default function GamePage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const { firebaseUser } = useAuth();
   const { currentGame } = useGame();
-  const { characters, loading: charactersLoading } = useCharacters();
+  const { characters, loading: charactersLoading, isGM } = usePublicCharacters();
   const createModal = useModalState();
+  const publicInfoModal = useModalState();
+  const [selectedCharacter, setSelectedCharacter] = useState<PublicCharacter | null>(null);
   const [playerUsers, setPlayerUsers] = useState<Map<string, User>>(new Map());
 
-  const isGM = currentGame && firebaseUser ? isGameMaster(currentGame, firebaseUser.uid) : false;
   const menuItems = useGameMenuItems({ isGM, onCreateCharacter: createModal.open });
 
   // Handle ?action=create URL param
@@ -53,12 +54,30 @@ export default function GamePage() {
     });
   }, [isGM, currentGame]);
 
-  const handleCharacterClick = (characterId: string) => {
-    navigate(`/games/${gameId}/characters/${characterId}`);
+  const canAccessFullSheet = (character: PublicCharacter) => {
+    if (!firebaseUser) return false;
+    // Owner or GM can access full sheet
+    return character.ownerId === firebaseUser.uid || isGM;
+  };
+
+  const handleCharacterClick = (character: PublicCharacter) => {
+    if (canAccessFullSheet(character)) {
+      // Navigate to full character sheet
+      navigate(`/games/${gameId}/characters/${character.id}`);
+    } else {
+      // Show public info modal
+      setSelectedCharacter(character);
+      publicInfoModal.open();
+    }
   };
 
   const handleCharacterCreated = (characterId: string) => {
     navigate(`/games/${gameId}/characters/${characterId}`);
+  };
+
+  const handlePublicInfoModalClose = () => {
+    publicInfoModal.close();
+    setSelectedCharacter(null);
   };
 
   if (charactersLoading || !firebaseUser) {
@@ -128,7 +147,8 @@ export default function GamePage() {
                   <CharacterCard
                     key={character.id}
                     character={character}
-                    onClick={() => handleCharacterClick(character.id)}
+                    onClick={() => handleCharacterClick(character)}
+                    showHiddenBadge={isGM}
                   />
                 ))}
               </PageGrid>
@@ -142,7 +162,8 @@ export default function GamePage() {
                   <CharacterCard
                     key={character.id}
                     character={character}
-                    onClick={() => handleCharacterClick(character.id)}
+                    onClick={() => handleCharacterClick(character)}
+                    showHiddenBadge={isGM}
                   />
                 ))}
               </PageGrid>
@@ -159,7 +180,7 @@ export default function GamePage() {
                   <CharacterCard
                     key={character.id}
                     character={character}
-                    onClick={() => handleCharacterClick(character.id)}
+                    onClick={() => handleCharacterClick(character)}
                   />
                 ))}
               </PageGrid>
@@ -173,7 +194,7 @@ export default function GamePage() {
                   <CharacterCard
                     key={character.id}
                     character={character}
-                    onClick={() => handleCharacterClick(character.id)}
+                    onClick={() => handleCharacterClick(character)}
                   />
                 ))}
               </PageGrid>
@@ -192,6 +213,12 @@ export default function GamePage() {
           gameSystem={currentGame?.system}
         />
       )}
+
+      <CharacterPublicInfoModal
+        isOpen={publicInfoModal.isOpen}
+        onClose={handlePublicInfoModalClose}
+        character={selectedCharacter}
+      />
     </PageLayout>
   );
 }
