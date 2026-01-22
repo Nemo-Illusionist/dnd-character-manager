@@ -31,6 +31,20 @@ const LEVEL_NAMES: Record<number, string> = {
 
 type FilterType = 'all' | 'prepared' | 'ritual';
 
+// Shorten casting time for table display
+function formatCastingTime(time: string | undefined): string {
+  if (!time) return '—';
+  const lower = time.toLowerCase();
+  if (lower === '1 action') return '1A';
+  if (lower === '1 bonus action') return '1BA';
+  if (lower === '1 reaction') return '1R';
+  if (lower.endsWith(' minute')) return time.replace(' minute', 'm');
+  if (lower.endsWith(' minutes')) return time.replace(' minutes', 'm');
+  if (lower.endsWith(' hour')) return time.replace(' hour', 'h');
+  if (lower.endsWith(' hours')) return time.replace(' hours', 'h');
+  return time;
+}
+
 export function SpellsTab({ character, gameId }: SpellsTabProps) {
   const [editingSpell, setEditingSpell] = useState<CharacterSpellEntry | null>(null);
   const [filter, setFilter] = useState<FilterType>('all');
@@ -447,7 +461,7 @@ export function SpellsTab({ character, gameId }: SpellsTabProps) {
                               </td>
                             )}
                             <td className="cs-cell-name">{spell.name}</td>
-                            <td className="cs-cell-time">{spell.castingTime || '—'}</td>
+                            <td className="cs-cell-time">{formatCastingTime(spell.castingTime)}</td>
                             <td className="cs-cell-hit">{hitDcDisplay}</td>
                             <td className="cs-cell-effect">{spell.damage || '—'}</td>
                             <td className="cs-cell-notes">{notes.join(', ') || '—'}</td>
