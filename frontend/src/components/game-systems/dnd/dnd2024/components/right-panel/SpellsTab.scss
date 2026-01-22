@@ -308,14 +308,14 @@
 }
 
 .cs-level-toggle {
-  font-size: 0.625rem;
+  font-size: 0.75rem;
   color: var(--text-secondary);
-  width: 0.75rem;
+  width: 1rem;
 }
 
 .cs-level-name {
   flex: 1;
-  font-size: 0.8125rem;
+  font-size: 1rem;
   font-weight: 600;
   color: var(--text-primary);
 }
@@ -332,6 +332,32 @@
   font-size: 0.75rem;
   font-weight: 600;
   color: var(--accent);
+}
+
+/* Header slot pips */
+.cs-header-slots {
+  display: flex;
+  gap: 0.375rem;
+  margin-left: auto;
+  padding: 0.25rem;
+}
+
+.cs-header-pip {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid var(--accent);
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.cs-header-pip.filled {
+  background: var(--accent);
+}
+
+.cs-header-pip:hover {
+  transform: scale(1.15);
 }
 
 /* Spell Level Content */
@@ -554,6 +580,12 @@
 
   .cs-spell-casting-time {
     font-size: 0.6875rem;
+  }
+
+  /* Header pips mobile - larger touch targets */
+  .cs-header-pip {
+    width: 24px;
+    height: 24px;
   }
 
   /* Spells table mobile */

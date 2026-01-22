@@ -317,30 +317,6 @@ export function SpellsTab({ character, gameId }: SpellsTabProps) {
         </div>
       )}
 
-      {/* Spell Slots Header */}
-      {[1, 2, 3, 4, 5, 6, 7, 8, 9].some((level) => (spellSlots[level]?.max || 0) > 0) && (
-        <div className="cs-spell-slots-row">
-          {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((level) => {
-            const slot = spellSlots[level] || { current: 0, max: 0 };
-            if (slot.max === 0) return null;
-            return (
-              <div key={level} className="cs-spell-slot">
-                <div className="cs-slot-level">{level}</div>
-                <div className="cs-slot-pips">
-                  {Array.from({ length: slot.max }).map((_, i) => (
-                    <div
-                      key={i}
-                      className={`cs-slot-pip ${i < slot.current ? 'filled' : ''}`}
-                      onClick={() => useSpellSlot(level, i < slot.current ? -1 : 1)}
-                    />
-                  ))}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      )}
-
       {/* Filter tabs */}
       <div className="cs-spell-filters">
         <button
@@ -388,11 +364,16 @@ export function SpellsTab({ character, gameId }: SpellsTabProps) {
               >
                 <span className="cs-level-toggle">{isExpanded ? '▼' : '▶'}</span>
                 <span className="cs-level-name">{LEVEL_NAMES[level]}</span>
-                <span className="cs-level-count">{levelSpells.length}</span>
                 {level > 0 && slot && slot.max > 0 && (
-                  <span className="cs-level-slots">
-                    {slot.current}/{slot.max}
-                  </span>
+                  <div className="cs-header-slots" onClick={(e) => e.stopPropagation()}>
+                    {Array.from({ length: slot.max }).map((_, i) => (
+                      <div
+                        key={i}
+                        className={`cs-header-pip ${i < slot.current ? 'filled' : ''}`}
+                        onClick={() => useSpellSlot(level, i < slot.current ? -1 : 1)}
+                      />
+                    ))}
+                  </div>
                 )}
               </div>
 
