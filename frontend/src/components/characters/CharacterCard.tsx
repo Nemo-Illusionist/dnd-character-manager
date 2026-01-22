@@ -7,12 +7,14 @@ interface CharacterCardProps {
   character: PublicCharacter;
   onClick: () => void;
   showHiddenBadge?: boolean;
+  ownerName?: string;
 }
 
 export function CharacterCard({
   character,
   onClick,
   showHiddenBadge,
+  ownerName,
 }: CharacterCardProps) {
   const sheetTypeName = SHEET_TYPE_SHORT_NAMES[character.sheetType || DEFAULT_SHEET_TYPE];
 
@@ -26,6 +28,9 @@ export function CharacterCard({
         )}
         <div className="character-info">
           <h3 className="character-name">{character.name}</h3>
+          {ownerName && (
+            <p className="character-owner">Player: {ownerName}</p>
+          )}
           {character.publicDescription && (
             <p className="character-description">{character.publicDescription}</p>
           )}

@@ -1,11 +1,12 @@
 // Characters Page - List all characters in a game
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useAuth, usePublicCharacters, useGameMenuItems, useModalState } from '../hooks';
 import { useGame } from '../context/GameContext';
 import { CharacterCard } from '../components/characters/CharacterCard';
 import { CreateCharacterModal } from '../components/characters/CreateCharacterModal';
 import { CharacterPublicInfoModal } from '../components/characters/CharacterPublicInfoModal';
+import { getUsers } from '../services/users.service';
 import {
   PageLayout,
   PageHeader,
@@ -27,6 +28,7 @@ export default function GamePage() {
   const createModal = useModalState();
   const publicInfoModal = useModalState();
   const [selectedCharacter, setSelectedCharacter] = useState<PublicCharacter | null>(null);
+  const [ownerNames, setOwnerNames] = useState<Record<string, string>>({});
 
   const menuItems = useGameMenuItems({ isGM, onCreateCharacter: createModal.open });
 
@@ -37,6 +39,31 @@ export default function GamePage() {
       setSearchParams({}, { replace: true });
     }
   }, [searchParams, setSearchParams, createModal]);
+
+  // Load owner names for other characters
+  useEffect(() => {
+    const loadOwnerNames = async () => {
+      if (!firebaseUser || characters.length === 0) return;
+
+      // Get unique owner IDs (excluding current user)
+      const otherOwnerIds = [...new Set(
+        characters
+          .filter(c => c.ownerId !== firebaseUser.uid)
+          .map(c => c.ownerId)
+      )];
+
+      if (otherOwnerIds.length === 0) return;
+
+      const users = await getUsers(otherOwnerIds);
+      const namesMap: Record<string, string> = {};
+      users.forEach(user => {
+        namesMap[user.uid] = user.displayName;
+      });
+      setOwnerNames(namesMap);
+    };
+
+    loadOwnerNames();
+  }, [characters, firebaseUser]);
 
   const canAccessFullSheet = (character: PublicCharacter) => {
     if (!firebaseUser) return false;
@@ -64,6 +91,44 @@ export default function GamePage() {
     setSelectedCharacter(null);
   };
 
+  const gmId = currentGame?.gmId;
+
+  // GM's characters (only shown to players, not to GM)
+  const gmCharacters = useMemo(() => {
+    if (!firebaseUser || isGM || !gmId) return [];
+    return characters
+      .filter((c) => c.ownerId === gmId && c.ownerId !== firebaseUser.uid)
+      .sort((a, b) => a.name.localeCompare(b.name));
+  }, [characters, firebaseUser, gmId, isGM]);
+
+  // Sort other characters by owner name, then by character name (excluding GM's characters for players)
+  const otherCharacters = useMemo(() => {
+    if (!firebaseUser) return [];
+    return characters
+      .filter((c) => {
+        // Exclude my characters
+        if (c.ownerId === firebaseUser.uid) return false;
+        // For players: exclude GM's characters (they go to separate section)
+        if (!isGM && gmId && c.ownerId === gmId) return false;
+        return true;
+      })
+      .sort((a, b) => {
+        const ownerA = ownerNames[a.ownerId] || '';
+        const ownerB = ownerNames[b.ownerId] || '';
+        // First sort by owner name
+        const ownerCompare = ownerA.localeCompare(ownerB);
+        if (ownerCompare !== 0) return ownerCompare;
+        // Then by character name
+        return a.name.localeCompare(b.name);
+      });
+  }, [characters, firebaseUser, ownerNames, isGM, gmId]);
+
+  // My characters
+  const myCharacters = useMemo(() => {
+    if (!firebaseUser) return [];
+    return characters.filter((c) => c.ownerId === firebaseUser.uid);
+  }, [characters, firebaseUser]);
+
   if (charactersLoading || !firebaseUser) {
     return (
       <PageLayout>
@@ -71,9 +136,6 @@ export default function GamePage() {
       </PageLayout>
     );
   }
-
-  const myCharacters = characters.filter((c) => c.ownerId === firebaseUser.uid);
-  const otherCharacters = characters.filter((c) => c.ownerId !== firebaseUser.uid);
 
   return (
     <PageLayout>
@@ -113,6 +175,20 @@ export default function GamePage() {
             </PageSection>
           )}
 
+          {gmCharacters.length > 0 && (
+            <PageSection title="GM Characters" count={gmCharacters.length}>
+              <PageGrid>
+                {gmCharacters.map((character) => (
+                  <CharacterCard
+                    key={character.id}
+                    character={character}
+                    onClick={() => handleCharacterClick(character)}
+                  />
+                ))}
+              </PageGrid>
+            </PageSection>
+          )}
+
           {otherCharacters.length > 0 && (
             <PageSection title="Other Characters" count={otherCharacters.length}>
               <PageGrid>
@@ -122,6 +198,7 @@ export default function GamePage() {
                     character={character}
                     onClick={() => handleCharacterClick(character)}
                     showHiddenBadge={isGM}
+                    ownerName={ownerNames[character.ownerId]}
                   />
                 ))}
               </PageGrid>
