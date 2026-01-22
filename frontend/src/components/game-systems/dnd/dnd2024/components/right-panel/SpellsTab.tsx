@@ -392,31 +392,72 @@ export function SpellsTab({ character, gameId }: SpellsTabProps) {
 
               {isExpanded && (
                 <div className="cs-spell-level-content">
-                  {levelSpells.map((spell) => (
-                    <div
-                      key={spell.id}
-                      className={`cs-spell-row ${spell.prepared ? 'prepared' : ''} ${spell.concentration ? 'concentration' : ''}`}
-                      onClick={() => setEditingSpell(spell)}
-                    >
-                      {level > 0 && (
-                        <div
-                          className="cs-spell-prepared"
-                          onClick={(e) => togglePrepared(spell.id, e)}
-                          title={spell.prepared ? 'Unprepare' : 'Prepare'}
-                        >
-                          {spell.prepared ? '●' : '○'}
-                        </div>
-                      )}
-                      <div className="cs-spell-name">
-                        {spell.name}
-                        {spell.concentration && <span className="cs-spell-badge cs-conc">C</span>}
-                        {spell.ritual && <span className="cs-spell-badge cs-ritual">R</span>}
-                      </div>
-                      <div className="cs-spell-casting-time">{spell.castingTime || '—'}</div>
-                    </div>
-                  ))}
+                  <table className="cs-data-table cs-spells-table">
+                    <thead>
+                      <tr>
+                        {level > 0 && <th className="cs-col-prepared"></th>}
+                        <th className="cs-col-name">Name</th>
+                        <th className="cs-col-time">Time</th>
+                        <th className="cs-col-hit">Hit/DC</th>
+                        <th className="cs-col-effect">Effect</th>
+                        <th className="cs-col-notes">Notes</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {levelSpells.map((spell) => {
+                        // Build Hit/DC display
+                        let hitDcDisplay: React.ReactNode = '—';
+                        if (spell.attackType === 'attack') {
+                          hitDcDisplay = spellAttackBonus >= 0 ? `+${spellAttackBonus}` : `${spellAttackBonus}`;
+                        } else if (spell.attackType === 'save' && spell.saveAbility) {
+                          const abilityAbbr = spell.saveAbility.toUpperCase();
+                          hitDcDisplay = (
+                            <div className="cs-save-dc">
+                              <span className="cs-save-ability">{abilityAbbr}</span>
+                              <span className="cs-save-value">{spellSaveDC}</span>
+                            </div>
+                          );
+                        }
+
+                        // Build Notes display
+                        const notes: string[] = [];
+                        if (spell.concentration) notes.push('C');
+                        if (spell.ritual) notes.push('R');
+                        const components: string[] = [];
+                        if (spell.componentV) components.push('V');
+                        if (spell.componentS) components.push('S');
+                        if (spell.componentM) components.push('M');
+                        if (components.length > 0) notes.push(components.join('/'));
+
+                        return (
+                          <tr
+                            key={spell.id}
+                            className={`cs-table-row ${spell.prepared ? 'prepared' : ''}`}
+                            onClick={() => setEditingSpell(spell)}
+                          >
+                            {level > 0 && (
+                              <td className="cs-cell-prepared">
+                                <span
+                                  className="cs-active-toggle"
+                                  onClick={(e) => togglePrepared(spell.id, e)}
+                                  title={spell.prepared ? 'Unprepare' : 'Prepare'}
+                                >
+                                  {spell.prepared ? '●' : '○'}
+                                </span>
+                              </td>
+                            )}
+                            <td className="cs-cell-name">{spell.name}</td>
+                            <td className="cs-cell-time">{spell.castingTime || '—'}</td>
+                            <td className="cs-cell-hit">{hitDcDisplay}</td>
+                            <td className="cs-cell-effect">{spell.damage || '—'}</td>
+                            <td className="cs-cell-notes">{notes.join(', ') || '—'}</td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
                   <button
-                    className="cs-spell-add-btn"
+                    className="cs-table-add-btn"
                     onClick={() => addSpell(level)}
                   >
                     + Add {level === 0 ? 'Cantrip' : 'Spell'}

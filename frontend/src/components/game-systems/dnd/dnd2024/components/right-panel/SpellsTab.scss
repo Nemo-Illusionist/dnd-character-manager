@@ -426,6 +426,85 @@
   background: rgba(255, 255, 255, 0.05);
 }
 
+/* ==================== SPELLS TABLE ==================== */
+
+/* Column widths */
+.cs-spells-table .cs-col-prepared {
+  width: 32px;
+  text-align: center;
+}
+
+.cs-spells-table .cs-col-name {
+  width: auto;
+}
+
+.cs-spells-table .cs-col-time {
+  width: 70px;
+}
+
+.cs-spells-table .cs-col-hit {
+  width: 50px;
+  text-align: center;
+}
+
+.cs-spells-table .cs-col-effect {
+  width: 70px;
+}
+
+.cs-spells-table .cs-col-notes {
+  width: 80px;
+}
+
+/* Cell styles */
+.cs-cell-prepared {
+  text-align: center;
+}
+
+.cs-cell-time {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.cs-cell-hit {
+  text-align: center;
+  font-weight: 600;
+}
+
+.cs-cell-effect {
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+}
+
+/* Save DC display (stacked ability + value) */
+.cs-save-dc {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1.2;
+}
+
+.cs-save-ability {
+  font-size: 0.625rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.cs-save-value {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+/* Prepared spell row */
+.cs-spells-table .cs-table-row.prepared {
+  background: rgba(124, 58, 237, 0.1);
+}
+
+.cs-spells-table .cs-table-row.prepared:hover {
+  background: rgba(124, 58, 237, 0.15);
+}
+
 /* Responsive */
 @include mobile {
   .cs-spellcasting-stats {
@@ -474,5 +553,36 @@
 
   .cs-spell-casting-time {
     font-size: 0.6875rem;
+  }
+
+  /* Spells table mobile */
+  .cs-spells-table .cs-col-time {
+    width: 55px;
+  }
+
+  .cs-spells-table .cs-col-hit {
+    width: 40px;
+  }
+
+  .cs-spells-table .cs-col-effect {
+    width: 55px;
+  }
+
+  .cs-spells-table .cs-col-notes {
+    width: 60px;
+  }
+
+  .cs-cell-time,
+  .cs-cell-effect,
+  .cs-cell-notes {
+    font-size: 0.6875rem;
+  }
+
+  .cs-save-ability {
+    font-size: 0.5625rem;
+  }
+
+  .cs-save-value {
+    font-size: 0.75rem;
   }
 }

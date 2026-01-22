@@ -255,15 +255,15 @@ export function SpellModal({ spell, onUpdate, onDelete, onClose }: SpellModalPro
             )}
           </div>
 
-          {/* Damage/Healing */}
+          {/* Effect */}
           <div className="cs-form-row">
             <div className="cs-form-group">
-              <label>Damage / Heal</label>
+              <label>Effect</label>
               <input
                 type="text"
                 value={localSpell.damage ?? ''}
                 onChange={(e) => updateLocal({ damage: e.target.value })}
-                placeholder="2d10, 8d6..."
+                placeholder="2d10, Combat, Utility..."
               />
             </div>
             <div className="cs-form-group">
