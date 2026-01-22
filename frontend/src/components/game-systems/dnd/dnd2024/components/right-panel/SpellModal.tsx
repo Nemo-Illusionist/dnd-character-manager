@@ -1,5 +1,6 @@
 // D&D 2024 - Spell Modal Component
 
+import { useState, useEffect } from 'react';
 import type { CharacterSpellEntry, MagicSchool } from 'shared';
 import '../modals/Modals.scss';
 
@@ -47,13 +48,49 @@ const CASTING_TIMES = [
 ];
 
 export function SpellModal({ spell, onUpdate, onDelete, onClose }: SpellModalProps) {
+  // Local state for responsive editing
+  const [localSpell, setLocalSpell] = useState<CharacterSpellEntry>(spell);
+
+  // Sync local state when spell changes from outside
+  useEffect(() => {
+    setLocalSpell(spell);
+  }, [spell.id]);
+
+  // Save changes and close
+  const handleClose = () => {
+    // Only update if there are changes
+    const changes: Partial<CharacterSpellEntry> = {};
+    if (localSpell.name !== spell.name) changes.name = localSpell.name;
+    if (localSpell.level !== spell.level) changes.level = localSpell.level;
+    if (localSpell.school !== spell.school) changes.school = localSpell.school;
+    if (localSpell.castingTime !== spell.castingTime) changes.castingTime = localSpell.castingTime;
+    if (localSpell.range !== spell.range) changes.range = localSpell.range;
+    if (localSpell.components !== spell.components) changes.components = localSpell.components;
+    if (localSpell.duration !== spell.duration) changes.duration = localSpell.duration;
+    if (localSpell.concentration !== spell.concentration) changes.concentration = localSpell.concentration;
+    if (localSpell.ritual !== spell.ritual) changes.ritual = localSpell.ritual;
+    if (localSpell.prepared !== spell.prepared) changes.prepared = localSpell.prepared;
+    if (localSpell.description !== spell.description) changes.description = localSpell.description;
+    if (localSpell.source !== spell.source) changes.source = localSpell.source;
+
+    if (Object.keys(changes).length > 0) {
+      onUpdate(changes);
+    }
+    onClose();
+  };
+
+  // Update local state
+  const updateLocal = (updates: Partial<CharacterSpellEntry>) => {
+    setLocalSpell((prev) => ({ ...prev, ...updates }));
+  };
+
   return (
-    <div className="cs-modal-overlay" onClick={onClose}>
+    <div className="cs-modal-overlay" onClick={handleClose}>
       <div className="cs-modal-content" onClick={(e) => e.stopPropagation()}>
         <div className="cs-modal-drag-handle" />
         <div className="cs-modal-header">
-          <h2>{spell.name || 'New Spell'}</h2>
-          <button className="cs-modal-close" onClick={onClose}>×</button>
+          <h2>{localSpell.name || 'New Spell'}</h2>
+          <button className="cs-modal-close" onClick={handleClose}>×</button>
         </div>
 
         <div className="cs-modal-body">
@@ -62,8 +99,8 @@ export function SpellModal({ spell, onUpdate, onDelete, onClose }: SpellModalPro
             <label>Name</label>
             <input
               type="text"
-              value={spell.name}
-              onChange={(e) => onUpdate({ name: e.target.value })}
+              value={localSpell.name}
+              onChange={(e) => updateLocal({ name: e.target.value })}
               placeholder="Spell name"
             />
           </div>
@@ -73,8 +110,8 @@ export function SpellModal({ spell, onUpdate, onDelete, onClose }: SpellModalPro
             <div className="cs-form-group">
               <label>Level</label>
               <select
-                value={spell.level}
-                onChange={(e) => onUpdate({ level: parseInt(e.target.value) })}
+                value={localSpell.level}
+                onChange={(e) => updateLocal({ level: parseInt(e.target.value) })}
               >
                 {SPELL_LEVELS.map((opt) => (
                   <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -84,8 +121,8 @@ export function SpellModal({ spell, onUpdate, onDelete, onClose }: SpellModalPro
             <div className="cs-form-group">
               <label>School</label>
               <select
-                value={spell.school || ''}
-                onChange={(e) => onUpdate({ school: (e.target.value as MagicSchool) || undefined })}
+                value={localSpell.school || ''}
+                onChange={(e) => updateLocal({ school: (e.target.value as MagicSchool) || undefined })}
               >
                 <option value="">—</option>
                 {MAGIC_SCHOOLS.map((opt) => (
@@ -100,8 +137,8 @@ export function SpellModal({ spell, onUpdate, onDelete, onClose }: SpellModalPro
             <div className="cs-form-group">
               <label>Casting Time</label>
               <select
-                value={spell.castingTime || ''}
-                onChange={(e) => onUpdate({ castingTime: e.target.value || undefined })}
+                value={localSpell.castingTime || ''}
+                onChange={(e) => updateLocal({ castingTime: e.target.value || undefined })}
               >
                 <option value="">—</option>
                 {CASTING_TIMES.map((time) => (
@@ -113,8 +150,8 @@ export function SpellModal({ spell, onUpdate, onDelete, onClose }: SpellModalPro
               <label>Range</label>
               <input
                 type="text"
-                value={spell.range ?? ''}
-                onChange={(e) => onUpdate({ range: e.target.value })}
+                value={localSpell.range ?? ''}
+                onChange={(e) => updateLocal({ range: e.target.value })}
                 placeholder="Self, Touch, 30 feet..."
               />
             </div>
@@ -126,8 +163,8 @@ export function SpellModal({ spell, onUpdate, onDelete, onClose }: SpellModalPro
               <label>Components</label>
               <input
                 type="text"
-                value={spell.components ?? ''}
-                onChange={(e) => onUpdate({ components: e.target.value })}
+                value={localSpell.components ?? ''}
+                onChange={(e) => updateLocal({ components: e.target.value })}
                 placeholder="V, S, M (a feather)"
               />
             </div>
@@ -135,8 +172,8 @@ export function SpellModal({ spell, onUpdate, onDelete, onClose }: SpellModalPro
               <label>Duration</label>
               <input
                 type="text"
-                value={spell.duration ?? ''}
-                onChange={(e) => onUpdate({ duration: e.target.value })}
+                value={localSpell.duration ?? ''}
+                onChange={(e) => updateLocal({ duration: e.target.value })}
                 placeholder="Instantaneous, 1 minute..."
               />
             </div>
@@ -148,8 +185,8 @@ export function SpellModal({ spell, onUpdate, onDelete, onClose }: SpellModalPro
               <label className="cs-checkbox-label">
                 <input
                   type="checkbox"
-                  checked={spell.concentration || false}
-                  onChange={(e) => onUpdate({ concentration: e.target.checked })}
+                  checked={localSpell.concentration || false}
+                  onChange={(e) => updateLocal({ concentration: e.target.checked })}
                 />
                 <span>Concentration</span>
               </label>
@@ -158,19 +195,19 @@ export function SpellModal({ spell, onUpdate, onDelete, onClose }: SpellModalPro
               <label className="cs-checkbox-label">
                 <input
                   type="checkbox"
-                  checked={spell.ritual || false}
-                  onChange={(e) => onUpdate({ ritual: e.target.checked })}
+                  checked={localSpell.ritual || false}
+                  onChange={(e) => updateLocal({ ritual: e.target.checked })}
                 />
                 <span>Ritual</span>
               </label>
             </div>
-            {spell.level > 0 && (
+            {localSpell.level > 0 && (
               <div className="cs-form-group cs-checkbox-group">
                 <label className="cs-checkbox-label">
                   <input
                     type="checkbox"
-                    checked={spell.prepared || false}
-                    onChange={(e) => onUpdate({ prepared: e.target.checked })}
+                    checked={localSpell.prepared || false}
+                    onChange={(e) => updateLocal({ prepared: e.target.checked })}
                   />
                   <span>Prepared</span>
                 </label>
@@ -182,8 +219,8 @@ export function SpellModal({ spell, onUpdate, onDelete, onClose }: SpellModalPro
           <div className="cs-form-group">
             <label>Description</label>
             <textarea
-              value={spell.description ?? ''}
-              onChange={(e) => onUpdate({ description: e.target.value })}
+              value={localSpell.description ?? ''}
+              onChange={(e) => updateLocal({ description: e.target.value })}
               placeholder="Spell description..."
               rows={4}
             />
@@ -194,8 +231,8 @@ export function SpellModal({ spell, onUpdate, onDelete, onClose }: SpellModalPro
             <label>Source</label>
             <input
               type="text"
-              value={spell.source ?? ''}
-              onChange={(e) => onUpdate({ source: e.target.value })}
+              value={localSpell.source ?? ''}
+              onChange={(e) => updateLocal({ source: e.target.value })}
               placeholder="PHB 279, XGE 152..."
             />
           </div>

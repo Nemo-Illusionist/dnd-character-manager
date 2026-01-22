@@ -11,10 +11,26 @@ interface ActionsTabProps {
   gameId: string;
 }
 
+const ACTION_FILTERS = [
+  { id: 'all', label: 'All' },
+  { id: 'action', label: 'Action' },
+  { id: 'bonus', label: 'Bonus' },
+  { id: 'reaction', label: 'Reaction' },
+  { id: 'free', label: 'Free' },
+  { id: 'other', label: 'Other' },
+] as const;
+
+type FilterType = typeof ACTION_FILTERS[number]['id'];
+
 export function ActionsTab({ character, gameId }: ActionsTabProps) {
   const [editingAction, setEditingAction] = useState<CharacterAction | null>(null);
+  const [filter, setFilter] = useState<FilterType>('all');
 
   const actions = character.actions || [];
+
+  const filteredActions = filter === 'all'
+    ? actions
+    : actions.filter((action) => action.actionType === filter);
 
   const generateId = () => Math.random().toString(36).substring(2, 9);
 
@@ -22,6 +38,7 @@ export function ActionsTab({ character, gameId }: ActionsTabProps) {
     const newAction: CharacterAction = {
       id: generateId(),
       name: 'New Action',
+      actionType: 'action',
     };
     await updateCharacter(gameId, character.id, {
       actions: [...actions, newAction],
@@ -36,17 +53,15 @@ export function ActionsTab({ character, gameId }: ActionsTabProps) {
     await updateCharacter(gameId, character.id, {
       actions: updatedActions,
     });
-    // Update local editing state too
-    if (editingAction?.id === id) {
-      setEditingAction({ ...editingAction, ...updates });
-    }
   };
 
   const deleteAction = async (id: string) => {
+    // Close modal immediately for responsive UI
+    setEditingAction(null);
+    // Delete in background
     await updateCharacter(gameId, character.id, {
       actions: actions.filter((a) => a.id !== id),
     });
-    setEditingAction(null);
   };
 
   // Calculate attack bonus for display
@@ -72,7 +87,21 @@ export function ActionsTab({ character, gameId }: ActionsTabProps) {
 
   return (
     <div className="cs-actions-tab">
-      <table className="cs-actions-table">
+      {/* Filter tabs */}
+      <div className="cs-tab-filters">
+        {ACTION_FILTERS.map((type) => (
+          <button
+            key={type.id}
+            className={`cs-filter-btn ${filter === type.id ? 'active' : ''}`}
+            onClick={() => setFilter(type.id)}
+          >
+            {type.label}
+          </button>
+        ))}
+      </div>
+
+      {/* Actions table */}
+      <table className="cs-data-table">
         <thead>
           <tr>
             <th className="cs-col-name">Name</th>
@@ -82,21 +111,29 @@ export function ActionsTab({ character, gameId }: ActionsTabProps) {
           </tr>
         </thead>
         <tbody>
-          {actions.map((action) => (
-            <tr
-              key={action.id}
-              className="cs-action-row"
-              onClick={() => setEditingAction(action)}
-            >
-              <td className="cs-action-name">{action.name || '—'}</td>
-              <td>{getAttackBonus(action)}</td>
-              <td>{getDamageDisplay(action)}</td>
-              <td>{action.damageType || '—'}</td>
+          {filteredActions.length === 0 ? (
+            <tr className="cs-table-empty-row">
+              <td colSpan={4}>No actions</td>
             </tr>
-          ))}
+          ) : (
+            filteredActions.map((action) => (
+              <tr
+                key={action.id}
+                className="cs-table-row"
+                onClick={() => setEditingAction(action)}
+              >
+                <td className="cs-cell-name">{action.name || '—'}</td>
+                <td>{getAttackBonus(action)}</td>
+                <td>{getDamageDisplay(action)}</td>
+                <td>{action.damageType || '—'}</td>
+              </tr>
+            ))
+          )}
         </tbody>
       </table>
-      <button className="cs-action-add" onClick={addAction}>
+
+      {/* Add button - full width */}
+      <button className="cs-table-add-btn" onClick={addAction}>
         + Add Action
       </button>
 

@@ -17,6 +17,7 @@ const ITEM_TYPES = [
   { id: 'gear', label: 'Gear' },
   { id: 'consumable', label: 'Consumable' },
   { id: 'treasure', label: 'Treasure' },
+  { id: 'other', label: 'Other' },
 ] as const;
 
 type FilterType = typeof ITEM_TYPES[number]['id'];
@@ -38,7 +39,6 @@ export function InventoryTab({ character, gameId }: InventoryTabProps) {
       id: generateId(),
       name: 'New Item',
       type: 'gear',
-      quantity: 1,
     };
     await updateCharacter(gameId, character.id, {
       inventoryItems: [...items, newItem],
@@ -53,16 +53,15 @@ export function InventoryTab({ character, gameId }: InventoryTabProps) {
     await updateCharacter(gameId, character.id, {
       inventoryItems: updatedItems,
     });
-    if (editingItem?.id === id) {
-      setEditingItem({ ...editingItem, ...updates });
-    }
   };
 
   const deleteItem = async (id: string) => {
+    // Close modal immediately for responsive UI
+    setEditingItem(null);
+    // Delete in background
     await updateCharacter(gameId, character.id, {
       inventoryItems: items.filter((item) => item.id !== id),
     });
-    setEditingItem(null);
   };
 
   const toggleEquipped = async (id: string, e: React.MouseEvent) => {
@@ -73,9 +72,9 @@ export function InventoryTab({ character, gameId }: InventoryTabProps) {
     }
   };
 
-  // Calculate total weight
+  // Calculate total weight (treat undefined quantity as 1)
   const totalWeight = items.reduce((sum, item) => {
-    return sum + (item.weight || 0) * item.quantity;
+    return sum + (item.weight || 0) * (item.quantity ?? 1);
   }, 0);
 
   const updateCurrency = async (coin: keyof typeof character.currency, value: number) => {
@@ -129,7 +128,7 @@ export function InventoryTab({ character, gameId }: InventoryTabProps) {
       </div>
 
       {/* Filter tabs */}
-      <div className="cs-inventory-filters">
+      <div className="cs-tab-filters">
         {ITEM_TYPES.map((type) => (
           <button
             key={type.id}
@@ -141,43 +140,61 @@ export function InventoryTab({ character, gameId }: InventoryTabProps) {
         ))}
       </div>
 
-      {/* Items list */}
-      <div className="cs-inventory-list">
-        {filteredItems.length === 0 ? (
-          <div className="cs-inventory-empty">No items</div>
-        ) : (
-          filteredItems.map((item) => (
-            <div
-              key={item.id}
-              className={`cs-inventory-row ${item.equipped ? 'equipped' : ''}`}
-              onClick={() => setEditingItem(item)}
-            >
-              <div
-                className="cs-inventory-equipped"
-                onClick={(e) => toggleEquipped(item.id, e)}
-                title={item.equipped ? 'Unequip' : 'Equip'}
+      {/* Items table */}
+      <table className="cs-data-table">
+        <thead>
+          <tr>
+            <th className="cs-col-active">Active</th>
+            <th className="cs-col-name">Name</th>
+            <th className="cs-col-weight">Weight</th>
+            <th className="cs-col-qty">Qty</th>
+            <th className="cs-col-notes">Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          {filteredItems.length === 0 ? (
+            <tr className="cs-table-empty-row">
+              <td colSpan={5}>No items</td>
+            </tr>
+          ) : (
+            filteredItems.map((item) => (
+              <tr
+                key={item.id}
+                className={`cs-table-row ${item.equipped ? 'equipped' : ''}`}
+                onClick={() => setEditingItem(item)}
               >
-                {item.equipped ? '●' : '○'}
-              </div>
-              <div className="cs-inventory-name">
-                {item.name}
-                {item.attuned && <span className="cs-attuned-badge">A</span>}
-              </div>
-              <div className="cs-inventory-qty">{item.quantity > 1 ? `×${item.quantity}` : ''}</div>
-              <div className="cs-inventory-weight">{item.weight ? `${item.weight * item.quantity} lb` : ''}</div>
-            </div>
-          ))
-        )}
-      </div>
+                <td className="cs-cell-active">
+                  <span
+                    className="cs-active-toggle"
+                    onClick={(e) => toggleEquipped(item.id, e)}
+                    title={item.equipped ? 'Unequip' : 'Equip'}
+                  >
+                    {item.equipped ? '●' : '○'}
+                  </span>
+                </td>
+                <td className="cs-cell-name">
+                  {item.name}
+                  {item.attuned && <span className="cs-attuned-badge">A</span>}
+                </td>
+                <td className="cs-cell-weight">{item.weight ? `${item.weight}` : '—'}</td>
+                <td className="cs-cell-qty">{item.quantity != null ? item.quantity : '—'}</td>
+                <td className="cs-cell-notes">{item.description || '—'}</td>
+              </tr>
+            ))
+          )}
+        </tbody>
+      </table>
 
-      {/* Footer with total weight and add button */}
-      <div className="cs-inventory-footer">
-        <div className="cs-inventory-total">
+      {/* Add button - full width */}
+      <button className="cs-table-add-btn" onClick={addItem}>
+        + Add Item
+      </button>
+
+      {/* Footer with total weight */}
+      <div className="cs-table-footer">
+        <div className="cs-total-weight">
           Total: {totalWeight.toFixed(1)} lb
         </div>
-        <button className="cs-action-add" onClick={addItem}>
-          + Add Item
-        </button>
       </div>
 
       {editingItem && (

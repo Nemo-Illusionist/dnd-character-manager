@@ -282,9 +282,21 @@ export interface CharacterSpell {
   prepared: boolean;
 }
 
+// Action types for filtering (D&D Beyond style)
+export type ActionType = 'action' | 'bonus' | 'reaction' | 'free' | 'other';
+
+export const ACTION_TYPE_NAMES: Record<ActionType, string> = {
+  action: 'Action',
+  bonus: 'Bonus',
+  reaction: 'Reaction',
+  free: 'Free',
+  other: 'Other',
+};
+
 export interface CharacterAction {
   id: string;                   // Unique ID for the action
   name: string;                 // Action name (e.g., "Longsword", "Fireball")
+  actionType?: ActionType;      // Type of action for filtering
   ability?: AbilityName;        // Ability used for attack (str, dex, etc.)
   proficient?: boolean;         // Whether proficiency bonus applies
   extraBonus?: number;          // Additional bonus to attack
@@ -298,7 +310,7 @@ export interface InventoryItem {
   id: string;                   // Unique ID
   name: string;                 // Item name
   type: 'weapon' | 'armor' | 'gear' | 'consumable' | 'treasure' | 'other';
-  quantity: number;             // Amount
+  quantity?: number;            // Amount (optional - undefined for standard items, number for consumables)
   weight?: number;              // Weight in lbs
   equipped?: boolean;           // Is item equipped
   attuned?: boolean;            // Is item attuned (for magic items)

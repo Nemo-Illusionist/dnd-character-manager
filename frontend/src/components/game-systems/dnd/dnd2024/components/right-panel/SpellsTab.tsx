@@ -108,11 +108,6 @@ export function SpellsTab({ character, gameId }: SpellsTabProps) {
   };
 
   const updateSpell = async (id: string, updates: Partial<CharacterSpellEntry>) => {
-    // Update local state immediately for responsive UI
-    if (editingSpell?.id === id) {
-      setEditingSpell({ ...editingSpell, ...updates });
-    }
-
     const updatedSpells = spells.map((s) =>
       s.id === id ? { ...s, ...updates } : s
     );
@@ -122,10 +117,12 @@ export function SpellsTab({ character, gameId }: SpellsTabProps) {
   };
 
   const deleteSpell = async (id: string) => {
+    // Close modal immediately for responsive UI
+    setEditingSpell(null);
+    // Delete in background
     await updateCharacter(gameId, character.id, {
       spellEntries: spells.filter((s) => s.id !== id),
     });
-    setEditingSpell(null);
   };
 
   const togglePrepared = async (id: string, e: React.MouseEvent) => {

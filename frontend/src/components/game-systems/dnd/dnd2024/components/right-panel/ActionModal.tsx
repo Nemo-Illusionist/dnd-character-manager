@@ -1,8 +1,10 @@
 // D&D 2024 - Action Modal Component
 
+import { useState, useEffect } from 'react';
 import { NumberInput } from '../../../../../shared';
 import { ABILITY_NAMES, ABILITY_ORDER, DAMAGE_TYPES } from '../../constants';
-import type { CharacterAction, AbilityName } from 'shared';
+import type { CharacterAction, AbilityName, ActionType } from 'shared';
+import { ACTION_TYPE_NAMES } from 'shared';
 import '../modals/Modals.scss';
 
 interface ActionModalProps {
@@ -12,14 +14,49 @@ interface ActionModalProps {
   onClose: () => void;
 }
 
+const ACTION_TYPES: ActionType[] = ['action', 'bonus', 'reaction', 'free', 'other'];
+
 export function ActionModal({ action, onUpdate, onDelete, onClose }: ActionModalProps) {
+  // Local state for responsive editing
+  const [localAction, setLocalAction] = useState<CharacterAction>(action);
+
+  // Sync local state when action changes from outside
+  useEffect(() => {
+    setLocalAction(action);
+  }, [action.id]);
+
+  // Save changes and close
+  const handleClose = () => {
+    // Only update if there are changes
+    const changes: Partial<CharacterAction> = {};
+    if (localAction.name !== action.name) changes.name = localAction.name;
+    if (localAction.actionType !== action.actionType) changes.actionType = localAction.actionType;
+    if (localAction.ability !== action.ability) changes.ability = localAction.ability;
+    if (localAction.proficient !== action.proficient) changes.proficient = localAction.proficient;
+    if (localAction.extraBonus !== action.extraBonus) changes.extraBonus = localAction.extraBonus;
+    if (localAction.damage !== action.damage) changes.damage = localAction.damage;
+    if (localAction.damageBonus !== action.damageBonus) changes.damageBonus = localAction.damageBonus;
+    if (localAction.damageType !== action.damageType) changes.damageType = localAction.damageType;
+    if (localAction.notes !== action.notes) changes.notes = localAction.notes;
+
+    if (Object.keys(changes).length > 0) {
+      onUpdate(changes);
+    }
+    onClose();
+  };
+
+  // Update local state
+  const updateLocal = (updates: Partial<CharacterAction>) => {
+    setLocalAction((prev) => ({ ...prev, ...updates }));
+  };
+
   return (
-    <div className="cs-modal-overlay" onClick={onClose}>
+    <div className="cs-modal-overlay" onClick={handleClose}>
       <div className="cs-modal-content" onClick={(e) => e.stopPropagation()}>
         <div className="cs-modal-drag-handle" />
         <div className="cs-modal-header">
-          <h2>{action.name || 'New Action'}</h2>
-          <button className="cs-modal-close" onClick={onClose}>×</button>
+          <h2>{localAction.name || 'New Action'}</h2>
+          <button className="cs-modal-close" onClick={handleClose}>×</button>
         </div>
 
         <div className="cs-modal-body">
@@ -28,10 +65,23 @@ export function ActionModal({ action, onUpdate, onDelete, onClose }: ActionModal
             <label>Name</label>
             <input
               type="text"
-              value={action.name}
-              onChange={(e) => onUpdate({ name: e.target.value })}
+              value={localAction.name}
+              onChange={(e) => updateLocal({ name: e.target.value })}
               placeholder="Action name"
             />
+          </div>
+
+          {/* Action Type */}
+          <div className="cs-form-group">
+            <label>Action Type</label>
+            <select
+              value={localAction.actionType || 'action'}
+              onChange={(e) => updateLocal({ actionType: e.target.value as ActionType })}
+            >
+              {ACTION_TYPES.map((type) => (
+                <option key={type} value={type}>{ACTION_TYPE_NAMES[type]}</option>
+              ))}
+            </select>
           </div>
 
           {/* Attack settings */}
@@ -39,8 +89,8 @@ export function ActionModal({ action, onUpdate, onDelete, onClose }: ActionModal
             <div className="cs-form-group">
               <label>Ability</label>
               <select
-                value={action.ability || ''}
-                onChange={(e) => onUpdate({ ability: (e.target.value as AbilityName) || undefined })}
+                value={localAction.ability || ''}
+                onChange={(e) => updateLocal({ ability: (e.target.value as AbilityName) || undefined })}
               >
                 <option value="">—</option>
                 {ABILITY_ORDER.map((ab) => (
@@ -51,8 +101,8 @@ export function ActionModal({ action, onUpdate, onDelete, onClose }: ActionModal
             <div className="cs-form-group">
               <label>Extra Bonus</label>
               <NumberInput
-                value={action.extraBonus || 0}
-                onChange={(value) => onUpdate({ extraBonus: value })}
+                value={localAction.extraBonus || 0}
+                onChange={(value) => updateLocal({ extraBonus: value })}
                 defaultValue={0}
               />
             </div>
@@ -63,8 +113,8 @@ export function ActionModal({ action, onUpdate, onDelete, onClose }: ActionModal
             <label className="cs-checkbox-label">
               <input
                 type="checkbox"
-                checked={action.proficient || false}
-                onChange={(e) => onUpdate({ proficient: e.target.checked })}
+                checked={localAction.proficient || false}
+                onChange={(e) => updateLocal({ proficient: e.target.checked })}
               />
               <span>Proficient</span>
             </label>
@@ -76,16 +126,16 @@ export function ActionModal({ action, onUpdate, onDelete, onClose }: ActionModal
               <label>Damage</label>
               <input
                 type="text"
-                value={action.damage ?? ''}
-                onChange={(e) => onUpdate({ damage: e.target.value })}
+                value={localAction.damage ?? ''}
+                onChange={(e) => updateLocal({ damage: e.target.value })}
                 placeholder="1d8"
               />
             </div>
             <div className="cs-form-group">
               <label>Damage Bonus</label>
               <NumberInput
-                value={action.damageBonus || 0}
-                onChange={(value) => onUpdate({ damageBonus: value })}
+                value={localAction.damageBonus || 0}
+                onChange={(value) => updateLocal({ damageBonus: value })}
                 defaultValue={0}
               />
             </div>
@@ -94,8 +144,8 @@ export function ActionModal({ action, onUpdate, onDelete, onClose }: ActionModal
           <div className="cs-form-group">
             <label>Damage Type</label>
             <select
-              value={action.damageType ?? ''}
-              onChange={(e) => onUpdate({ damageType: e.target.value || undefined })}
+              value={localAction.damageType ?? ''}
+              onChange={(e) => updateLocal({ damageType: e.target.value || undefined })}
             >
               <option value="">—</option>
               {DAMAGE_TYPES.map((type) => (
@@ -108,8 +158,8 @@ export function ActionModal({ action, onUpdate, onDelete, onClose }: ActionModal
           <div className="cs-form-group">
             <label>Notes</label>
             <textarea
-              value={action.notes ?? ''}
-              onChange={(e) => onUpdate({ notes: e.target.value })}
+              value={localAction.notes ?? ''}
+              onChange={(e) => updateLocal({ notes: e.target.value })}
               placeholder="Additional notes..."
               rows={3}
             />

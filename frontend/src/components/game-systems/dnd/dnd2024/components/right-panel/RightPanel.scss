@@ -155,20 +155,30 @@
   overflow-y: auto;
 }
 
-/* ==================== ACTIONS TABLE ==================== */
+/* ==================== UNIFIED TAB FILTERS ==================== */
 
-.cs-actions-tab {
+.cs-tab-filters {
+  display: flex;
+  gap: 0.25rem;
+  flex-wrap: wrap;
+}
+
+/* ==================== UNIFIED DATA TABLE ==================== */
+
+.cs-actions-tab,
+.cs-inventory-tab {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
+  height: 100%;
 }
 
-.cs-actions-table {
+.cs-data-table {
   width: 100%;
   border-collapse: collapse;
 }
 
-.cs-actions-table th {
+.cs-data-table th {
   text-align: left;
   padding: 0.5rem 0.5rem;
   font-size: 0.6875rem;
@@ -179,7 +189,7 @@
   border-bottom: 1px solid var(--border);
 }
 
-.cs-actions-table td {
+.cs-data-table td {
   padding: 0.625rem 0.5rem;
   vertical-align: middle;
   font-size: 0.875rem;
@@ -187,25 +197,75 @@
 }
 
 /* Clickable rows */
-.cs-action-row {
+.cs-table-row {
   cursor: pointer;
   transition: background 0.2s ease;
 }
 
-.cs-action-row:hover {
+.cs-table-row:hover {
   background: rgba(255, 255, 255, 0.05);
 }
 
-.cs-action-row td {
+.cs-table-row td {
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.cs-action-name {
-  font-weight: 600;
-  color: var(--text-primary);
+.cs-table-row.equipped {
+  background: rgba(124, 58, 237, 0.1);
 }
 
-/* Column widths */
+.cs-table-row.equipped:hover {
+  background: rgba(124, 58, 237, 0.15);
+}
+
+.cs-table-empty-row td {
+  padding: 1.5rem;
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+}
+
+/* Cell styles */
+.cs-cell-name {
+  font-weight: 600;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.cs-cell-active {
+  text-align: center;
+}
+
+.cs-active-toggle {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.cs-table-row.equipped .cs-active-toggle {
+  color: var(--accent);
+}
+
+.cs-cell-weight,
+.cs-cell-qty {
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 0.8125rem;
+}
+
+.cs-cell-notes {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  max-width: 100px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Column widths - Actions */
 .cs-col-name {
   width: 35%;
 }
@@ -222,9 +282,44 @@
   width: 25%;
 }
 
-/* Add action button */
-.cs-action-add {
-  padding: 0.5rem 1rem;
+/* Column widths - Inventory */
+.cs-col-active {
+  width: 48px;
+  text-align: center;
+}
+
+.cs-col-weight {
+  width: 60px;
+  text-align: center;
+}
+
+.cs-col-qty {
+  width: 48px;
+  text-align: center;
+}
+
+.cs-col-notes {
+  width: 100px;
+}
+
+/* Table footer with total */
+.cs-table-footer {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--border);
+}
+
+.cs-total-weight {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+/* Add button - full width */
+.cs-table-add-btn {
+  width: 100%;
+  padding: 0.625rem 1rem;
   background: rgba(124, 58, 237, 0.2);
   border: 1px dashed var(--accent);
   border-radius: 8px;
@@ -235,18 +330,11 @@
   transition: all 0.2s ease;
 }
 
-.cs-action-add:hover {
+.cs-table-add-btn:hover {
   background: rgba(124, 58, 237, 0.3);
 }
 
-/* ==================== INVENTORY TAB ==================== */
-
-.cs-inventory-tab {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  height: 100%;
-}
+/* ==================== INVENTORY TAB - COINS ==================== */
 
 /* Coins section */
 .cs-coins-section {
@@ -305,13 +393,7 @@
   -moz-appearance: textfield;
 }
 
-/* Filter tabs */
-.cs-inventory-filters {
-  display: flex;
-  gap: 0.25rem;
-  flex-wrap: wrap;
-}
-
+/* Filter button styles (shared) */
 .cs-filter-btn {
   padding: 0.375rem 0.625rem;
   background: transparent;
@@ -335,67 +417,7 @@
   color: #fff;
 }
 
-/* Items list */
-.cs-inventory-list {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-  overflow-y: auto;
-}
-
-.cs-inventory-empty {
-  padding: 2rem;
-  text-align: center;
-  color: var(--text-secondary);
-  font-size: 0.875rem;
-}
-
-.cs-inventory-row {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 0.75rem;
-  background: rgba(255, 255, 255, 0.03);
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background 0.2s ease;
-}
-
-.cs-inventory-row:hover {
-  background: rgba(255, 255, 255, 0.06);
-}
-
-.cs-inventory-row.equipped {
-  background: rgba(124, 58, 237, 0.15);
-}
-
-.cs-inventory-row.equipped:hover {
-  background: rgba(124, 58, 237, 0.2);
-}
-
-.cs-inventory-equipped {
-  font-size: 0.75rem;
-  color: var(--text-secondary);
-  width: 16px;
-  text-align: center;
-  cursor: pointer;
-}
-
-.cs-inventory-row.equipped .cs-inventory-equipped {
-  color: var(--accent);
-}
-
-.cs-inventory-name {
-  flex: 1;
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: var(--text-primary);
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
+/* Attuned badge */
 .cs-attuned-badge {
   font-size: 0.625rem;
   font-weight: 700;
@@ -403,35 +425,6 @@
   background: rgba(124, 58, 237, 0.2);
   padding: 0.125rem 0.375rem;
   border-radius: 4px;
-}
-
-.cs-inventory-qty {
-  font-size: 0.8125rem;
-  color: var(--text-secondary);
-  min-width: 32px;
-  text-align: right;
-}
-
-.cs-inventory-weight {
-  font-size: 0.75rem;
-  color: var(--text-secondary);
-  min-width: 48px;
-  text-align: right;
-}
-
-/* Footer */
-.cs-inventory-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  padding-top: 0.5rem;
-  border-top: 1px solid var(--border);
-}
-
-.cs-inventory-total {
-  font-size: 0.8125rem;
-  color: var(--text-secondary);
 }
 
 /* ==================== BIOGRAPHY TAB ==================== */
