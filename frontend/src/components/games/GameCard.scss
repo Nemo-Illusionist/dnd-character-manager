@@ -1,6 +1,9 @@
 .game-card {
   cursor: pointer;
   transition: all 0.2s;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 
   &:hover {
     transform: translateY(-2px);
@@ -63,6 +66,7 @@
   line-clamp: 2;
   -webkit-box-orient: vertical;
   word-break: break-word;
+  flex-grow: 1;
 }
 
 .game-card-footer {
@@ -71,6 +75,7 @@
   justify-content: space-between;
   padding-top: 0.75rem;
   border-top: 1px solid var(--bg-tertiary);
+  margin-top: auto;
 }
 
 .game-card-players {
