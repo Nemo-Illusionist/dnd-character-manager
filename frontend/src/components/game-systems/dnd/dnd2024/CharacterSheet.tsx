@@ -32,6 +32,7 @@ export function CharacterSheet({ character, gameId }: CharacterSheetProps) {
   const [conditionsOpen, setConditionsOpen] = useState(false);
   const lastScrollY = useRef(0);
   const isManualToggle = useRef(false);
+  const waitingAtTop = useRef(false); // Flag for "stop" at top before expanding
 
   // Track window width for mobile/tablet mode
   useEffect(() => {
@@ -76,14 +77,27 @@ export function CharacterSheet({ character, gameId }: CharacterSheetProps) {
       }
 
       const currentScrollY = window.scrollY;
+      const scrollingUp = currentScrollY < lastScrollY.current;
 
-      // Expand when at top
+      // At top of page
       if (currentScrollY <= 10) {
-        setHeaderExpanded(true);
+        // If already waiting at top and user tries to scroll up again → expand
+        if (waitingAtTop.current && scrollingUp) {
+          setHeaderExpanded(true);
+          waitingAtTop.current = false;
+        } else if (!headerExpanded && !waitingAtTop.current) {
+          // First time reaching top while collapsed → wait for second gesture
+          waitingAtTop.current = true;
+        }
       }
-      // Collapse when scrolling down past threshold
-      else if (currentScrollY > lastScrollY.current && currentScrollY > SCROLL_THRESHOLD) {
-        setHeaderExpanded(false);
+      // Scrolled down from top → reset the waiting flag
+      else if (currentScrollY > 10) {
+        waitingAtTop.current = false;
+
+        // Collapse when scrolling down past threshold
+        if (currentScrollY > lastScrollY.current && currentScrollY > SCROLL_THRESHOLD) {
+          setHeaderExpanded(false);
+        }
       }
 
       lastScrollY.current = currentScrollY;

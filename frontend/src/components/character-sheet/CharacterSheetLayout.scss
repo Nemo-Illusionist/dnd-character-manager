@@ -190,6 +190,8 @@
 @include mobile {
   .character-sheet-page {
     padding: 0.75rem;
+    /* Extra padding at bottom to ensure content can scroll fully into view */
+    padding-bottom: 5rem;
   }
 }
 
