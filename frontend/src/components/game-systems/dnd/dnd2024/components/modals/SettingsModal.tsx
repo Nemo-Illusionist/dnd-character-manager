@@ -44,25 +44,7 @@ export function SettingsModal({ character, gameId, onClose }: SettingsModalProps
         </div>
 
         <div className="cs-modal-body">
-          <div className="cs-form-group">
-            <label>Name</label>
-            <input
-              type="text"
-              value={character.name}
-              onChange={(e) => update({ name: e.target.value })}
-            />
-          </div>
-
-          <div className="cs-form-group">
-            <label>Background</label>
-            <input
-              type="text"
-              value={character.race}
-              onChange={(e) => update({ race: e.target.value })}
-            />
-          </div>
-
-          {isGM && players.length > 0 && (
+          {isGM && players.length > 0 ? (
             <div className="cs-form-group">
               <label>Owner</label>
               <select
@@ -77,6 +59,8 @@ export function SettingsModal({ character, gameId, onClose }: SettingsModalProps
                 ))}
               </select>
             </div>
+          ) : (
+            <p style={{ color: 'var(--text-secondary)' }}>No settings available.</p>
           )}
         </div>
       </div>

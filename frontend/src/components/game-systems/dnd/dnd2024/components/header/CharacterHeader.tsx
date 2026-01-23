@@ -4,7 +4,7 @@ import { useModalState, useCharacterMutation } from '../../../../../../hooks';
 import { getAbilityModifier } from '../../../core';
 import { getProficiencyBonus } from '../../constants';
 import { HPBoxDesktop, HPBoxMobile, HPModal } from '../hp';
-import { SettingsModal, LevelXPModal, ConditionsModal, CombatStatsModal } from '../modals';
+import { LevelXPModal, ConditionsModal, CombatStatsModal } from '../modals';
 import type { Character } from 'shared';
 import './CharacterHeader.scss';
 
@@ -17,7 +17,6 @@ interface CharacterHeaderProps {
 
 export function CharacterHeader({ character, gameId, expanded, onToggleExpand }: CharacterHeaderProps) {
   // Modal states using the new hook
-  const settingsModal = useModalState();
   const levelModal = useModalState();
   const hpModal = useModalState();
   const conditionsModal = useModalState();
@@ -45,12 +44,7 @@ export function CharacterHeader({ character, gameId, expanded, onToggleExpand }:
         {/* Desktop Layout */}
         <div className="cs-header-desktop">
           <div className="cs-header-left">
-            <div className="cs-name-block">
-              <h1 className="cs-name">{character.name}</h1>
-              <button className="cs-settings-btn" onClick={settingsModal.open}>
-                ⚙️
-              </button>
-            </div>
+            <h1 className="cs-name">{character.name}</h1>
             <p className="cs-subtitle">{character.race}</p>
             <p className="cs-subtitle">{character.class} {character.subclass && `(${character.subclass})`}</p>
             <button className="cs-level-btn" onClick={levelModal.open}>
@@ -82,12 +76,7 @@ export function CharacterHeader({ character, gameId, expanded, onToggleExpand }:
           {/* Expandable content - always rendered, visibility controlled by CSS */}
           <div className={`cs-mobile-expanded ${expanded ? 'expanded' : 'collapsed'}`}>
             <div className="cs-mobile-expanded-inner">
-              <div className="cs-name-block">
-                <h1 className="cs-name">{character.name}</h1>
-                <button className="cs-settings-btn" onClick={settingsModal.open}>
-                  ⚙️
-                </button>
-              </div>
+              <h1 className="cs-name">{character.name}</h1>
               <p className="cs-subtitle">
                 {character.race} — {character.class} {character.subclass && `(${character.subclass})`}
               </p>
@@ -160,14 +149,6 @@ export function CharacterHeader({ character, gameId, expanded, onToggleExpand }:
       </div>
 
       {/* Modals */}
-      {settingsModal.isOpen && (
-        <SettingsModal
-          character={character}
-          gameId={gameId}
-          onClose={settingsModal.close}
-        />
-      )}
-
       {levelModal.isOpen && (
         <LevelXPModal
           character={character}

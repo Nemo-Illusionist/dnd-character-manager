@@ -1,8 +1,12 @@
 // D&D 2024 - Biography Tab Component
 
 import { useState, useEffect } from 'react';
+import { useAuth } from '../../../../../../hooks';
+import { useGame } from '../../../../../../context/GameContext';
+import { isGameMaster } from '../../../../../../services/games.service';
 import { updateCharacter } from '../../../../../../services/characters.service';
-import type { Character } from 'shared';
+import { getUsers } from '../../../../../../services/users.service';
+import type { Character, User } from 'shared';
 
 interface BiographyTabProps {
   character: Character;
@@ -50,8 +54,25 @@ function useNumberInput(externalValue: number | undefined, onCommit: (value: num
 }
 
 export function BiographyTab({ character, gameId }: BiographyTabProps) {
+  const { firebaseUser } = useAuth();
+  const { currentGame } = useGame();
+  const [players, setPlayers] = useState<User[]>([]);
+
+  const isGM = currentGame && firebaseUser ? isGameMaster(currentGame, firebaseUser.uid) : false;
+
+  // Load players for GM
+  useEffect(() => {
+    if (!isGM || !currentGame) return;
+    const allPlayerIds = [currentGame.gmId, ...currentGame.playerIds.filter(id => id !== currentGame.gmId)];
+    getUsers(allPlayerIds).then(setPlayers);
+  }, [isGM, currentGame]);
+
   const biography = character.biography || {};
   const appearance = biography.appearance || {};
+
+  const update = (changes: Partial<Character>) => {
+    updateCharacter(gameId, character.id, changes);
+  };
 
   const updateBiography = async (field: string, value: string) => {
     await updateCharacter(gameId, character.id, {
@@ -79,6 +100,44 @@ export function BiographyTab({ character, gameId }: BiographyTabProps) {
 
   return (
     <div className="cs-biography-tab">
+      {/* Name & Background */}
+      <div className="cs-bio-identity">
+        <div className="cs-bio-field">
+          <label>Name</label>
+          <input
+            type="text"
+            value={character.name}
+            onChange={(e) => update({ name: e.target.value })}
+            placeholder="Character name"
+          />
+        </div>
+        <div className="cs-bio-field">
+          <label>Background</label>
+          <input
+            type="text"
+            value={character.race}
+            onChange={(e) => update({ race: e.target.value })}
+            placeholder="Species / Origin"
+          />
+        </div>
+        {isGM && players.length > 0 && (
+          <div className="cs-bio-field">
+            <label>Owner</label>
+            <select
+              value={character.ownerId}
+              onChange={(e) => update({ ownerId: e.target.value })}
+            >
+              {players.map((player) => (
+                <option key={player.uid} value={player.uid}>
+                  {player.displayName || player.email}
+                  {currentGame && player.uid === currentGame.gmId ? ' (GM)' : ''}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+      </div>
+
       {/* Alignment */}
       <div className="cs-bio-section">
         <label className="cs-bio-label">Alignment</label>
