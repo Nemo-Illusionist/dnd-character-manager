@@ -1,13 +1,11 @@
 // D&D 2024 - Spells Tab Component (D&D Beyond style)
 
-import { useState, useEffect, useRef } from 'react';
-import { NumberInput } from '../../../../../shared';
+import { useState } from 'react';
 import { updateCharacter } from '../../../../../../services/characters.service';
 import { getAbilityModifier } from '../../../core';
-import { ABILITY_ORDER, ABILITY_NAMES, getSpellSlotsForLevel, CASTER_TYPE_NAMES } from '../../constants';
-import type { SpellcasterType } from '../../constants';
+import { ABILITY_NAMES } from '../../constants';
 import { SpellModal } from './SpellModal';
-import type { Character, CharacterSpellEntry, AbilityName } from 'shared';
+import type { Character, CharacterSpellEntry } from 'shared';
 import './SpellsTab.scss';
 
 interface SpellsTabProps {
@@ -49,39 +47,16 @@ export function SpellsTab({ character, gameId }: SpellsTabProps) {
   const [editingSpell, setEditingSpell] = useState<CharacterSpellEntry | null>(null);
   const [filter, setFilter] = useState<FilterType>('all');
   const [expandedLevels, setExpandedLevels] = useState<Set<number>>(new Set([0, 1]));
-  const [showSettings, setShowSettings] = useState(false);
-  const prevLevelRef = useRef(character.level);
-  const prevCasterTypeRef = useRef(character.spellcasterType);
 
   const spells = character.spellEntries || [];
   const spellSlots = character.spellSlots || {};
   const spellcastingAbility = character.spellcastingAbility || 'int';
-  const spellcasterType = (character.spellcasterType || 'none') as SpellcasterType;
-  const showAllSpellLevels = character.showAllSpellLevels || false;
 
   // Calculate spellcasting stats
   const abilityScore = character.abilities[spellcastingAbility];
   const spellModifier = getAbilityModifier(abilityScore);
   const spellSaveDC = 8 + character.proficiencyBonus + spellModifier;
   const spellAttackBonus = character.proficiencyBonus + spellModifier;
-
-  // Determine max available spell level based on slots
-  const maxSlotLevel = Math.max(0, ...[1, 2, 3, 4, 5, 6, 7, 8, 9].filter((l) => (spellSlots[l]?.max || 0) > 0));
-
-  // Auto-update spell slots when level or caster type changes (only for auto types)
-  useEffect(() => {
-    const levelChanged = prevLevelRef.current !== character.level;
-    const casterTypeChanged = prevCasterTypeRef.current !== character.spellcasterType;
-    const isAutoType = spellcasterType === 'full' || spellcasterType === 'half' || spellcasterType === 'warlock';
-
-    if ((levelChanged || casterTypeChanged) && isAutoType) {
-      const newSlots = getSpellSlotsForLevel(spellcasterType, character.level);
-      updateCharacter(gameId, character.id, { spellSlots: newSlots });
-    }
-
-    prevLevelRef.current = character.level;
-    prevCasterTypeRef.current = character.spellcasterType;
-  }, [character.level, character.spellcasterType, spellcasterType, gameId, character.id]);
 
   // Filter spells
   const filteredSpells = spells.filter((spell) => {
@@ -153,169 +128,27 @@ export function SpellsTab({ character, gameId }: SpellsTabProps) {
   // Count prepared spells (excluding cantrips)
   const preparedCount = spells.filter((s) => s.prepared && s.level > 0).length;
 
-  const handleSpellcastingAbilityChange = async (ability: AbilityName) => {
-    await updateCharacter(gameId, character.id, {
-      spellcastingAbility: ability,
-    });
-  };
-
-  const handleCasterTypeChange = async (type: SpellcasterType) => {
-    if (type === 'none') {
-      // Clear all slots
-      await updateCharacter(gameId, character.id, {
-        spellcasterType: type,
-        spellSlots: {},
-      });
-    } else if (type === 'manual') {
-      // Keep current slots, just change type
-      await updateCharacter(gameId, character.id, {
-        spellcasterType: type,
-      });
-    } else {
-      // Auto types - set slots based on level
-      const newSlots = getSpellSlotsForLevel(type, character.level);
-      await updateCharacter(gameId, character.id, {
-        spellcasterType: type,
-        spellSlots: newSlots,
-      });
-    }
-  };
-
-  const handleShowAllSpellLevelsChange = async (show: boolean) => {
-    await updateCharacter(gameId, character.id, {
-      showAllSpellLevels: show,
-    });
-  };
-
-  const handleSlotMaxChange = async (level: number, max: number) => {
-    const slot = spellSlots[level] || { current: 0, max: 0 };
-    await updateCharacter(gameId, character.id, {
-      spellSlots: {
-        ...spellSlots,
-        [level]: { current: Math.min(slot.current, max), max },
-      },
-    });
-  };
-
-  const isNone = spellcasterType === 'none';
-  const isManual = spellcasterType === 'manual';
-
   return (
     <div className="cs-spells-tab">
-      {/* Spellcasting Stats - hidden for None */}
-      {!isNone && (
-        <div className="cs-spellcasting-stats">
-          <div className="cs-spellcasting-stat">
-            <span className="cs-stat-label">Ability</span>
-            <span className="cs-stat-value cs-stat-ability">{ABILITY_NAMES[spellcastingAbility].slice(0, 3).toUpperCase()}</span>
-          </div>
-          <div className="cs-spellcasting-stat">
-            <span className="cs-stat-label">Modifier</span>
-            <span className="cs-stat-value">{spellModifier >= 0 ? '+' : ''}{spellModifier}</span>
-          </div>
-          <div className="cs-spellcasting-stat">
-            <span className="cs-stat-label">Save DC</span>
-            <span className="cs-stat-value">{spellSaveDC}</span>
-          </div>
-          <div className="cs-spellcasting-stat">
-            <span className="cs-stat-label">Attack</span>
-            <span className="cs-stat-value">{spellAttackBonus >= 0 ? '+' : ''}{spellAttackBonus}</span>
-          </div>
-          <button
-            className="cs-slot-settings-btn"
-            onClick={() => setShowSettings(!showSettings)}
-            title="Configure Spellcasting"
-          >
-            ⚙
-          </button>
+      {/* Spellcasting Stats */}
+      <div className="cs-spellcasting-stats">
+        <div className="cs-spellcasting-stat">
+          <span className="cs-stat-label">Ability</span>
+          <span className="cs-stat-value cs-stat-ability">{ABILITY_NAMES[spellcastingAbility].slice(0, 3).toUpperCase()}</span>
         </div>
-      )}
-
-      {/* Settings button for None type */}
-      {isNone && (
-        <div className="cs-spellcasting-none">
-          <span>No spellcasting configured</span>
-          <button
-            className="cs-slot-settings-btn"
-            onClick={() => setShowSettings(!showSettings)}
-            title="Configure Spellcasting"
-          >
-            ⚙
-          </button>
+        <div className="cs-spellcasting-stat">
+          <span className="cs-stat-label">Modifier</span>
+          <span className="cs-stat-value">{spellModifier >= 0 ? '+' : ''}{spellModifier}</span>
         </div>
-      )}
-
-      {/* Spellcasting Settings */}
-      {showSettings && (
-        <div className="cs-slot-settings">
-          {/* Caster Type Selection */}
-          <div className="cs-settings-row">
-            <label>Caster Type</label>
-            <select
-              value={spellcasterType}
-              onChange={(e) => handleCasterTypeChange(e.target.value as SpellcasterType)}
-            >
-              {(Object.keys(CASTER_TYPE_NAMES) as SpellcasterType[]).map((type) => (
-                <option key={type} value={type}>{CASTER_TYPE_NAMES[type]}</option>
-              ))}
-            </select>
-          </div>
-
-          {/* Ability Selection - only for non-None */}
-          {!isNone && (
-            <div className="cs-settings-row">
-              <label>Spellcasting Ability</label>
-              <select
-                value={spellcastingAbility}
-                onChange={(e) => handleSpellcastingAbilityChange(e.target.value as AbilityName)}
-              >
-                {ABILITY_ORDER.map((ab) => (
-                  <option key={ab} value={ab}>{ABILITY_NAMES[ab]}</option>
-                ))}
-              </select>
-            </div>
-          )}
-
-          {/* Manual Spell Slots - only for Manual type */}
-          {isManual && (
-            <>
-              <div className="cs-slot-settings-header">Spell Slots (Max)</div>
-              <div className="cs-slot-settings-grid">
-                {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((level) => {
-                  const slot = spellSlots[level] || { current: 0, max: 0 };
-                  return (
-                    <div key={level} className="cs-slot-setting">
-                      <span className="cs-slot-setting-level">{level}</span>
-                      <NumberInput
-                        className="cs-slot-setting-input"
-                        value={slot.max}
-                        onChange={(val) => handleSlotMaxChange(level, val)}
-                        min={0}
-                        max={9}
-                        defaultValue={0}
-                      />
-                    </div>
-                  );
-                })}
-              </div>
-            </>
-          )}
-
-          {/* Show all spell levels checkbox */}
-          {!isNone && (
-            <div className="cs-settings-row cs-checkbox-row">
-              <label className="cs-checkbox-label">
-                <input
-                  type="checkbox"
-                  checked={showAllSpellLevels}
-                  onChange={(e) => handleShowAllSpellLevelsChange(e.target.checked)}
-                />
-                <span>Show all spell levels</span>
-              </label>
-            </div>
-          )}
+        <div className="cs-spellcasting-stat">
+          <span className="cs-stat-label">Save DC</span>
+          <span className="cs-stat-value">{spellSaveDC}</span>
         </div>
-      )}
+        <div className="cs-spellcasting-stat">
+          <span className="cs-stat-label">Attack</span>
+          <span className="cs-stat-value">{spellAttackBonus >= 0 ? '+' : ''}{spellAttackBonus}</span>
+        </div>
+      </div>
 
       {/* Filter tabs */}
       <div className="cs-spell-filters">
@@ -344,13 +177,7 @@ export function SpellsTab({ character, gameId }: SpellsTabProps) {
         {SPELL_LEVELS.map((level) => {
           const levelSpells = spellsByLevel[level];
 
-          // Hide spell levels without slots unless showAllSpellLevels is true
-          // Always show cantrips (level 0) and levels with spells
-          const hasSlots = level === 0 || (spellSlots[level]?.max || 0) > 0;
-          const hasSpells = levelSpells.length > 0;
-          const shouldShow = showAllSpellLevels || hasSlots || hasSpells || level <= maxSlotLevel;
-
-          if (!shouldShow) return null;
+          // Hide levels with no spells when filtering
           if (levelSpells.length === 0 && filter !== 'all') return null;
 
           const isExpanded = expandedLevels.has(level);

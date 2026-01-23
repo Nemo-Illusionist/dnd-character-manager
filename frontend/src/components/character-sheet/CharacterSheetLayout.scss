@@ -86,8 +86,6 @@
   margin-bottom: 0.75rem;
   background: rgba(255, 255, 255, 0.03);
   border-radius: 8px;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
 }
 
 .cs-mobile-tab-btn {
@@ -115,6 +113,60 @@
 .cs-mobile-tab-btn.active {
   color: var(--accent);
   background: rgba(124, 58, 237, 0.2);
+}
+
+/* ==================== MORE MENU ==================== */
+
+.cs-more-menu-wrapper {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+}
+
+.cs-more-menu-wrapper .cs-mobile-tab-btn {
+  width: 100%;
+}
+
+.cs-more-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 0.25rem;
+  min-width: 120px;
+  background: var(--bg-secondary, #1a1a2e);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  z-index: 100;
+  overflow: hidden;
+}
+
+.cs-more-menu-item {
+  display: block;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cs-more-menu-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-primary);
+}
+
+.cs-more-menu-item.active {
+  color: var(--accent);
+  background: rgba(124, 58, 237, 0.1);
+}
+
+.cs-more-menu-item + .cs-more-menu-item {
+  border-top: 1px solid var(--border);
 }
 
 /* ==================== TABLET STATS ROW ==================== */

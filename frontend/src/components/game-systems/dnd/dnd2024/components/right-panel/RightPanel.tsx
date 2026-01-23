@@ -8,17 +8,18 @@ import { ActionsTab } from './ActionsTab';
 import { SpellsTab } from './SpellsTab';
 import { InventoryTab } from './InventoryTab';
 import { BiographyTab } from './BiographyTab';
+import { ClassTab } from './ClassTab';
 import type { Character } from 'shared';
 import './RightPanel.scss';
 
 interface RightPanelProps {
   character: Character;
   gameId: string;
-  externalTab?: 'actions' | 'spells' | 'inventory' | 'bio' | null;
+  externalTab?: 'actions' | 'spells' | 'inventory' | 'bio' | 'class' | null;
   hideTabHeader?: boolean;
 }
 
-type TabId = 'actions' | 'spells' | 'inventory' | 'bio';
+type TabId = 'actions' | 'spells' | 'inventory' | 'bio' | 'class';
 
 export function RightPanel({ character, gameId, externalTab, hideTabHeader }: RightPanelProps) {
   const [conditionsOpen, setConditionsOpen] = useState(false);
@@ -40,6 +41,7 @@ export function RightPanel({ character, gameId, externalTab, hideTabHeader }: Ri
     { id: 'spells', label: 'Spells' },
     { id: 'inventory', label: 'Items' },
     { id: 'bio', label: 'Bio' },
+    { id: 'class', label: 'Class' },
   ];
 
   // Filter tabs based on settings
@@ -147,6 +149,9 @@ export function RightPanel({ character, gameId, externalTab, hideTabHeader }: Ri
           )}
           {activeTab === 'bio' && (
             <BiographyTab character={character} gameId={gameId} />
+          )}
+          {activeTab === 'class' && (
+            <ClassTab character={character} gameId={gameId} />
           )}
         </div>
       </div>

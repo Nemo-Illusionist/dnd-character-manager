@@ -22,7 +22,7 @@ const MOBILE_BREAKPOINT = 650;
 const WIDE_TABLET_BREAKPOINT = 850;
 
 // Tab IDs for unified mobile navigation
-type MobileTabId = 'abilities' | 'actions' | 'spells' | 'inventory' | 'bio';
+type MobileTabId = 'abilities' | 'actions' | 'spells' | 'inventory' | 'bio' | 'class';
 
 export function CharacterSheet({ character, gameId }: CharacterSheetProps) {
   const [headerExpanded, setHeaderExpanded] = useState(true);
@@ -30,6 +30,8 @@ export function CharacterSheet({ character, gameId }: CharacterSheetProps) {
   const [isMobileMode, setIsMobileMode] = useState(false);
   const [isTabletMode, setIsTabletMode] = useState(false); // 650-849px
   const [conditionsOpen, setConditionsOpen] = useState(false);
+  const [moreMenuOpen, setMoreMenuOpen] = useState(false);
+  const moreMenuRef = useRef<HTMLDivElement>(null);
   const lastScrollY = useRef(0);
   const isManualToggle = useRef(false);
   const waitingAtTop = useRef(false); // Flag for "stop" at top before expanding
@@ -45,6 +47,19 @@ export function CharacterSheet({ character, gameId }: CharacterSheetProps) {
     window.addEventListener('resize', checkWidth);
     return () => window.removeEventListener('resize', checkWidth);
   }, []);
+
+  // Close more menu on outside click
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (moreMenuRef.current && !moreMenuRef.current.contains(e.target as Node)) {
+        setMoreMenuOpen(false);
+      }
+    };
+    if (moreMenuOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [moreMenuOpen]);
 
   // Stats row handlers
   const initiativeModifier = getAbilityModifier(character.abilities.dex);
@@ -112,29 +127,42 @@ export function CharacterSheet({ character, gameId }: CharacterSheetProps) {
     setHeaderExpanded(!headerExpanded);
   };
 
-  // Build available mobile tabs
-  const allMobileTabs: { id: MobileTabId; label: string }[] = [
+  // Build available mobile tabs - split into main and more
+  const mainTabs: { id: MobileTabId; label: string }[] = [
     { id: 'abilities', label: 'Stats' },
     { id: 'actions', label: 'Actions' },
     { id: 'spells', label: 'Spells' },
     { id: 'inventory', label: 'Items' },
+  ];
+
+  const moreTabs: { id: MobileTabId; label: string }[] = [
     { id: 'bio', label: 'Bio' },
+    { id: 'class', label: 'Class' },
   ];
 
   // Filter out spells tab if hidden
-  const mobileTabs = allMobileTabs.filter(
+  const visibleMainTabs = mainTabs.filter(
     (tab) => !(tab.id === 'spells' && character.hideSpellsTab)
   );
 
+  // Check if current tab is in "more" menu
+  const isMoreTabActive = moreTabs.some((t) => t.id === mobileTab);
+
+  // All tabs for validation
+  const allTabs = [...visibleMainTabs, ...moreTabs];
+
+  // True mobile (< 650px) - show "..." menu; Tablet (>= 650px) - show all tabs
+  const isTrueMobile = isMobileMode && !isTabletMode;
+
   // Ensure active tab is valid
   useEffect(() => {
-    if (!mobileTabs.find((t) => t.id === mobileTab) && mobileTabs.length > 0) {
-      setMobileTab(mobileTabs[0].id);
+    if (!allTabs.find((t) => t.id === mobileTab) && allTabs.length > 0) {
+      setMobileTab(allTabs[0].id);
     }
-  }, [mobileTabs, mobileTab]);
+  }, [allTabs, mobileTab]);
 
   // Map mobile tab to RightPanel tab
-  const getRightPanelTab = (): 'actions' | 'spells' | 'inventory' | 'bio' | null => {
+  const getRightPanelTab = (): 'actions' | 'spells' | 'inventory' | 'bio' | 'class' | null => {
     if (mobileTab === 'abilities') return null;
     return mobileTab;
   };
@@ -198,7 +226,8 @@ export function CharacterSheet({ character, gameId }: CharacterSheetProps) {
         {/* Mobile/Tablet unified tab bar (< 850px) */}
         {isMobileMode && (
           <div className="cs-mobile-tab-bar">
-            {mobileTabs.map((tab) => (
+            {/* Main tabs */}
+            {visibleMainTabs.map((tab) => (
               <button
                 key={tab.id}
                 className={`cs-mobile-tab-btn ${mobileTab === tab.id ? 'active' : ''}`}
@@ -207,6 +236,45 @@ export function CharacterSheet({ character, gameId }: CharacterSheetProps) {
                 {tab.label}
               </button>
             ))}
+
+            {/* On true mobile (< 650px): show "..." menu */}
+            {isTrueMobile ? (
+              <div className="cs-more-menu-wrapper" ref={moreMenuRef}>
+                <button
+                  className={`cs-mobile-tab-btn ${isMoreTabActive ? 'active' : ''}`}
+                  onClick={() => setMoreMenuOpen(!moreMenuOpen)}
+                >
+                  •••
+                </button>
+                {moreMenuOpen && (
+                  <div className="cs-more-menu">
+                    {moreTabs.map((tab) => (
+                      <button
+                        key={tab.id}
+                        className={`cs-more-menu-item ${mobileTab === tab.id ? 'active' : ''}`}
+                        onClick={() => {
+                          setMobileTab(tab.id);
+                          setMoreMenuOpen(false);
+                        }}
+                      >
+                        {tab.label}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ) : (
+              /* On tablet (>= 650px): show all tabs */
+              moreTabs.map((tab) => (
+                <button
+                  key={tab.id}
+                  className={`cs-mobile-tab-btn ${mobileTab === tab.id ? 'active' : ''}`}
+                  onClick={() => setMobileTab(tab.id)}
+                >
+                  {tab.label}
+                </button>
+              ))
+            )}
           </div>
         )}
 

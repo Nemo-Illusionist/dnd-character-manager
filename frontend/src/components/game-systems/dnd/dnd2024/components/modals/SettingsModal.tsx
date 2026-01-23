@@ -62,35 +62,6 @@ export function SettingsModal({ character, gameId, onClose }: SettingsModalProps
             />
           </div>
 
-          <div className="cs-form-group">
-            <label>Class</label>
-            <input
-              type="text"
-              value={character.class}
-              onChange={(e) => update({ class: e.target.value })}
-            />
-          </div>
-
-          <div className="cs-form-group">
-            <label>Subclass</label>
-            <input
-              type="text"
-              value={character.subclass || ''}
-              onChange={(e) => update({ subclass: e.target.value })}
-            />
-          </div>
-
-          <div className="cs-form-group cs-checkbox-group">
-            <label className="cs-checkbox-label">
-              <input
-                type="checkbox"
-                checked={!character.hideSpellsTab}
-                onChange={(e) => update({ hideSpellsTab: !e.target.checked })}
-              />
-              <span>Spellcasting Class</span>
-            </label>
-          </div>
-
           {isGM && players.length > 0 && (
             <div className="cs-form-group">
               <label>Owner</label>
