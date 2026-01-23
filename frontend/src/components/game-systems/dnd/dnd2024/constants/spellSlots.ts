@@ -1,6 +1,8 @@
 // D&D 2024 Spell Slots by Caster Type and Level
 
-export type SpellcasterType = 'none' | 'full' | 'half' | 'warlock' | 'manual';
+// Re-export SpellcasterType from shared for convenience
+import type { SpellcasterType } from 'shared';
+export type { SpellcasterType } from 'shared';
 
 export interface SpellSlotConfig {
   [level: number]: { max: number }; // level 1-9

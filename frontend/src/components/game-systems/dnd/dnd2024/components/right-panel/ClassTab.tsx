@@ -5,8 +5,9 @@ import { useEffect, useRef } from 'react';
 import { NumberInput } from '../../../../../shared';
 import { updateCharacter } from '../../../../../../services/characters.service';
 import { ABILITY_ORDER, ABILITY_NAMES, getSpellSlotsForLevel, CASTER_TYPE_NAMES } from '../../constants';
+import { getPrimaryClass } from '../../utils';
 import type { SpellcasterType } from '../../constants';
-import type { Character, AbilityName } from 'shared';
+import type { Character, CharacterClass, AbilityName } from 'shared';
 
 interface ClassTabProps {
   character: Character;
@@ -14,21 +15,40 @@ interface ClassTabProps {
 }
 
 export function ClassTab({ character, gameId }: ClassTabProps) {
+  const primaryClass = getPrimaryClass(character);
   const prevLevelRef = useRef(character.level);
-  const prevCasterTypeRef = useRef(character.spellcasterType);
+  const prevCasterTypeRef = useRef(primaryClass.spellcasterType);
 
-  const spellcasterType = (character.spellcasterType || 'none') as SpellcasterType;
-  const spellcastingAbility = character.spellcastingAbility || 'int';
+  const spellcasterType = (primaryClass.spellcasterType || 'none') as SpellcasterType;
+  const spellcastingAbility = primaryClass.spellcastingAbility || 'int';
   const isSpellcaster = spellcasterType !== 'none';
 
-  const update = (changes: Partial<Character>) => {
-    updateCharacter(gameId, character.id, changes);
+  // Update primary class (updates both classes array and legacy fields)
+  const updatePrimaryClass = (classChanges: Partial<CharacterClass>) => {
+    const updatedClass = { ...primaryClass, ...classChanges };
+    const classes = character.classes ? [...character.classes] : [];
+    classes[0] = updatedClass;
+
+    // Build legacy field updates for backward compatibility
+    const legacyUpdates: Partial<Character> = {};
+    if ('name' in classChanges) legacyUpdates.class = classChanges.name;
+    if ('subclass' in classChanges) legacyUpdates.subclass = classChanges.subclass;
+    if ('level' in classChanges) legacyUpdates.level = classChanges.level;
+    if ('hitDice' in classChanges) legacyUpdates.hitDice = classChanges.hitDice;
+    if ('hitDiceUsed' in classChanges) legacyUpdates.hitDiceUsed = classChanges.hitDiceUsed;
+    if ('spellcasterType' in classChanges) legacyUpdates.spellcasterType = classChanges.spellcasterType;
+    if ('spellcastingAbility' in classChanges) legacyUpdates.spellcastingAbility = classChanges.spellcastingAbility;
+
+    updateCharacter(gameId, character.id, {
+      classes,
+      ...legacyUpdates,
+    });
   };
 
   // Auto-update spell slots when level or caster type changes (only for auto types)
   useEffect(() => {
     const levelChanged = prevLevelRef.current !== character.level;
-    const casterTypeChanged = prevCasterTypeRef.current !== character.spellcasterType;
+    const casterTypeChanged = prevCasterTypeRef.current !== primaryClass.spellcasterType;
     const isAutoType = spellcasterType === 'full' || spellcasterType === 'half' || spellcasterType === 'warlock';
 
     if ((levelChanged || casterTypeChanged) && isAutoType) {
@@ -37,13 +57,19 @@ export function ClassTab({ character, gameId }: ClassTabProps) {
     }
 
     prevLevelRef.current = character.level;
-    prevCasterTypeRef.current = character.spellcasterType;
-  }, [character.level, character.spellcasterType, spellcasterType, gameId, character.id]);
+    prevCasterTypeRef.current = primaryClass.spellcasterType;
+  }, [character.level, primaryClass.spellcasterType, spellcasterType, gameId, character.id]);
 
   const handleCasterTypeChange = async (type: SpellcasterType) => {
+    // Update primary class
+    const updatedClass = { ...primaryClass, spellcasterType: type };
+    const classes = character.classes ? [...character.classes] : [];
+    classes[0] = updatedClass;
+
     if (type === 'none') {
       // Clear all slots and hide spells tab
       await updateCharacter(gameId, character.id, {
+        classes,
         spellcasterType: type,
         spellSlots: {},
         hideSpellsTab: true,
@@ -51,6 +77,7 @@ export function ClassTab({ character, gameId }: ClassTabProps) {
     } else if (type === 'manual') {
       // Keep current slots, just change type, show spells tab
       await updateCharacter(gameId, character.id, {
+        classes,
         spellcasterType: type,
         hideSpellsTab: false,
       });
@@ -58,6 +85,7 @@ export function ClassTab({ character, gameId }: ClassTabProps) {
       // Auto types - set slots based on level, show spells tab
       const newSlots = getSpellSlotsForLevel(type, character.level);
       await updateCharacter(gameId, character.id, {
+        classes,
         spellcasterType: type,
         spellSlots: newSlots,
         hideSpellsTab: false,
@@ -66,9 +94,7 @@ export function ClassTab({ character, gameId }: ClassTabProps) {
   };
 
   const handleSpellcastingAbilityChange = async (ability: AbilityName) => {
-    await updateCharacter(gameId, character.id, {
-      spellcastingAbility: ability,
-    });
+    updatePrimaryClass({ spellcastingAbility: ability });
   };
 
   const handleSlotMaxChange = async (level: number, max: number) => {
@@ -85,7 +111,7 @@ export function ClassTab({ character, gameId }: ClassTabProps) {
   const isManual = spellcasterType === 'manual';
 
   // For now, single class - future: array of classes
-  const hasClass = character.class && character.class.trim() !== '';
+  const hasClass = primaryClass.name && primaryClass.name.trim() !== '';
 
   return (
     <div className="cs-class-tab">
@@ -101,7 +127,7 @@ export function ClassTab({ character, gameId }: ClassTabProps) {
         <div className="cs-class-card">
           <div className="cs-class-card-header">
             <div className="cs-class-card-title">
-              {hasClass ? character.class : 'No Class'}
+              {hasClass ? primaryClass.name : 'No Class'}
             </div>
             <div className="cs-class-card-level">
               <span className="cs-class-level-label">Lvl</span>
@@ -115,8 +141,8 @@ export function ClassTab({ character, gameId }: ClassTabProps) {
               <label>Class</label>
               <input
                 type="text"
-                value={character.class}
-                onChange={(e) => update({ class: e.target.value })}
+                value={primaryClass.name}
+                onChange={(e) => updatePrimaryClass({ name: e.target.value })}
                 placeholder="Fighter, Wizard, Rogue..."
               />
             </div>
@@ -126,8 +152,8 @@ export function ClassTab({ character, gameId }: ClassTabProps) {
               <label>Subclass</label>
               <input
                 type="text"
-                value={character.subclass || ''}
-                onChange={(e) => update({ subclass: e.target.value })}
+                value={primaryClass.subclass || ''}
+                onChange={(e) => updatePrimaryClass({ subclass: e.target.value })}
                 placeholder="Champion, Evocation..."
               />
             </div>

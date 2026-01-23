@@ -4,13 +4,15 @@ import { useState, useEffect } from 'react';
 import { Button, NumberInput } from '../../../../../shared';
 import { updateCharacter } from '../../../../../../services/characters.service';
 import { XP_THRESHOLDS, calculateLevelFromXP, getProficiencyBonus, getSpellSlotsForLevel } from '../../constants';
+import { getPrimaryClass } from '../../utils';
 import type { SpellcasterType } from '../../constants';
 import type { Character } from 'shared';
 import './Modals.scss';
 
 // Helper to get spell slots update if needed
 function getSpellSlotsUpdate(character: Character, newLevel: number) {
-  const casterType = character.spellcasterType as SpellcasterType | undefined;
+  const primaryClass = getPrimaryClass(character);
+  const casterType = primaryClass.spellcasterType as SpellcasterType | undefined;
   const isAutoType = casterType === 'full' || casterType === 'half' || casterType === 'warlock';
 
   if (isAutoType) {

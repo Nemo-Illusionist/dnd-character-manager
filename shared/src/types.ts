@@ -74,6 +74,9 @@ export type ArmorType = 'Light Armor' | 'Medium Armor' | 'Heavy Armor' | 'Shield
 
 export type Currency = 'cp' | 'sp' | 'ep' | 'gp' | 'pp';
 
+// Spellcaster types for auto spell slot calculation
+export type SpellcasterType = 'none' | 'full' | 'half' | 'warlock' | 'manual';
+
 export type MagicSchool =
   | 'Abjuration' | 'Conjuration' | 'Divination' | 'Enchantment'
   | 'Evocation' | 'Illusion' | 'Necromancy' | 'Transmutation';
@@ -145,6 +148,19 @@ export const PUBLIC_CHARACTER_FIELDS = [
   'publicDescription', 'isHidden', 'createdAt', 'updatedAt'
 ] as const;
 
+// ==================== CHARACTER CLASS ====================
+// Class configuration for multiclassing support
+
+export interface CharacterClass {
+  name: string;                       // Class name (Fighter, Wizard, etc.)
+  subclass?: string;                  // Subclass (Champion, Evocation, etc.)
+  level: number;                      // Class level
+  hitDice?: string;                   // Hit dice type (d6, d8, d10, d12)
+  hitDiceUsed?: number;               // Hit dice used (recovered on long rest)
+  spellcasterType?: SpellcasterType;  // Caster type for this class
+  spellcastingAbility?: AbilityName;  // Spellcasting ability for this class
+}
+
 // ==================== PRIVATE CHARACTER SHEET ====================
 // Приватная часть листа персонажа (только owner + GM)
 // Хранится в /games/{gameId}/characters/{charId}/private/sheet
@@ -155,10 +171,13 @@ export interface PrivateCharacterSheet {
   // D&D 5e core stats
   level: number;
   experience?: number;          // XP points
-  race: string;                 // Может быть ID из базы знаний или custom
-  class: string;
-  subclass?: string;
+  race: string;                 // Species (legacy field name)
+  class: string;                // @deprecated Use classes[0].name
+  subclass?: string;            // @deprecated Use classes[0].subclass
   background?: string;
+
+  // Multiclass support
+  classes?: CharacterClass[];   // Array of classes (for multiclassing)
 
   // Abilities (характеристики)
   abilities: {
@@ -168,9 +187,9 @@ export interface PrivateCharacterSheet {
   // Attributes (атрибуты)
   hp: { current: number; max: number; temp: number };
   hpBonus?: number;             // Bonus to max HP (from items, effects, etc.)
-  hitDice?: string;             // Hit dice type (d6, d8, d10, d12)
-  hitDiceTotal?: number;        // Total hit dice (usually = level)
-  hitDiceUsed?: number;         // Used hit dice (recovered on long rest)
+  hitDice?: string;             // @deprecated Use classes[0].hitDice
+  hitDiceTotal?: number;        // Total hit dice (= sum of class levels)
+  hitDiceUsed?: number;         // @deprecated Use classes[0].hitDiceUsed
   deathSaves?: {
     successes: number;          // 0-3 successful death saves
     failures: number;           // 0-3 failed death saves
@@ -210,9 +229,9 @@ export interface PrivateCharacterSheet {
   // Spells (заклинания)
   spells: CharacterSpell[];
   spellEntries?: CharacterSpellEntry[];  // Simplified spell entries
-  spellcastingAbility?: AbilityName;     // Ability used for spellcasting (int, wis, cha)
-  spellcasterType?: 'none' | 'full' | 'half' | 'warlock' | 'manual';  // Caster type for auto spell slots
-  showAllSpellLevels?: boolean;  // Show spell levels even without slots
+  spellcastingAbility?: AbilityName;     // @deprecated Use classes[0].spellcastingAbility
+  spellcasterType?: SpellcasterType;     // @deprecated Use classes[0].spellcasterType
+  showAllSpellLevels?: boolean;          // Show spell levels even without slots
   hideSpellsTab?: boolean;               // Hide spells tab in UI
 
   // Spell Slots (ячейки заклинаний)

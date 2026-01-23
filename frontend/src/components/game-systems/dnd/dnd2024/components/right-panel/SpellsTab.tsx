@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { updateCharacter } from '../../../../../../services/characters.service';
 import { getAbilityModifier } from '../../../core';
 import { ABILITY_NAMES } from '../../constants';
+import { getPrimaryClass } from '../../utils';
 import { SpellModal } from './SpellModal';
 import type { Character, CharacterSpellEntry } from 'shared';
 import './SpellsTab.scss';
@@ -48,9 +49,10 @@ export function SpellsTab({ character, gameId }: SpellsTabProps) {
   const [filter, setFilter] = useState<FilterType>('all');
   const [expandedLevels, setExpandedLevels] = useState<Set<number>>(new Set([0, 1]));
 
+  const primaryClass = getPrimaryClass(character);
   const spells = character.spellEntries || [];
   const spellSlots = character.spellSlots || {};
-  const spellcastingAbility = character.spellcastingAbility || 'int';
+  const spellcastingAbility = primaryClass.spellcastingAbility || 'int';
 
   // Calculate spellcasting stats
   const abilityScore = character.abilities[spellcastingAbility];

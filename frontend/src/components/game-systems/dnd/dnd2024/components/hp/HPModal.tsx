@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useCharacterMutation } from '../../../../../../hooks';
+import { getPrimaryClass } from '../../utils';
 import { HPDisplay } from './HPDisplay';
 import { HealDamageActions } from './HealDamageActions';
 import { DeathSavesSection } from './DeathSavesSection';
@@ -135,7 +136,8 @@ export function HPModal({ character, gameId, onClose }: HPModalProps) {
     setHitDiceUsed(newHitDiceUsed);
 
     // Warlock: restore all spell slots on short rest
-    const isWarlock = character.spellcasterType === 'warlock';
+    const primaryClass = getPrimaryClass(character);
+    const isWarlock = primaryClass.spellcasterType === 'warlock';
     let spellSlotsUpdate: Record<string, { current: number; max: number }> | undefined;
 
     if (isWarlock) {
