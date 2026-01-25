@@ -6,8 +6,10 @@
 mobile-character-sheet/
 ├── frontend/           # React PWA приложение
 ├── shared/             # Shared TypeScript типы
+├── scripts/            # Migration scripts (Firebase)
 ├── plans/              # Документация и планы
 ├── .ai/                # Контекст для AI
+├── CLAUDE.md           # Инструкции для AI-ассистента
 ├── firebase.json       # Firebase конфигурация
 ├── firestore.rules     # Правила безопасности БД
 └── firestore.indexes.json
@@ -45,6 +47,9 @@ frontend/src/
 │   │   └── dnd/
 │   │       ├── core/       # Общая D&D логика (abilities, skills)
 │   │       └── dnd2024/    # D&D 2024 специфичные компоненты
+│   │           ├── components/  # UI компоненты (header, hp, modals, right-panel)
+│   │           ├── constants/   # Таблицы и константы (spell slots, classes)
+│   │           └── utils/       # Утилиты (character helpers)
 │   ├── games/          # Список игр
 │   ├── characters/     # Управление персонажами
 │   ├── character-sheet/# Отображение листа персонажа

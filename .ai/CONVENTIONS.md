@@ -77,6 +77,24 @@ export const Component: React.FC<ComponentProps> = ({ prop }) => {
 - `master` — основная ветка
 - Feature branches по необходимости
 
+## Миграции
+
+Миграции Firebase данных находятся в `scripts/`.
+
+### Именование
+- Формат: `YYYYMMDDHHMMSS-<description>.ts`
+- Пример: `20260126143022-add-new-field.ts`
+- Timestamp берётся из даты создания файла
+
+### Запуск
+```bash
+# Dry run (предпросмотр)
+npx ts-node --project scripts/tsconfig.json scripts/<file>.ts --dry-run
+
+# Применить изменения
+npx ts-node --project scripts/tsconfig.json scripts/<file>.ts
+```
+
 ## TypeScript
 
 - Strict mode включён
