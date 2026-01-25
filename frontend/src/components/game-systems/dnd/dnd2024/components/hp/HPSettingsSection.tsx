@@ -1,40 +1,33 @@
 // D&D 2024 - HP Settings Section Component
+// Supports multiclass with per-class hit dice settings
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { NumberInput } from '../../../../../shared';
+import type { HitDiceGroup } from '../../utils';
 
 interface HPSettingsSectionProps {
   maxHP: number;
   hpBonus: number;
-  hitDice: string;
-  hitDiceUsed: number;
-  hitDiceTotal: number;
   onMaxHPChange: (value: number) => void;
   onHPBonusChange: (value: number) => void;
-  onHitDiceChange: (value: string) => void;
-  onHitDiceUsedChange: (value: number) => void;
-  showHitDiceSettings?: boolean; // Hide hit dice for multiclass (managed in Class tab)
+  // Multiclass mode
+  hitDiceGroups?: HitDiceGroup[];
+  onHitDiceUsedChange?: (diceType: string, newUsed: number) => void;
 }
 
 export function HPSettingsSection({
   maxHP,
   hpBonus,
-  hitDice,
-  hitDiceUsed,
-  hitDiceTotal,
   onMaxHPChange,
   onHPBonusChange,
-  onHitDiceChange,
+  hitDiceGroups,
   onHitDiceUsedChange,
-  showHitDiceSettings = true,
 }: HPSettingsSectionProps) {
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const hitDiceRemaining = hitDiceTotal - hitDiceUsed;
-
-  const handleRemainingChange = (newRemaining: number) => {
-    const newUsed = hitDiceTotal - newRemaining;
-    onHitDiceUsedChange(newUsed);
+  const handleRemainingChange = (diceType: string, total: number, newRemaining: number) => {
+    const newUsed = total - newRemaining;
+    onHitDiceUsedChange?.(diceType, newUsed);
   };
 
   return (
@@ -47,7 +40,7 @@ export function HPSettingsSection({
       </button>
       {isExpanded && (
         <div className="cs-hp-settings-grid">
-          {/* Row 1: Max | input | Bonus | input */}
+          {/* Row 1: Max HP */}
           <label>Max</label>
           <NumberInput
             value={maxHP}
@@ -55,6 +48,8 @@ export function HPSettingsSection({
             min={1}
             defaultValue={1}
           />
+
+          {/* Row 1: HP Bonus */}
           <label>Bonus</label>
           <NumberInput
             value={hpBonus}
@@ -62,33 +57,30 @@ export function HPSettingsSection({
             defaultValue={0}
           />
 
-          {/* Row 2: Dice | select | Left | input with suffix (hidden for multiclass) */}
-          {showHitDiceSettings && (
-            <>
-              <label>Dice</label>
-              <select
-                className="cs-hp-settings-select"
-                value={hitDice}
-                onChange={(e) => onHitDiceChange(e.target.value)}
-              >
-                <option value="d6">d6</option>
-                <option value="d8">d8</option>
-                <option value="d10">d10</option>
-                <option value="d12">d12</option>
-              </select>
-              <label>Left</label>
-              <div className="cs-hp-input-with-suffix">
-                <NumberInput
-                  value={hitDiceRemaining}
-                  onChange={handleRemainingChange}
-                  min={0}
-                  max={hitDiceTotal}
-                  defaultValue={hitDiceTotal}
-                />
-                <span className="cs-hp-input-suffix">/{hitDiceTotal}</span>
-              </div>
-            </>
-          )}
+          {/* Hit Dice rows - each class gets a row under Bonus column */}
+          {hitDiceGroups && hitDiceGroups.map((group) => {
+            const remaining = group.total - group.used;
+            return (
+              <React.Fragment key={group.type}>
+                {/* Empty cell to align with Max column */}
+                <span />
+                <span />
+                {/* Label with class name and dice type */}
+                <label>{group.className || group.type}</label>
+                {/* Input with /total suffix */}
+                <div className="cs-hp-input-with-suffix">
+                  <NumberInput
+                    value={remaining}
+                    onChange={(newRemaining) => handleRemainingChange(group.type, group.total, newRemaining)}
+                    min={0}
+                    max={group.total}
+                    defaultValue={group.total}
+                  />
+                  <span className="cs-hp-input-suffix">/{group.total}</span>
+                </div>
+              </React.Fragment>
+            );
+          })}
         </div>
       )}
     </div>

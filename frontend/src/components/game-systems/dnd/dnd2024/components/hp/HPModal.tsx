@@ -6,7 +6,6 @@ import { useCharacterMutation } from '../../../../../../hooks';
 import {
   getClasses,
   getHitDiceByType,
-  getTotalHitDiceRemaining,
   updateHitDiceUsed,
   applyLongRestHitDiceRecovery,
   isMulticlass,
@@ -34,17 +33,11 @@ export function HPModal({ character, gameId, onClose }: HPModalProps) {
   const [amount, setAmount] = useState(0);
   const [showShortRestDialog, setShowShortRestDialog] = useState(false);
   const [shortRestDiceType, setShortRestDiceType] = useState<string>('');
-  const [shortRestDiceCount, setShortRestDiceCount] = useState(1);
+  const [shortRestDiceCount, setShortRestDiceCount] = useState(0);
 
   const classes = getClasses(character);
   const hitDiceGroups = getHitDiceByType(character);
   const hasMultipleClasses = isMulticlass(character);
-  const totalHitDiceRemaining = getTotalHitDiceRemaining(character);
-
-  // Get primary class info for single-class display
-  const primaryClass = classes[0];
-  const primaryHitDice = primaryClass?.hitDice || 'd8';
-  const primaryHitDiceUsed = primaryClass?.hitDiceUsed || 0;
 
   const { update, heal, damage } = useCharacterMutation(gameId, character);
 
@@ -109,13 +102,6 @@ export function HPModal({ character, gameId, onClose }: HPModalProps) {
     await update({ hpBonus: newBonus });
   };
 
-  const handleHitDiceChange = async (newHitDice: string) => {
-    // Update primary class hit dice
-    const updatedClasses = [...classes];
-    updatedClasses[0] = { ...updatedClasses[0], hitDice: newHitDice };
-    await update({ classes: updatedClasses, hitDice: newHitDice });
-  };
-
   const handleDeathSaveSuccessChange = async (count: number) => {
     await update({
       deathSaves: { ...(character.deathSaves || { successes: 0, failures: 0 }), successes: count },
@@ -128,11 +114,25 @@ export function HPModal({ character, gameId, onClose }: HPModalProps) {
     });
   };
 
-  const handleHitDiceUsedChange = async (newUsed: number) => {
-    // For single class, update primary class
+  const handleHitDiceUsedChange = async (diceType: string, newUsed: number) => {
+    // Find all classes with this dice type and update their hitDiceUsed
     const updatedClasses = [...classes];
-    updatedClasses[0] = { ...updatedClasses[0], hitDiceUsed: Math.max(0, Math.min(updatedClasses[0].level, newUsed)) };
-    await update({ classes: updatedClasses, hitDiceUsed: newUsed });
+    let remainingUsed = newUsed;
+
+    for (let i = 0; i < updatedClasses.length; i++) {
+      const cls = updatedClasses[i];
+      if ((cls.hitDice || 'd8') === diceType) {
+        // Distribute the used dice across classes of this type
+        const toUse = Math.min(cls.level, remainingUsed);
+        updatedClasses[i] = { ...cls, hitDiceUsed: toUse };
+        remainingUsed -= toUse;
+      }
+    }
+
+    await update({
+      classes: updatedClasses,
+      hitDiceUsed: updatedClasses[0]?.hitDiceUsed || 0,
+    });
   };
 
   const toggleShortRestDialog = () => {
@@ -143,25 +143,20 @@ export function HPModal({ character, gameId, onClose }: HPModalProps) {
       if (hasMultipleClasses) {
         const firstAvailable = hitDiceGroups.find(g => g.total - g.used > 0);
         setShortRestDiceType(firstAvailable?.type || hitDiceGroups[0]?.type || 'd8');
+      } else {
+        setShortRestDiceType(hitDiceGroups[0]?.type || 'd8');
       }
-      setShortRestDiceCount(1);
+      setShortRestDiceCount(0); // Start at 0 to allow rest without spending dice
       setShowShortRestDialog(true);
     }
   };
 
   const handleShortRest = async () => {
-    if (shortRestDiceCount <= 0) return;
+    let updatedClasses = [...classes];
 
-    let updatedClasses;
-
-    if (hasMultipleClasses) {
-      // Update hit dice for selected type
+    // Spend hit dice if any selected
+    if (shortRestDiceCount > 0) {
       updatedClasses = updateHitDiceUsed(character, shortRestDiceType, shortRestDiceCount);
-    } else {
-      // Single class - use primary
-      updatedClasses = [...classes];
-      const newUsed = Math.min(classes[0].level, (classes[0].hitDiceUsed || 0) + shortRestDiceCount);
-      updatedClasses[0] = { ...updatedClasses[0], hitDiceUsed: newUsed };
     }
 
     // Warlock: restore all pact magic slots on short rest
@@ -193,6 +188,14 @@ export function HPModal({ character, gameId, onClose }: HPModalProps) {
       ...(spellSlotsUpdate && { spellSlots: spellSlotsUpdate }),
     });
   };
+
+  // Get remaining dice for selected type
+  const getSelectedTypeRemaining = () => {
+    const group = hitDiceGroups.find(g => g.type === shortRestDiceType);
+    return group ? group.total - group.used : 0;
+  };
+
+  const selectedTypeRemaining = getSelectedTypeRemaining();
 
   const handleLongRest = async () => {
     // 1. Restore HP to max
@@ -235,16 +238,6 @@ export function HPModal({ character, gameId, onClose }: HPModalProps) {
     });
   };
 
-  // Get remaining dice for selected type
-  const getSelectedTypeRemaining = () => {
-    if (hasMultipleClasses) {
-      const group = hitDiceGroups.find(g => g.type === shortRestDiceType);
-      return group ? group.total - group.used : 0;
-    }
-    return classes[0].level - (classes[0].hitDiceUsed || 0);
-  };
-
-  const selectedTypeRemaining = getSelectedTypeRemaining();
 
   return (
     <div className="cs-modal-overlay" onClick={onClose}>
@@ -281,22 +274,13 @@ export function HPModal({ character, gameId, onClose }: HPModalProps) {
               onDamage={handleDamage}
             />
 
-            {/* Hit Dice - show groups for multiclass */}
-            {hasMultipleClasses ? (
-              <HitDiceSection groups={hitDiceGroups} />
-            ) : (
-              <HitDiceSection
-                hitDice={primaryHitDice}
-                total={classes[0]?.level || 0}
-                used={primaryHitDiceUsed}
-              />
-            )}
+            {/* Hit Dice - always use groups (works for both single and multiclass) */}
+            <HitDiceSection groups={hitDiceGroups} />
 
             <div className="cs-rest-buttons">
               <button
                 className="cs-short-rest-btn"
                 onClick={toggleShortRestDialog}
-                disabled={totalHitDiceRemaining <= 0}
               >
                 ☀️ Short Rest
               </button>
@@ -346,8 +330,8 @@ export function HPModal({ character, gameId, onClose }: HPModalProps) {
                   <div className="cs-short-rest-dice-selector">
                     <button
                       className="cs-dice-btn"
-                      onClick={() => setShortRestDiceCount(Math.max(1, shortRestDiceCount - 1))}
-                      disabled={shortRestDiceCount <= 1}
+                      onClick={() => setShortRestDiceCount(Math.max(0, shortRestDiceCount - 1))}
+                      disabled={shortRestDiceCount <= 0}
                     >
                       −
                     </button>
@@ -361,11 +345,15 @@ export function HPModal({ character, gameId, onClose }: HPModalProps) {
                     </button>
                   </div>
                   <small className="cs-short-rest-info">
-                    Roll {shortRestDiceCount}{hasMultipleClasses ? shortRestDiceType : primaryHitDice} + CON mod to heal
+                    {shortRestDiceCount > 0
+                      ? `Roll ${shortRestDiceCount}${shortRestDiceType} + CON mod to heal`
+                      : 'Rest without spending dice (restores features only)'}
                   </small>
                 </div>
                 <button className="cs-short-rest-confirm" onClick={handleShortRest}>
-                  Use {shortRestDiceCount} Hit {shortRestDiceCount === 1 ? 'Die' : 'Dice'}
+                  {shortRestDiceCount > 0
+                    ? `Use ${shortRestDiceCount} Hit ${shortRestDiceCount === 1 ? 'Die' : 'Dice'}`
+                    : 'Take Short Rest'}
                 </button>
               </div>
             )}
@@ -374,14 +362,10 @@ export function HPModal({ character, gameId, onClose }: HPModalProps) {
           <HPSettingsSection
             maxHP={maxHP}
             hpBonus={hpBonus}
-            hitDice={primaryHitDice}
-            hitDiceUsed={primaryHitDiceUsed}
-            hitDiceTotal={classes[0]?.level || 0}
             onMaxHPChange={handleMaxHPChange}
             onHPBonusChange={handleHPBonusChange}
-            onHitDiceChange={handleHitDiceChange}
+            hitDiceGroups={hitDiceGroups}
             onHitDiceUsedChange={handleHitDiceUsedChange}
-            showHitDiceSettings={!hasMultipleClasses}
           />
         </div>
       </div>

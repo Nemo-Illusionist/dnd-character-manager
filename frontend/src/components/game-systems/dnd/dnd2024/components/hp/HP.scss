@@ -984,6 +984,71 @@
   }
 }
 
+/* Short Rest - Multiple dice selectors */
+.cs-short-rest-dice-selectors {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.cs-short-rest-dice-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 6px;
+}
+
+.cs-dice-type-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--accent);
+  min-width: 2.5rem;
+}
+
+.cs-dice-remaining {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  min-width: 1.5rem;
+}
+
+.cs-short-rest-dice-row .cs-short-rest-dice-selector {
+  flex: 1;
+  justify-content: center;
+}
+
+/* HP Settings - Hit Dice per class */
+.cs-hp-hitdice-settings {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.cs-hp-hitdice-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.cs-hp-hitdice-label {
+  flex: 1;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cs-hp-hitdice-row .cs-hp-input-with-suffix {
+  flex: 0 0 auto;
+  width: 5rem;
+}
+
 /* MOBILE: < 650px (BREAKPOINTS.MOBILE) */
 @include mobile {
   /* Fix HP modal overflow */

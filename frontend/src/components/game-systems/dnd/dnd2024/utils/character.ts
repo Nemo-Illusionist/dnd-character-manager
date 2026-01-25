@@ -114,6 +114,7 @@ export interface HitDiceGroup {
   type: string;
   total: number;
   used: number;
+  className: string; // Combined class names for display (e.g., "Fighter, Paladin")
   classes: { name: string; level: number; used: number }[];
 }
 
@@ -128,6 +129,7 @@ export function getHitDiceByType(character: Character): HitDiceGroup[] {
         type: diceType,
         total: 0,
         used: 0,
+        className: '',
         classes: [],
       };
     }
@@ -138,6 +140,11 @@ export function getHitDiceByType(character: Character): HitDiceGroup[] {
       level: cls.level,
       used: cls.hitDiceUsed || 0,
     });
+  }
+
+  // Build className from class names
+  for (const group of Object.values(groups)) {
+    group.className = group.classes.map(c => c.name).join(', ');
   }
 
   // Sort by dice size (d12 > d10 > d8 > d6)
