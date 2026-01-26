@@ -729,21 +729,44 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  width: 100%;
   padding: 0.75rem 1rem;
   background: rgba(255, 255, 255, 0.05);
-  border-bottom: 1px solid var(--border);
+  border: none;
+  cursor: pointer;
+  transition: background 0.15s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.08);
+  }
 }
 
 .cs-class-card-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   font-size: 1rem;
   font-weight: 600;
   color: var(--text-primary);
+  text-align: left;
+}
+
+.cs-class-toggle-icon {
+  display: inline-block;
+  transition: transform 0.2s ease;
+  transform: rotate(-90deg);
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.cs-class-toggle-icon.open {
+  transform: rotate(0deg);
 }
 
 .cs-class-card-level {
   display: flex;
-  align-items: baseline;
-  gap: 0.25rem;
+  align-items: center;
+  gap: 0.375rem;
 }
 
 .cs-class-level-label {
@@ -915,19 +938,22 @@
 
 /* Level +/- buttons for multiclass */
 .cs-class-level-btn {
-  width: 24px;
-  height: 24px;
-  border-radius: 4px;
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
   border: 1px solid var(--border);
   background: rgba(255, 255, 255, 0.05);
   color: var(--text-secondary);
-  font-size: 1rem;
+  font-size: 1.25rem;
   font-weight: 600;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.2s ease;
+  // Larger touch target on mobile
+  min-width: 36px;
+  min-height: 36px;
 }
 
 .cs-class-level-btn:hover:not(:disabled) {

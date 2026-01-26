@@ -32,6 +32,7 @@ export function ClassTab({ character, gameId }: ClassTabProps) {
   const [gainXPInput, setGainXPInput] = useState(0);
   const [xpMessage, setXpMessage] = useState('');
   const [showXPSection, setShowXPSection] = useState(false);
+  const [expandedClasses, setExpandedClasses] = useState<Set<number>>(new Set());
 
   const classes = getClasses(character);
   const hasMultipleClasses = isMulticlass(character);
@@ -169,15 +170,8 @@ export function ClassTab({ character, gameId }: ClassTabProps) {
 
     await updateClass(index, { level: newLevel });
 
-    // Clear message if levels are now properly allocated
-    const newTotalClassLevels = totalClassLevels + delta;
-    if (newTotalClassLevels === globalLevel) {
-      setXpMessage('');
-    } else if (newTotalClassLevels < globalLevel) {
-      setXpMessage(`${globalLevel - newTotalClassLevels} level(s) to allocate.`);
-    } else {
-      setXpMessage(`Reduce class levels by ${newTotalClassLevels - globalLevel}.`);
-    }
+    // Clear allocation message when levels are adjusted
+    setXpMessage('');
   };
 
   // Handle caster type change
@@ -247,14 +241,7 @@ export function ClassTab({ character, gameId }: ClassTabProps) {
         proficiencyBonus: getProficiencyBonus(newGlobalLevel),
       });
 
-      const diff = newGlobalLevel - totalClassLevels;
-      if (diff > 0) {
-        setXpMessage(`Level ${newGlobalLevel}! ${diff} level(s) to allocate.`);
-      } else if (diff < 0) {
-        setXpMessage(`Level ${newGlobalLevel}! Reduce class levels by ${-diff}.`);
-      } else {
-        setXpMessage('XP updated.');
-      }
+      setXpMessage(newGlobalLevel !== globalLevel ? `Level ${newGlobalLevel}!` : 'XP updated.');
       return;
     }
 
@@ -301,12 +288,7 @@ export function ClassTab({ character, gameId }: ClassTabProps) {
         proficiencyBonus: getProficiencyBonus(newGlobalLevel),
       });
 
-      const diff = newGlobalLevel - totalClassLevels;
-      if (diff > 0) {
-        setXpMessage(`+${xpGained} XP! Level ${newGlobalLevel}! ${diff} level(s) to allocate.`);
-      } else {
-        setXpMessage(`+${xpGained} XP!`);
-      }
+      setXpMessage(newGlobalLevel !== globalLevel ? `+${xpGained} XP! Level ${newGlobalLevel}!` : `+${xpGained} XP!`);
       return;
     }
 
@@ -335,6 +317,19 @@ export function ClassTab({ character, gameId }: ClassTabProps) {
   };
 
   // Level up: increases global level (XP), auto-increases class only if single class
+  // Toggle class card expansion
+  const toggleClassExpanded = (index: number) => {
+    setExpandedClasses(prev => {
+      const next = new Set(prev);
+      if (next.has(index)) {
+        next.delete(index);
+      } else {
+        next.add(index);
+      }
+      return next;
+    });
+  };
+
   const handleLevelUp = async () => {
     if (globalLevel >= 20) return;
 
@@ -349,8 +344,7 @@ export function ClassTab({ character, gameId }: ClassTabProps) {
         proficiencyBonus: getProficiencyBonus(newGlobalLevel),
       });
       setCurrentXP(newXP);
-      const unallocated = newGlobalLevel - totalClassLevels;
-      setXpMessage(`Level ${newGlobalLevel}! ${unallocated} level(s) to allocate.`);
+      setXpMessage(`Level ${newGlobalLevel}!`);
       return;
     }
 
@@ -455,10 +449,16 @@ export function ClassTab({ character, gameId }: ClassTabProps) {
           const isManual = spellcasterType === 'manual';
           const hasClass = cls.name && cls.name.trim() !== '';
 
+          const isExpanded = expandedClasses.has(index);
+
           return (
             <div key={index} className="cs-class-card">
-              <div className="cs-class-card-header">
+              <button
+                className="cs-class-card-header"
+                onClick={() => toggleClassExpanded(index)}
+              >
                 <div className="cs-class-card-title">
+                  <span className={`cs-class-toggle-icon ${isExpanded ? 'open' : ''}`}>▾</span>
                   {hasClass ? cls.name : 'No Class'}
                   {cls.subclass && <span className="cs-class-subclass"> ({cls.subclass})</span>}
                 </div>
@@ -466,7 +466,7 @@ export function ClassTab({ character, gameId }: ClassTabProps) {
                   {hasMultipleClasses && (
                     <button
                       className="cs-class-level-btn"
-                      onClick={() => handleLevelChange(index, -1)}
+                      onClick={(e) => { e.stopPropagation(); handleLevelChange(index, -1); }}
                       disabled={cls.level <= 0}
                     >
                       −
@@ -477,15 +477,16 @@ export function ClassTab({ character, gameId }: ClassTabProps) {
                   {hasMultipleClasses && (
                     <button
                       className="cs-class-level-btn"
-                      onClick={() => handleLevelChange(index, 1)}
+                      onClick={(e) => { e.stopPropagation(); handleLevelChange(index, 1); }}
                       disabled={totalClassLevels >= globalLevel}
                     >
                       +
                     </button>
                   )}
                 </div>
-              </div>
+              </button>
 
+              {isExpanded && (
               <div className="cs-class-card-body">
                 {/* Class Name */}
                 <div className="cs-class-field">
@@ -586,6 +587,7 @@ export function ClassTab({ character, gameId }: ClassTabProps) {
                   </button>
                 )}
               </div>
+              )}
             </div>
           );
         })}
