@@ -375,15 +375,25 @@ export function ClassTab({ character, gameId }: ClassTabProps) {
 
   return (
     <div className="cs-class-tab">
-      {/* Level & XP Section - unified block */}
-      <div className="cs-level-xp-block">
-        {/* Level Row */}
-        <div className="cs-xp-row">
-          <div className="cs-level-display">Level {globalLevel}</div>
+      {/* Level Card - like class card */}
+      <div className="cs-level-card">
+        <button
+          className="cs-level-card-header"
+          onClick={() => setShowXPSection(!showXPSection)}
+        >
+          <div className="cs-level-card-title">
+            <span className={`cs-level-toggle-icon ${showXPSection ? 'open' : ''}`}>▾</span>
+            Level {globalLevel}
+          </div>
           {globalLevel < 20 && (
-            <Button onClick={handleLevelUp}>Level Up</Button>
+            <button
+              className="cs-level-up-btn"
+              onClick={(e) => { e.stopPropagation(); handleLevelUp(); }}
+            >
+              Level Up
+            </button>
           )}
-        </div>
+        </button>
 
         {/* Show class level allocation for multiclass */}
         {hasMultipleClasses && totalClassLevels !== globalLevel && (
@@ -394,18 +404,9 @@ export function ClassTab({ character, gameId }: ClassTabProps) {
           </div>
         )}
 
-        {/* XP Section Toggle */}
-        <button
-          className="cs-xp-toggle"
-          onClick={() => setShowXPSection(!showXPSection)}
-        >
-          <span>Experience</span>
-          <span className={`cs-xp-toggle-icon ${showXPSection ? 'open' : ''}`}>▾</span>
-        </button>
-
         {/* Collapsible XP Section */}
         {showXPSection && (
-          <div className="cs-xp-section">
+          <div className="cs-level-card-body">
             {/* Current XP */}
             <label>Current Experience</label>
             <div className="cs-xp-row">
