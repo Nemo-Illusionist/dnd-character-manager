@@ -454,6 +454,20 @@
   gap: 1rem;
 }
 
+/* Avatar section - visible only on mobile/small-tablet */
+.cs-bio-avatar-section {
+  display: flex;
+  justify-content: center;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+@include wide-tablet-up {
+  .cs-bio-avatar-section {
+    display: none;
+  }
+}
+
 .cs-bio-identity {
   display: grid;
   grid-template-columns: 1fr 1fr;

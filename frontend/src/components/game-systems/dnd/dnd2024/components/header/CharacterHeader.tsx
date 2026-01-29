@@ -6,6 +6,7 @@ import { useCharacterStats } from '../../hooks';
 import { CombatStatsRow } from '../shared';
 import { HPBoxDesktop, HPBoxMobile, HPModal } from '../hp';
 import { LevelXPModal, ConditionsModal, CombatStatsModal } from '../modals';
+import { AvatarPicker } from './AvatarPicker';
 import type { Character } from 'shared';
 import './CharacterHeader.scss';
 
@@ -32,14 +33,17 @@ export function CharacterHeader({ character, gameId, expanded, onToggleExpand }:
         {/* Desktop Layout */}
         <div className="cs-header-desktop">
           <div className="cs-header-left">
-            <div className="cs-name-block">
-              <h1 className="cs-name">{character.name}</h1>
+            <AvatarPicker character={character} gameId={gameId} size={64} />
+            <div className="cs-header-left-info">
+              <div className="cs-name-block">
+                <h1 className="cs-name">{character.name}</h1>
+              </div>
+              <p className="cs-subtitle">{character.race}</p>
+              <p className="cs-subtitle">{character.class} {character.subclass && `(${character.subclass})`}</p>
+              <button className="cs-level-btn" onClick={levelModal.open}>
+                Level {character.level}
+              </button>
             </div>
-            <p className="cs-subtitle">{character.race}</p>
-            <p className="cs-subtitle">{character.class} {character.subclass && `(${character.subclass})`}</p>
-            <button className="cs-level-btn" onClick={levelModal.open}>
-              Level {character.level}
-            </button>
           </div>
 
           <div className="cs-header-right">

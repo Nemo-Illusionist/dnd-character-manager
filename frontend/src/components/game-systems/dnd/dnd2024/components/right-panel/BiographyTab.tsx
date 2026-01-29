@@ -6,6 +6,7 @@ import { useGame } from '../../../../../../context/GameContext';
 import { isGameMaster } from '../../../../../../services/games.service';
 import { updateCharacter } from '../../../../../../services/characters.service';
 import { getUsers } from '../../../../../../services/users.service';
+import { AvatarPicker } from '../header/AvatarPicker';
 import type { Character, User } from 'shared';
 
 interface BiographyTabProps {
@@ -73,6 +74,11 @@ export function BiographyTab({ character, gameId }: BiographyTabProps) {
 
   return (
     <div className="cs-biography-tab">
+      {/* Avatar - visible on mobile/small-tablet only */}
+      <div className="cs-bio-avatar-section">
+        <AvatarPicker character={character} gameId={gameId} size={96} />
+      </div>
+
       {/* Identity */}
       <div className="cs-bio-identity">
         <div className="cs-bio-field cs-bio-name">

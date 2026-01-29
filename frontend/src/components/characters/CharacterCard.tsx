@@ -1,6 +1,7 @@
 // Character Card Component - Shows public character info
 import { Card } from '../shared';
 import { SHEET_TYPE_SHORT_NAMES, DEFAULT_SHEET_TYPE, type PublicCharacter } from 'shared';
+import { getAvatarUrl } from '../game-systems/dnd/dnd2024/utils/avatar';
 import './CharacterCard.scss';
 
 interface CharacterCardProps {
@@ -21,11 +22,9 @@ export function CharacterCard({
   return (
     <Card onClick={onClick} className="character-card">
       <div className="character-card-header">
-        {character.avatar && (
-          <div className="character-avatar">
-            <img src={character.avatar} alt={character.name} />
-          </div>
-        )}
+        <div className="character-avatar">
+          <img src={getAvatarUrl(character.avatar)} alt={character.name} />
+        </div>
         <div className="character-info">
           <h3 className="character-name">{character.name}</h3>
           {ownerName && (
