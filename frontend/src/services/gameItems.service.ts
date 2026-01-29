@@ -97,7 +97,7 @@ export function subscribeToGameItems(
       callback(items);
     },
     (error) => {
-      console.error('Error subscribing to game items:', error);
+      console.error('[GameItems] Error subscribing to game items:', error);
       callback([]);
     }
   );

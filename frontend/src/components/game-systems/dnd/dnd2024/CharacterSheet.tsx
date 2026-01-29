@@ -3,8 +3,9 @@
 import { CharacterHeader } from './components/header';
 import { AbilitiesSection } from './components/abilities';
 import { RightPanel } from './components/right-panel';
+import { CombatStatsRow } from './components/shared';
 import { ConditionsModal } from './components/modals';
-import { useCharacterStats, useCharacterSheetLayout } from './hooks';
+import { useCharacterSheetLayout } from './hooks';
 import type { Character } from 'shared';
 
 interface CharacterSheetProps {
@@ -32,13 +33,6 @@ export function CharacterSheet({ character, gameId }: CharacterSheetProps) {
     getRightPanelTab,
   } = useCharacterSheetLayout(character);
 
-  const {
-    displayedInitiative,
-    activeConditions,
-    handleInspirationToggle,
-    handleExhaustionChange,
-  } = useCharacterStats(character, gameId);
-
   return (
     <>
       <CharacterHeader
@@ -53,45 +47,11 @@ export function CharacterSheet({ character, gameId }: CharacterSheetProps) {
         {/* Tablet stats row (650-849px only) - not on mobile, they're in header */}
         {isTabletMode && (
           <div className="cs-tablet-stats-row">
-            <div
-              className="cs-mini-stat"
-              style={{ cursor: 'pointer' }}
-              onClick={handleInspirationToggle}
-            >
-              <div className="cs-mini-label">Inspiration</div>
-              <div className="cs-mini-value">{character.inspiration ? '✓' : '—'}</div>
-            </div>
-
-            <div className="cs-mini-stat">
-              <div className="cs-mini-label">Initiative</div>
-              <div className="cs-mini-value">
-                {displayedInitiative >= 0 ? '+' : ''}{displayedInitiative}
-              </div>
-            </div>
-
-            <div className="cs-mini-stat">
-              <div className="cs-mini-label">Exhaustion</div>
-              <select
-                className="cs-mini-value cs-exhaustion-select"
-                value={character.exhaustion || 0}
-                onChange={(e) => handleExhaustionChange(Number(e.target.value))}
-              >
-                {[0, 1, 2, 3, 4, 5, 6].map((level) => (
-                  <option key={level} value={level}>{level}</option>
-                ))}
-              </select>
-            </div>
-
-            <div
-              className="cs-mini-stat"
-              style={{ cursor: 'pointer' }}
-              onClick={() => setConditionsOpen(true)}
-            >
-              <div className="cs-mini-label">Conditions</div>
-              <div className="cs-mini-value">
-                {activeConditions.length > 0 ? activeConditions.length : '—'}
-              </div>
-            </div>
+            <CombatStatsRow
+              character={character}
+              gameId={gameId}
+              onConditionsClick={() => setConditionsOpen(true)}
+            />
           </div>
         )}
 

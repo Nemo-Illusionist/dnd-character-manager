@@ -1,7 +1,7 @@
 // D&D 2024 - Biography Tab Component
 
 import { useState, useEffect } from 'react';
-import { useAuth } from '../../../../../../hooks';
+import { useAuth, useNumberInput } from '../../../../../../hooks';
 import { useGame } from '../../../../../../context/GameContext';
 import { isGameMaster } from '../../../../../../services/games.service';
 import { updateCharacter } from '../../../../../../services/characters.service';
@@ -25,33 +25,6 @@ const ALIGNMENTS = [
   'Chaotic Evil',
   'Unaligned',
 ] as const;
-
-// Hook for number input with local state (allows clearing)
-function useNumberInput(externalValue: number | undefined, onCommit: (value: number | undefined) => void) {
-  const [localValue, setLocalValue] = useState(externalValue?.toString() ?? '');
-
-  useEffect(() => {
-    setLocalValue(externalValue?.toString() ?? '');
-  }, [externalValue]);
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = e.target.value;
-    if (val === '' || /^\d*$/.test(val)) {
-      setLocalValue(val);
-    }
-  };
-
-  const handleBlur = () => {
-    if (localValue === '') {
-      onCommit(undefined);
-    } else {
-      const num = parseInt(localValue, 10);
-      onCommit(isNaN(num) ? undefined : num);
-    }
-  };
-
-  return { value: localValue, onChange: handleChange, onBlur: handleBlur };
-}
 
 export function BiographyTab({ character, gameId }: BiographyTabProps) {
   const { firebaseUser } = useAuth();

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { NumberInput } from '../../../../../shared';
+import { getChanges } from '../../utils';
 import type { InventoryItem } from 'shared';
 import '../modals/Modals.scss';
 
@@ -32,16 +33,7 @@ export function InventoryItemModal({ item, onUpdate, onDelete, onClose }: Invent
 
   // Save changes and close
   const handleClose = () => {
-    // Only update if there are changes
-    const changes: Partial<InventoryItem> = {};
-    if (localItem.name !== item.name) changes.name = localItem.name;
-    if (localItem.type !== item.type) changes.type = localItem.type;
-    if (localItem.quantity !== item.quantity) changes.quantity = localItem.quantity;
-    if (localItem.weight !== item.weight) changes.weight = localItem.weight;
-    if (localItem.equipped !== item.equipped) changes.equipped = localItem.equipped;
-    if (localItem.attuned !== item.attuned) changes.attuned = localItem.attuned;
-    if (localItem.description !== item.description) changes.description = localItem.description;
-
+    const changes = getChanges(item, localItem);
     if (Object.keys(changes).length > 0) {
       onUpdate(changes);
     }

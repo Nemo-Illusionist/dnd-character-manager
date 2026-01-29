@@ -29,7 +29,6 @@ export function usePublicCharacters() {
       return;
     }
 
-    console.log('Subscribing to public characters for game:', currentGame.id);
     setLoading(true);
     setError(null);
 
@@ -41,7 +40,6 @@ export function usePublicCharacters() {
           ? updatedCharacters
           : updatedCharacters.filter(c => !c.isHidden || c.ownerId === user.uid);
 
-        console.log('Public characters updated:', visibleCharacters);
         setCharacters(visibleCharacters);
         setLoading(false);
       }
@@ -72,7 +70,6 @@ export function useCharacters() {
       return;
     }
 
-    console.log('Subscribing to characters for game:', currentGame.id);
     setLoading(true);
     setError(null);
 
@@ -83,7 +80,6 @@ export function useCharacters() {
       user.uid,
       isGM,
       (updatedCharacters) => {
-        console.log('Characters updated:', updatedCharacters);
         setCharacters(updatedCharacters);
         setLoading(false);
       }

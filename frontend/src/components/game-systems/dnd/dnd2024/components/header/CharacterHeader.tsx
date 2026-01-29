@@ -3,6 +3,7 @@
 import { useModalState } from '../../../../../../hooks';
 import { getProficiencyBonus } from '../../constants';
 import { useCharacterStats } from '../../hooks';
+import { CombatStatsRow } from '../shared';
 import { HPBoxDesktop, HPBoxMobile, HPModal } from '../hp';
 import { LevelXPModal, ConditionsModal, CombatStatsModal } from '../modals';
 import type { Character } from 'shared';
@@ -23,13 +24,7 @@ export function CharacterHeader({ character, gameId, expanded, onToggleExpand }:
   const combatStatsModal = useModalState();
 
   // Character stats hook
-  const {
-    displayedInitiative,
-    conditionsCount,
-    totalAC,
-    handleInspirationToggle,
-    handleExhaustionChange,
-  } = useCharacterStats(character, gameId);
+  const { totalAC } = useCharacterStats(character, gameId);
 
   return (
     <>
@@ -84,40 +79,12 @@ export function CharacterHeader({ character, gameId, expanded, onToggleExpand }:
 
               {/* 4 stat blocks */}
               <div className="cs-expanded-stats">
-                <div
-                  className="cs-mini-stat"
-                  style={{ cursor: 'pointer' }}
-                  onClick={handleInspirationToggle}
-                >
-                  <div className="cs-mini-label">Inspiration</div>
-                  <div className="cs-mini-value">{character.inspiration ? '✓' : '—'}</div>
-                </div>
-                <div className="cs-mini-stat" style={{ cursor: 'pointer' }} onClick={combatStatsModal.open}>
-                  <div className="cs-mini-label">Initiative</div>
-                  <div className="cs-mini-value">
-                    {displayedInitiative >= 0 ? '+' : ''}{displayedInitiative}
-                  </div>
-                </div>
-                <div
-                  className="cs-mini-stat"
-                  style={{ cursor: 'pointer' }}
-                  onClick={conditionsModal.open}
-                >
-                  <div className="cs-mini-label">Conditions</div>
-                  <div className="cs-mini-value">{conditionsCount > 0 ? conditionsCount : '—'}</div>
-                </div>
-                <div className="cs-mini-stat">
-                  <div className="cs-mini-label">Exhaustion</div>
-                  <select
-                    className="cs-mini-value cs-exhaustion-select"
-                    value={character.exhaustion || 0}
-                    onChange={(e) => handleExhaustionChange(Number(e.target.value))}
-                  >
-                    {[0, 1, 2, 3, 4, 5, 6].map(level => (
-                      <option key={level} value={level}>{level}</option>
-                    ))}
-                  </select>
-                </div>
+                <CombatStatsRow
+                  character={character}
+                  gameId={gameId}
+                  onConditionsClick={conditionsModal.open}
+                  onInitiativeClick={combatStatsModal.open}
+                />
               </div>
             </div>
           </div>

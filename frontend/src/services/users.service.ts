@@ -26,45 +26,33 @@ export async function getUser(userId: string): Promise<User | null> {
  */
 export async function getUserByEmail(email: string): Promise<User | null> {
   const searchEmail = email.trim().toLowerCase();
-  console.log('Firestore instance:', db);
-  console.log('Firestore settings:', db.toJSON ? db.toJSON() : 'N/A');
-  console.log('Searching for user with email:', searchEmail);
 
   // Try with query first
   try {
     const q = query(collection(db, 'users'), where('email', '==', searchEmail));
     const snapshot = await getDocs(q);
 
-    console.log('Query found users:', snapshot.size);
-
     if (!snapshot.empty) {
-      const user = snapshot.docs[0].data() as User;
-      console.log('Found user via query:', user);
-      return user;
+      return snapshot.docs[0].data() as User;
     }
   } catch (error) {
-    console.error('Query failed:', error);
+    console.error('[Users] Query failed:', error);
   }
 
   // Fallback: Get all users and filter client-side
-  console.log('Trying fallback: getting all users...');
   try {
     const allUsersSnapshot = await getDocs(collection(db, 'users'));
-    console.log('Total users in collection:', allUsersSnapshot.size);
 
     for (const doc of allUsersSnapshot.docs) {
       const userData = doc.data() as User;
-      console.log('Checking user:', userData.email);
       if (userData.email.toLowerCase() === searchEmail) {
-        console.log('Found user via fallback:', userData);
         return userData;
       }
     }
   } catch (error) {
-    console.error('Fallback failed:', error);
+    console.error('[Users] Fallback failed:', error);
   }
 
-  console.log('User not found');
   return null;
 }
 

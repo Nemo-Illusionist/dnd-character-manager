@@ -15,37 +15,18 @@ import type {User} from 'shared';
  * Register a new user
  */
 export async function register(email: string, password: string, displayName: string): Promise<FirebaseUser> {
-    console.log('🔐 Starting registration for:', email);
-
     try {
         // Create Firebase Auth user
-        console.log('📝 Step 1: Creating Firebase Auth user...');
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const firebaseUser = userCredential.user;
-        console.log('✅ Firebase Auth user created:', firebaseUser.uid);
 
         // Update profile with display name
-        console.log('📝 Step 2: Updating profile with display name...');
-        console.log('displayName value:', displayName, 'type:', typeof displayName);
         await updateProfile(firebaseUser, {displayName});
-        console.log('✅ Profile updated');
-        console.log('firebaseUser.photoURL:', firebaseUser.photoURL, 'type:', typeof firebaseUser.photoURL);
 
         // Wait for auth token to propagate
-        console.log('⏳ Waiting for auth token...');
-        const idToken = await firebaseUser.getIdToken(true);
-        console.log('✅ Auth token obtained:', idToken ? 'present' : 'missing');
-
-        // Verify current auth state
-        const currentUser = auth.currentUser;
-        console.log('👤 Current auth user:', {
-            uid: currentUser?.uid,
-            matches: currentUser?.uid === firebaseUser.uid
-        });
+        await firebaseUser.getIdToken(true);
 
         // Create user document in Firestore
-        console.log('📝 Step 3: Creating user document in Firestore...');
-
         // Build userData without undefined values
         const userData: Record<string, any> = {
             uid: firebaseUser.uid,
@@ -59,37 +40,11 @@ export async function register(email: string, password: string, displayName: str
             userData.photoURL = firebaseUser.photoURL;
         }
 
-        console.log('photoURL check:', {
-            raw: firebaseUser.photoURL,
-            type: typeof firebaseUser.photoURL,
-            isNull: firebaseUser.photoURL === null,
-            isUndefined: firebaseUser.photoURL === undefined,
-            willInclude: firebaseUser.photoURL != null
-        });
-
-        console.log('📄 User data to write:', {
-            path: `users/${firebaseUser.uid}`,
-            data: { ...userData, createdAt: '<serverTimestamp>' },
-            hasPhotoURL: 'photoURL' in userData,
-            photoURLValue: userData.photoURL
-        });
-
         await setDoc(doc(db, 'users', firebaseUser.uid), userData);
-        console.log('✅ User document created in Firestore');
 
-        // Verify it was written
-        const userDocRef = doc(db, 'users', firebaseUser.uid);
-        const userDocSnap = await getDoc(userDocRef);
-        if (userDocSnap.exists()) {
-            console.log('✅ User document verified:', userDocSnap.data());
-        } else {
-            console.warn('⚠️  User document NOT found after write!');
-        }
-
-        console.log('🎉 Registration completed successfully!');
         return firebaseUser;
     } catch (error) {
-        console.error('❌ Registration failed:', error);
+        console.error('[Auth] Registration failed:', error);
         throw error;
     }
 }

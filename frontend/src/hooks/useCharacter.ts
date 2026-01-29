@@ -15,12 +15,10 @@ export function useCharacter(gameId: string | null, characterId: string | null) 
       return;
     }
 
-    console.log('Subscribing to character:', characterId);
     setLoading(true);
     setError(null);
 
     const unsubscribe = subscribeToCharacter(gameId, characterId, (updatedCharacter) => {
-      console.log('Character updated:', updatedCharacter);
       setCharacter(updatedCharacter);
       setLoading(false);
     });

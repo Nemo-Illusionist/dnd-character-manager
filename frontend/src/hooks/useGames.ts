@@ -17,13 +17,11 @@ export function useGames() {
       return;
     }
 
-    console.log('Subscribing to games for user:', firebaseUser.uid);
     setLoading(true);
     setError(null);
 
     try {
       const unsubscribe = subscribeToUserGames(firebaseUser.uid, (updatedGames) => {
-        console.log('Games updated:', updatedGames);
         setGames(updatedGames);
         setLoading(false);
       });

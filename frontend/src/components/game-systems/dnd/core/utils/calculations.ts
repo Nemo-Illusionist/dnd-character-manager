@@ -2,15 +2,11 @@
 // Shared between D&D 2014 and D&D 2024
 
 import type { Character, AbilityName, SkillName } from 'shared';
+import { getAbilityModifier } from 'shared';
 import { SKILL_ABILITIES } from '../constants/skills';
 
-/**
- * Calculate ability modifier from ability score
- * Formula: floor((score - 10) / 2)
- */
-export function getAbilityModifier(score: number): number {
-  return Math.floor((score - 10) / 2);
-}
+// Re-export from shared
+export { getAbilityModifier };
 
 /**
  * Calculate skill modifier

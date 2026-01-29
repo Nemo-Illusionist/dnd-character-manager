@@ -15,12 +15,10 @@ export function useGameItems(gameId: string | null) {
       return;
     }
 
-    console.log('Subscribing to game items:', gameId);
     setLoading(true);
     setError(null);
 
     const unsubscribe = subscribeToGameItems(gameId, (updatedItems) => {
-      console.log('Game items updated:', updatedItems);
       setItems(updatedItems);
       setLoading(false);
     });

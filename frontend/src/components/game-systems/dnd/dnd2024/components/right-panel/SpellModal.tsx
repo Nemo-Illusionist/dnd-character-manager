@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import type { CharacterSpellEntry, MagicSchool, SpellAttackType, AbilityName } from 'shared';
 import { ABILITY_NAMES, ABILITY_ORDER, DAMAGE_TYPES } from '../../constants';
+import { getChanges } from '../../utils';
 import '../modals/Modals.scss';
 
 interface SpellModalProps {
@@ -65,28 +66,7 @@ export function SpellModal({ spell, onUpdate, onDelete, onClose }: SpellModalPro
 
   // Save changes and close
   const handleClose = () => {
-    // Only update if there are changes
-    const changes: Partial<CharacterSpellEntry> = {};
-    if (localSpell.name !== spell.name) changes.name = localSpell.name;
-    if (localSpell.level !== spell.level) changes.level = localSpell.level;
-    if (localSpell.school !== spell.school) changes.school = localSpell.school;
-    if (localSpell.castingTime !== spell.castingTime) changes.castingTime = localSpell.castingTime;
-    if (localSpell.range !== spell.range) changes.range = localSpell.range;
-    if (localSpell.componentV !== spell.componentV) changes.componentV = localSpell.componentV;
-    if (localSpell.componentS !== spell.componentS) changes.componentS = localSpell.componentS;
-    if (localSpell.componentM !== spell.componentM) changes.componentM = localSpell.componentM;
-    if (localSpell.materials !== spell.materials) changes.materials = localSpell.materials;
-    if (localSpell.duration !== spell.duration) changes.duration = localSpell.duration;
-    if (localSpell.attackType !== spell.attackType) changes.attackType = localSpell.attackType;
-    if (localSpell.saveAbility !== spell.saveAbility) changes.saveAbility = localSpell.saveAbility;
-    if (localSpell.damage !== spell.damage) changes.damage = localSpell.damage;
-    if (localSpell.damageType !== spell.damageType) changes.damageType = localSpell.damageType;
-    if (localSpell.concentration !== spell.concentration) changes.concentration = localSpell.concentration;
-    if (localSpell.ritual !== spell.ritual) changes.ritual = localSpell.ritual;
-    if (localSpell.prepared !== spell.prepared) changes.prepared = localSpell.prepared;
-    if (localSpell.description !== spell.description) changes.description = localSpell.description;
-    if (localSpell.source !== spell.source) changes.source = localSpell.source;
-
+    const changes = getChanges(spell, localSpell);
     if (Object.keys(changes).length > 0) {
       onUpdate(changes);
     }

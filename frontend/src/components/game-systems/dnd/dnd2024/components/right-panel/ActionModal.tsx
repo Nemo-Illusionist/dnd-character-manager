@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { NumberInput } from '../../../../../shared';
 import { ABILITY_NAMES, ABILITY_ORDER, DAMAGE_TYPES } from '../../constants';
+import { getChanges } from '../../utils';
 import type { CharacterAction, AbilityName, ActionType } from 'shared';
 import { ACTION_TYPE_NAMES } from 'shared';
 import '../modals/Modals.scss';
@@ -27,18 +28,7 @@ export function ActionModal({ action, onUpdate, onDelete, onClose }: ActionModal
 
   // Save changes and close
   const handleClose = () => {
-    // Only update if there are changes
-    const changes: Partial<CharacterAction> = {};
-    if (localAction.name !== action.name) changes.name = localAction.name;
-    if (localAction.actionType !== action.actionType) changes.actionType = localAction.actionType;
-    if (localAction.ability !== action.ability) changes.ability = localAction.ability;
-    if (localAction.proficient !== action.proficient) changes.proficient = localAction.proficient;
-    if (localAction.extraBonus !== action.extraBonus) changes.extraBonus = localAction.extraBonus;
-    if (localAction.damage !== action.damage) changes.damage = localAction.damage;
-    if (localAction.damageBonus !== action.damageBonus) changes.damageBonus = localAction.damageBonus;
-    if (localAction.damageType !== action.damageType) changes.damageType = localAction.damageType;
-    if (localAction.notes !== action.notes) changes.notes = localAction.notes;
-
+    const changes = getChanges(action, localAction);
     if (Object.keys(changes).length > 0) {
       onUpdate(changes);
     }

@@ -106,29 +106,17 @@ export function subscribeToGame(
 ): Unsubscribe {
   const gameRef = doc(db, 'games', gameId);
 
-  console.log('📡 Setting up game subscription for:', gameId);
-
   return onSnapshot(
     gameRef,
     (snapshot) => {
       if (snapshot.exists()) {
-        const gameData = snapshot.data() as Game;
-        console.log('✅ Game snapshot received:', {
-          id: gameData.id,
-          name: gameData.name,
-          gmId: gameData.gmId,
-          playerIds: gameData.playerIds
-        });
-        callback(gameData);
+        callback(snapshot.data() as Game);
       } else {
-        console.warn('⚠️ Game document does not exist:', gameId);
         callback(null);
       }
     },
     (error) => {
-      console.error('❌ Error subscribing to game:', error);
-      console.error('Error code:', error.code);
-      console.error('Error message:', error.message);
+      console.error('[Games] Error subscribing to game:', error);
       callback(null);
     }
   );
@@ -142,8 +130,6 @@ export function subscribeToUserGames(
   callback: (games: Game[]) => void
 ): Unsubscribe {
   const gamesRef = collection(db, 'games');
-
-  console.log('🔍 Setting up subscriptions for userId:', userId);
 
   // Subscribe to games where user is GM or player
   const gmQuery = query(gamesRef, where('gmId', '==', userId));
@@ -176,38 +162,22 @@ export function subscribeToUserGames(
   const unsubGm = onSnapshot(
     gmQuery,
     (snapshot) => {
-      console.log('📊 GM query snapshot:', {
-        size: snapshot.size,
-        empty: snapshot.empty,
-        docs: snapshot.docs.map(doc => ({ id: doc.id, data: doc.data() }))
-      });
       gmGames = snapshot.docs.map((doc) => doc.data() as Game);
-      console.log('GM games:', gmGames);
       updateGames();
     },
     (error) => {
-      console.error('❌ Error in GM games subscription:', error);
-      console.error('Error code:', error.code);
-      console.error('Error message:', error.message);
+      console.error('[Games] Error in GM games subscription:', error);
     }
   );
 
   const unsubPlayer = onSnapshot(
     playerQuery,
     (snapshot) => {
-      console.log('📊 Player query snapshot:', {
-        size: snapshot.size,
-        empty: snapshot.empty,
-        docs: snapshot.docs.map(doc => ({ id: doc.id, data: doc.data() }))
-      });
       playerGames = snapshot.docs.map((doc) => doc.data() as Game);
-      console.log('Player games:', playerGames);
       updateGames();
     },
     (error) => {
-      console.error('❌ Error in player games subscription:', error);
-      console.error('Error code:', error.code);
-      console.error('Error message:', error.message);
+      console.error('[Games] Error in player games subscription:', error);
     }
   );
 
@@ -235,8 +205,6 @@ export async function updateGame(
  * Add player to game
  */
 export async function addPlayerToGame(gameId: string, playerId: string): Promise<void> {
-  console.log('➕ Adding player to game:', { gameId, playerId });
-
   const gameDoc = await getDoc(doc(db, 'games', gameId));
 
   if (!gameDoc.exists()) {
@@ -245,25 +213,16 @@ export async function addPlayerToGame(gameId: string, playerId: string): Promise
 
   const game = gameDoc.data() as Game;
 
-  console.log('Current game state:', {
-    name: game.name,
-    gmId: game.gmId,
-    currentPlayers: game.playerIds
-  });
-
   if (game.playerIds.includes(playerId)) {
     throw new Error('Player already in game');
   }
 
   const newPlayerIds = [...game.playerIds, playerId];
-  console.log('Updating playerIds to:', newPlayerIds);
 
   await updateDoc(doc(db, 'games', gameId), {
     playerIds: newPlayerIds,
     updatedAt: serverTimestamp(),
   });
-
-  console.log('✅ Player added successfully');
 }
 
 /**

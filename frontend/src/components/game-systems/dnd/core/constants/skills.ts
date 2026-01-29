@@ -2,27 +2,10 @@
 // Shared between D&D 2014 and D&D 2024
 
 import type { AbilityName, SkillName } from 'shared';
+import { SKILL_ABILITIES } from 'shared';
 
-export const SKILL_ABILITIES: Record<SkillName, AbilityName> = {
-  'Acrobatics': 'dex',
-  'Animal Handling': 'wis',
-  'Arcana': 'int',
-  'Athletics': 'str',
-  'Deception': 'cha',
-  'History': 'int',
-  'Insight': 'wis',
-  'Intimidation': 'cha',
-  'Investigation': 'int',
-  'Medicine': 'wis',
-  'Nature': 'int',
-  'Perception': 'wis',
-  'Performance': 'cha',
-  'Persuasion': 'cha',
-  'Religion': 'int',
-  'Sleight of Hand': 'dex',
-  'Stealth': 'dex',
-  'Survival': 'wis',
-};
+// Re-export from shared
+export { SKILL_ABILITIES };
 
 // Group skills by ability
 export function getSkillsByAbility(): Record<AbilityName, SkillName[]> {

@@ -8,3 +8,4 @@ export { useGameItems } from './useGameItems';
 export { useGameMenuItems } from './useGameMenuItems';
 export { useGames } from './useGames';
 export { useModalState } from './useModalState';
+export { useNumberInput } from './useNumberInput';

@@ -1,32 +1,10 @@
 // Stats Section - Abilities, Skills, Saving Throws
 import { Card, NumberInput } from '../shared';
-import { getAbilityModifier, getSavingThrowModifier, getSkillModifier, updateCharacter } from '../../services/characters.service';
+import { updateCharacter } from '../../services/characters.service';
+import { getAbilityModifier, getSkillModifier, getSavingThrowModifier } from '../game-systems/dnd/core';
+import { SKILL_ABILITIES } from 'shared';
 import type { Character, AbilityName, SkillName } from 'shared';
 import './StatsSection.scss';
-
-/**
- * Skill ability mapping (D&D 2024 SRD 5.2)
- */
-const SKILL_ABILITIES: Record<SkillName, AbilityName> = {
-  'Acrobatics': 'dex',
-  'Animal Handling': 'wis',
-  'Arcana': 'int',
-  'Athletics': 'str',
-  'Deception': 'cha',
-  'History': 'int',
-  'Insight': 'wis',
-  'Intimidation': 'cha',
-  'Investigation': 'int',
-  'Medicine': 'wis',
-  'Nature': 'int',
-  'Perception': 'wis',
-  'Performance': 'cha',
-  'Persuasion': 'cha',
-  'Religion': 'int',
-  'Sleight of Hand': 'dex',
-  'Stealth': 'dex',
-  'Survival': 'wis',
-};
 
 interface StatsSectionProps {
   character: Character;
@@ -111,7 +89,7 @@ export function StatsSection({ character, gameId }: StatsSectionProps) {
           <h3 className="card-title">Saving Throws</h3>
           <div className="saves-list">
             {(Object.keys(ABILITY_NAMES) as AbilityName[]).map((ability) => {
-              const modifier = getSavingThrowModifier(character, ability);
+              const modifier = getSavingThrowModifier(character, ability, character.proficiencyBonus);
               const isProficient = character.savingThrows[ability].proficiency;
 
               return (
@@ -135,7 +113,7 @@ export function StatsSection({ character, gameId }: StatsSectionProps) {
           <h3 className="card-title">Skills</h3>
           <div className="skills-list">
             {(Object.keys(character.skills) as SkillName[]).map((skill) => {
-              const modifier = getSkillModifier(character, skill);
+              const modifier = getSkillModifier(character, skill, character.proficiencyBonus);
               const proficiency = character.skills[skill].proficiency;
 
               return (
