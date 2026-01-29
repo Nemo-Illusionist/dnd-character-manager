@@ -1,3 +1,5 @@
+@use '../../../../../../styles/breakpoints' as *;
+
 /* ==================== AVATAR PICKER ==================== */
 
 .cs-avatar-picker {
@@ -47,6 +49,8 @@
   transition: background 0.2s ease;
 }
 
-.cs-avatar-picker-btn:hover .cs-avatar-picker-overlay {
-  background: rgba(0, 0, 0, 0.2);
+@media (hover: hover) {
+  .cs-avatar-picker-btn:hover .cs-avatar-picker-overlay {
+    background: rgba(0, 0, 0, 0.2);
+  }
 }

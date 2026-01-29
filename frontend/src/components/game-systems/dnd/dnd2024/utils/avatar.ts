@@ -24,11 +24,23 @@ export const DEFAULT_AVATARS: DefaultAvatar[] = [
 ];
 
 /**
+ * Normalize imgur page URLs to direct image URLs.
+ * https://imgur.com/MUrMd4L → https://i.imgur.com/MUrMd4L.png
+ */
+export function normalizeImageUrl(url: string): string {
+  const imgurMatch = url.match(/^https?:\/\/imgur\.com\/([a-zA-Z0-9]+)$/);
+  if (imgurMatch) {
+    return `https://i.imgur.com/${imgurMatch[1]}.png`;
+  }
+  return url;
+}
+
+/**
  * Get avatar URL for a character.
  * Priority: custom avatar > class-based default > generic default
  */
 export function getAvatarUrl(avatar?: string, className?: string): string {
-  if (avatar) return avatar;
+  if (avatar) return normalizeImageUrl(avatar);
 
   if (className) {
     const normalized = className.toLowerCase();

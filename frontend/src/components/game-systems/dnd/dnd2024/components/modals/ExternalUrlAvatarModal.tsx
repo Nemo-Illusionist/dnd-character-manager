@@ -1,6 +1,7 @@
 // External URL Avatar Modal
 
 import { useState } from 'react';
+import { normalizeImageUrl } from '../../utils/avatar';
 import './AvatarModals.scss';
 import './Modals.scss';
 
@@ -19,14 +20,16 @@ export function ExternalUrlAvatarModal({ currentAvatar, onSave, onClose }: Exter
     setPreviewError(false);
   };
 
+  const normalizedUrl = normalizeImageUrl(url.trim());
+
   const handleSave = () => {
-    if (url.trim()) {
-      onSave(url.trim());
+    if (normalizedUrl) {
+      onSave(normalizedUrl);
       onClose();
     }
   };
 
-  const showPreview = url.trim().length > 0;
+  const showPreview = normalizedUrl.length > 0;
 
   return (
     <div className="cs-modal-overlay" onClick={onClose}>
@@ -52,7 +55,7 @@ export function ExternalUrlAvatarModal({ currentAvatar, onSave, onClose }: Exter
             <div className="cs-avatar-preview-section">
               <img
                 className={`cs-avatar-preview ${previewError ? 'error' : ''}`}
-                src={url}
+                src={normalizedUrl}
                 alt="Preview"
                 onLoad={() => setPreviewError(false)}
                 onError={() => setPreviewError(true)}

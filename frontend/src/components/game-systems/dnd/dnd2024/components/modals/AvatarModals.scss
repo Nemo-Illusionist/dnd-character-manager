@@ -26,15 +26,24 @@
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 
-  &:hover {
-    background: rgba(255, 255, 255, 0.05);
-    border-color: rgba(255, 255, 255, 0.15);
+  &:focus:not(:focus-visible) {
+    outline: none;
+    box-shadow: none;
   }
 
   &.selected {
     border-color: var(--accent);
     background: rgba(124, 58, 237, 0.1);
+  }
+}
+
+@media (hover: hover) {
+  .cs-avatar-grid-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.15);
   }
 }
 

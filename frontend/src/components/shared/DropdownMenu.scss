@@ -18,9 +18,12 @@
   font-size: 1.5rem;
   cursor: pointer;
   transition: background 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
 
-  &:hover {
-    background: var(--bg-tertiary);
+  @media (hover: hover) {
+    &:hover {
+      background: var(--bg-tertiary);
+    }
   }
 }
 
@@ -56,9 +59,12 @@
   text-align: left;
   cursor: pointer;
   transition: background 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
 
-  &:hover {
-    background: var(--bg-tertiary);
+  @media (hover: hover) {
+    &:hover {
+      background: var(--bg-tertiary);
+    }
   }
 
   &:not(:last-child) {

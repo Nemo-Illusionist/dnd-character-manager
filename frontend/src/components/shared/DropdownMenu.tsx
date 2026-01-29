@@ -17,28 +17,32 @@ interface DropdownMenuProps {
 export function DropdownMenu({ items, trigger, className = '' }: DropdownMenuProps) {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
+    function handleClickOutside(event: Event) {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
         setIsOpen(false);
+        triggerRef.current?.blur();
       }
     }
 
     if (isOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-      return () => document.removeEventListener('mousedown', handleClickOutside);
+      document.addEventListener('pointerdown', handleClickOutside);
+      return () => document.removeEventListener('pointerdown', handleClickOutside);
     }
   }, [isOpen]);
 
   const handleItemClick = (item: DropdownMenuItem) => {
     item.onClick();
     setIsOpen(false);
+    triggerRef.current?.blur();
   };
 
   return (
     <div className={`dropdown-menu ${className}`} ref={menuRef}>
       <button
+        ref={triggerRef}
         className="dropdown-trigger"
         onClick={() => setIsOpen(!isOpen)}
         aria-expanded={isOpen}

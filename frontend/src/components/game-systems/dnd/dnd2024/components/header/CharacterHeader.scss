@@ -266,6 +266,17 @@
   display: none;
 }
 
+/* Avatar in header: hidden below wide-tablet, shown in Bio tab instead */
+.cs-header-left > .cs-avatar-picker {
+  display: none;
+}
+
+@include wide-tablet-up {
+  .cs-header-left > .cs-avatar-picker {
+    display: inline-block;
+  }
+}
+
 /* ==================== RESPONSIVE ==================== */
 
 /* SMALL_TABLET: 650-749px - скрываем Proficiency */
